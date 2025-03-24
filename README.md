@@ -30,10 +30,10 @@ pip install tukuy
 ## 🛠️ Basic Usage
 
 ```python
-from tukuy import ToolsTransformer
+from tukuy import TukuyTransformer
 
 # Create transformer
-TUKUY = ToolsTransformer()
+TUKUY = TukuyTransformer()
 
 # Basic text transformation
 text = " Hello World! "
@@ -104,7 +104,7 @@ class MyPlugin(TransformerPlugin):
         }
 
 # Usage
-TUKUY = ToolsTransformer()
+TUKUY = TukuyTransformer()
 TUKUY.register_plugin(MyPlugin())
 
 result = TUKUY.transform("hello", ["reverse"])  # "olleh"

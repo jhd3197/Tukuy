@@ -49,11 +49,11 @@ class ExamplePlugin(TransformerPlugin):
     
     Example usage:
         ```python
-        from tukuy import ToolsTransformer
+        from tukuy import TukuyTransformer
         from tukuy.plugins.example import ExamplePlugin
         
         # Create transformer
-        TUKUY = ToolsTransformer()
+        TUKUY = TukuyTransformer()
         
         # Register plugin
         TUKUY.register_plugin(ExamplePlugin())

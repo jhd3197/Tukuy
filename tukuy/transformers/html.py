@@ -228,8 +228,8 @@ class HtmlExtractor(ChainableTransformer[str, Dict[str, Any]]):
             return value
             
         # Import here to avoid circular imports
-        from ..transformers import ToolsTransformer
+        from ..transformers import TukuyTransformer
         
         # Create a transformer to apply the transforms
-        transformer = ToolsTransformer()
+        transformer = TukuyTransformer()
         return transformer.transform(value, transforms)

@@ -13,7 +13,7 @@ from ..plugins import (
 
 logger = getLogger(__name__)
 
-class ToolsTransformer:
+class TukuyTransformer:
     """
     Main transformer class that provides access to all transformation tools.
     
@@ -211,4 +211,4 @@ class ToolsTransformer:
             raise result.error
         return result.value[prop['name']] if prop.get('name') else None
 
-__all__ = ['ToolsTransformer']
+__all__ = ['TukuyTransformer']

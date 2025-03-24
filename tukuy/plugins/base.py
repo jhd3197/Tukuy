@@ -11,7 +11,7 @@ class TransformerPlugin(ABC):
     Base class for transformer plugins.
     
     A plugin is a collection of related transformers that can be registered
-    with the ToolsTransformer. Plugins provide a way to organize transformers
+    with the TukuyTransformer. Plugins provide a way to organize transformers
     into logical groups and manage their lifecycle.
     """
     

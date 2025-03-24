@@ -4,7 +4,7 @@ Tukuy - Example usage for the Tukuy transformation library.
 This file contains practical examples of text and HTML transformations.
 """
 
-from tukuy import ToolsTransformer
+from tukuy import TukuyTransformer
 from tukuy.exceptions import ValidationError, TransformationError, ParseError
 
 def text_transformation_examples():
@@ -12,7 +12,7 @@ def text_transformation_examples():
     print("\n===== TEXT TRANSFORMATION EXAMPLES =====\n")
     
     # Create the transformer
-    TUKUY = ToolsTransformer()
+    TUKUY = TukuyTransformer()
     
     # Example 1: Basic text transformations
     text = "  Hello World! This is a TEST string.  "
@@ -63,7 +63,7 @@ def html_transformation_examples():
     print("\n===== HTML TRANSFORMATION EXAMPLES =====\n")
     
     # Create the transformer
-    TUKUY = ToolsTransformer()
+    TUKUY = TukuyTransformer()
     
     # Example 1: Simple HTML extraction
     html = """
@@ -129,7 +129,7 @@ def json_transformation_example():
     print("\n===== JSON TRANSFORMATION EXAMPLES =====\n")
     
     # Create the transformer
-    TUKUY = ToolsTransformer()
+    TUKUY = TukuyTransformer()
     
     # Example: JSON parsing and extraction
     json_str = """
