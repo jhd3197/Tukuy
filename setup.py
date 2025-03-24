@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="tukuy",
-    version="0.0.1",
+    version='0.0.1',
     packages=find_packages(),
     install_requires=[
         "beautifulsoup4>=4.9.0",
