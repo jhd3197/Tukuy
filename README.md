@@ -33,11 +33,11 @@ pip install tukuy
 from tukuy import ToolsTransformer
 
 # Create transformer
-tools = ToolsTransformer()
+TUKUY = ToolsTransformer()
 
 # Basic text transformation
 text = " Hello World! "
-result = tools.transform(text, [
+result = TUKUY.transform(text, [
     "strip",
     "lowercase",
     {"function": "truncate", "length": 5}
@@ -46,7 +46,7 @@ print(result)  # "hello..."
 
 # HTML transformation
 html = "<div>Hello <b>World</b>!</div>"
-result = tools.transform(html, [
+result = TUKUY.transform(html, [
     "strip_html_tags",
     "lowercase"
 ])
@@ -54,14 +54,14 @@ print(result)  # "hello world!"
 
 # Date transformation
 date_str = "2023-01-01"
-age = tools.transform(date_str, [
+age = TUKUY.transform(date_str, [
     {"function": "age_calc"}
 ])
 print(age)  # 1
 
 # Validation
 email = "test@example.com"
-valid = tools.transform(email, ["email_validator"])
+valid = TUKUY.transform(email, ["email_validator"])
 print(valid)  # "test@example.com" or None if invalid
 ```
 
@@ -104,10 +104,10 @@ class MyPlugin(TransformerPlugin):
         }
 
 # Usage
-tools = ToolsTransformer()
-tools.register_plugin(MyPlugin())
+TUKUY = ToolsTransformer()
+TUKUY.register_plugin(MyPlugin())
 
-result = tools.transform("hello", ["reverse"])  # "olleh"
+result = TUKUY.transform("hello", ["reverse"])  # "olleh"
 ```
 
 See the [example plugin](tukuy/plugins/example/__init__.py) for a more detailed example.
@@ -150,7 +150,7 @@ pattern = {
     ]
 }
 
-data = tools.extract_html_with_pattern(html, pattern)
+data = TUKUY.extract_html_with_pattern(html, pattern)
 ```
 
 ### 📋 JSON Extraction
@@ -172,7 +172,7 @@ pattern = {
     ]
 }
 
-data = tools.extract_json_with_pattern(json_str, pattern)
+data = TUKUY.extract_json_with_pattern(json_str, pattern)
 ```
 
 ## 🚀 Use Cases
@@ -202,7 +202,7 @@ Tukuy provides comprehensive error handling with detailed error messages:
 from tukuy.exceptions import ValidationError, TransformationError, ParseError
 
 try:
-    result = tools.transform(data, transformations)
+    result = TUKUY.transform(data, transformations)
 except ValidationError as e:
     print(f"Validation failed: {e}")
 except ParseError as e:

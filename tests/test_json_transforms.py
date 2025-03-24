@@ -400,3 +400,100 @@ def test_complex_json_pattern(transformer):
     
     assert result["review_ratings"] == [5, 4, 5]
     assert result["average_rating"] == 4.67  # Average of [5, 4, 5]
+
+def test_extract_property_from_json(transformer):
+    # Test simple property extraction from JSON string
+    json_str = '{"user": {"name": "John", "email": "john@example.com"}, "status": "active"}'
+    
+    # Extract user name
+    result = transformer.extract_property_from_json(json_str, {
+        "name": "username",
+        "selector": "user.name"
+    })
+    assert result == "John"
+
+    # Test extraction from already parsed JSON
+    parsed = json.loads(json_str)
+    result = transformer.extract_property_from_json(parsed, {
+        "name": "status",
+        "selector": "status"
+    })
+    assert result == "active"
+
+    # Test nested property with transform
+    complex_json = '''
+    {
+        "product": {
+            "pricing": {
+                "sale": 999.99,
+                "discount": "20% OFF"
+            }
+        }
+    }
+    '''
+    result = transformer.extract_property_from_json(complex_json, {
+        "name": "savings",
+        "selector": "product.pricing.discount",
+        "transform": [
+            {"function": "regex", "pattern": r"(\d+)%", "template": "{1}"}
+        ]
+    })
+    assert result == "20"
+
+    # Test array extraction
+    array_json = '''
+    {
+        "products": [
+            {"name": "Laptop"},
+            {"name": "Phone"},
+            {"name": "Tablet"}
+        ]
+    }
+    '''
+    result = transformer.extract_property_from_json(array_json, {
+        "name": "names",
+        "selector": "products[*].name",
+        "type": "array"
+    })
+    assert result == ["Laptop", "Phone", "Tablet"]
+
+    # Test with fallback
+    fallback_json = '''
+    {
+        "data": {},
+        "backup": {
+            "image": "backup.jpg"
+        }
+    }
+    '''
+    result = transformer.extract_property_from_json(fallback_json, {
+        "name": "image",
+        "selector": {
+            "primary": "data.main_image",
+            "fallback": ["backup.image"]
+        }
+    })
+    assert result == "backup.jpg"
+
+def test_extract_property_from_json_errors(transformer):
+    # Test invalid JSON string
+    with pytest.raises(ParseError):
+        transformer.extract_property_from_json('{"name": "John"', {
+            "name": "username",
+            "selector": "name"
+        })
+
+    # Test missing property
+    json_str = '{"user": {"name": "John"}}'
+    result = transformer.extract_property_from_json(json_str, {
+        "name": "email",
+        "selector": "user.email"
+    })
+    assert result is None
+
+    # Test invalid selector
+    with pytest.raises(TransformationError):
+        transformer.extract_property_from_json(json_str, {
+            "name": "invalid",
+            "selector": None
+        })

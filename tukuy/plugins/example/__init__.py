@@ -53,22 +53,22 @@ class ExamplePlugin(TransformerPlugin):
         from tukuy.plugins.example import ExamplePlugin
         
         # Create transformer
-        tools = ToolsTransformer()
+        TUKUY = ToolsTransformer()
         
         # Register plugin
-        tools.register_plugin(ExamplePlugin())
+        TUKUY.register_plugin(ExamplePlugin())
         
         # Use transformers
         text = "Hello World"
         
         # Reverse text
-        reversed_text = tools.transform(text, ["reverse"])  # "dlroW olleH"
+        reversed_text = TUKUY.transform(text, ["reverse"])  # "dlroW olleH"
         
         # Count words
-        word_count = tools.transform(text, ["count_words"])  # 2
+        word_count = TUKUY.transform(text, ["count_words"])  # 2
         
         # Find patterns
-        patterns = tools.transform(text, [{
+        patterns = TUKUY.transform(text, [{
             "function": "find_pattern",
             "pattern": r"\w+"
         }])  # ["Hello", "World"]

@@ -12,22 +12,22 @@ def text_transformation_examples():
     print("\n===== TEXT TRANSFORMATION EXAMPLES =====\n")
     
     # Create the transformer
-    tools = ToolsTransformer()
+    TUKUY = ToolsTransformer()
     
     # Example 1: Basic text transformations
     text = "  Hello World! This is a TEST string.  "
     print(f"Original text: '{text}'")
     
     # Strip whitespace
-    result = tools.transform(text, ["strip"])
+    result = TUKUY.transform(text, ["strip"])
     print(f"After strip: '{result}'")
     
     # Convert to lowercase
-    result = tools.transform(text, ["lowercase"])
+    result = TUKUY.transform(text, ["lowercase"])
     print(f"After lowercase: '{result}'")
     
     # Chain transformations - strip and lowercase
-    result = tools.transform(text, ["strip", "lowercase"])
+    result = TUKUY.transform(text, ["strip", "lowercase"])
     print(f"After strip and lowercase: '{result}'")
     
     # Example 2: Parametrized text transformations
@@ -35,7 +35,7 @@ def text_transformation_examples():
     print(f"\nOriginal text: '{text}'")
     
     # Truncate with ellipsis
-    result = tools.transform(text, [{"function": "truncate", "length": 20}])
+    result = TUKUY.transform(text, [{"function": "truncate", "length": 20}])
     print(f"Truncated to 20 chars: '{result}'")
     
     # Example 3: Regular expressions
@@ -43,7 +43,7 @@ def text_transformation_examples():
     print(f"\nOriginal text: '{text}'")
     
     # Extract user ID using regex
-    result = tools.transform(text, [
+    result = TUKUY.transform(text, [
         {"function": "regex", "pattern": r"User ID: ([A-Z]+-\d+)", "template": "{1}"}
     ])
     print(f"Extracted User ID: '{result}'")
@@ -53,7 +53,7 @@ def text_transformation_examples():
     print(f"\nOriginal text: '{text}'")
     
     # Replace word
-    result = tools.transform(text, [
+    result = TUKUY.transform(text, [
         {"function": "replace", "find": "world", "replace": "Tukuy"}
     ])
     print(f"After replacement: '{result}'")
@@ -63,7 +63,7 @@ def html_transformation_examples():
     print("\n===== HTML TRANSFORMATION EXAMPLES =====\n")
     
     # Create the transformer
-    tools = ToolsTransformer()
+    TUKUY = ToolsTransformer()
     
     # Example 1: Simple HTML extraction
     html = """
@@ -83,7 +83,7 @@ def html_transformation_examples():
     print("Original HTML: (truncated for readability)")
     
     # Extract text without HTML tags
-    result = tools.transform(html, ["strip_html_tags"])
+    result = TUKUY.transform(html, ["strip_html_tags"])
     print(f"\nText without HTML tags:\n'{result}'")
     
     # Example 2: Pattern-based HTML extraction
@@ -116,7 +116,7 @@ def html_transformation_examples():
     }
     
     try:
-        data = tools.extract_html_with_pattern(html, pattern)
+        data = TUKUY.extract_html_with_pattern(html, pattern)
         print(f"\nExtracted title: '{data['title']}'")
         print(f"Extracted description: '{data['description']}'")
         print(f"Extracted links: {data['links']}")
@@ -129,7 +129,7 @@ def json_transformation_example():
     print("\n===== JSON TRANSFORMATION EXAMPLES =====\n")
     
     # Create the transformer
-    tools = ToolsTransformer()
+    TUKUY = ToolsTransformer()
     
     # Example: JSON parsing and extraction
     json_str = """
@@ -152,7 +152,7 @@ def json_transformation_example():
     
     # Parse JSON
     try:
-        parsed = tools.transform(json_str, ["json_parse"])
+        parsed = TUKUY.transform(json_str, ["json_parse"])
         print("Parsed JSON:")
         print(f"User name: {parsed['user']['name']}")
         print(f"User interests: {parsed['user']['profile']['interests']}")
@@ -182,7 +182,7 @@ def json_transformation_example():
             ]
         }
         
-        data = tools.extract_json_with_pattern(json_str, pattern)
+        data = TUKUY.extract_json_with_pattern(json_str, pattern)
         print("\nExtracted data using pattern:")
         print(f"Username: {data['username']}")
         print(f"Email: {data['email']}")

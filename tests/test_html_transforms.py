@@ -254,3 +254,59 @@ def test_complex_pattern_extraction(transformer):
         {"url": "/files/manual.pdf", "type": "pdf", "size": "2.5 MB"},
         {"url": "/files/drivers.zip", "type": "zip", "size": "1.2 GB"}
     ]
+
+def test_extract_property_from_html(transformer):
+    # Test basic property extraction
+    html = """
+    <div class="container">
+        <h1 class="title">Welcome</h1>
+        <p class="description">This is a <b>test</b> description.</p>
+        <ul class="links">
+            <li><a href="link1.html">Link 1</a></li>
+            <li><a href="link2.html">Link 2</a></li>
+        </ul>
+    </div>
+    """
+
+    # Test simple text extraction
+    result = transformer.extract_property_from_html(html, {
+        "name": "title",
+        "selector": "h1",
+        "transform": ["strip"]
+    })
+    assert result == "Welcome"
+
+    # Test with HTML stripping
+    result = transformer.extract_property_from_html(html, {
+        "name": "description",
+        "selector": "p.description",
+        "transform": ["strip_html_tags", "strip"]
+    })
+    assert result == "This is a test description."
+
+    # Test array extraction
+    result = transformer.extract_property_from_html(html, {
+        "name": "links",
+        "selector": "a",
+        "attribute": "href",
+        "type": "array"
+    })
+    assert result == ["link1.html", "link2.html"]
+
+    # Test with fallback
+    result = transformer.extract_property_from_html(html, {
+        "name": "subtitle",
+        "selector": {
+            "primary": "h2.subtitle",
+            "fallback": ["h1.title"]
+        },
+        "transform": ["strip"]
+    })
+    assert result == "Welcome"
+
+    # Test missing property
+    result = transformer.extract_property_from_html(html, {
+        "name": "missing",
+        "selector": "nonexistent"
+    })
+    assert result is None

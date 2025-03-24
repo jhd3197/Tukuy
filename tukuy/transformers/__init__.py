@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 from logging import getLogger
 
 from ..base import BaseTransformer
-from ..types import TransformContext
+from ..types import TransformContext, JsonType
 from ..exceptions import ValidationError, TransformationError
 from ..plugins import (
     PluginRegistry,
@@ -136,6 +136,22 @@ class ToolsTransformer:
             raise result.error
         return result.value
     
+    def extract_property_from_html(self, html: str, prop: Dict[str, Any]) -> Any:
+        """Extract a single property from HTML."""
+        html_plugin = self.registry.get_plugin('html')
+        if not html_plugin:
+            raise ValidationError("HTML plugin not loaded")
+            
+        # Convert single property to proper pattern format
+        pattern = {
+            "properties": [prop]
+        }
+        extractor = html_plugin.transformers['html_extract']({"pattern": pattern})
+        result = extractor.transform(html)
+        if result.failed:
+            raise result.error
+        return result.value[prop['name']] if prop.get('name') else None
+    
     def extract_json_with_pattern(self, json_data: str, pattern: Dict[str, Any]) -> Dict[str, Any]:
         """Extract data from JSON using a pattern."""
         json_plugin = self.registry.get_plugin('json')
@@ -155,5 +171,44 @@ class ToolsTransformer:
             raise result.error
         
         return result.value
+
+    def extract_property_from_json(self, json_data: Union[str, JsonType], prop: Dict[str, Any]) -> Any:
+        """Extract a single property from JSON data.
+        
+        Args:
+            json_data: JSON string or already parsed JSON data
+            prop: Property extraction pattern
+            
+        Returns:
+            The extracted property value
+            
+        Raises:
+            ValidationError: If JSON plugin is not loaded
+            ParseError: If JSON string is invalid
+            TransformationError: If extraction fails
+        """
+        json_plugin = self.registry.get_plugin('json')
+        if not json_plugin:
+            raise ValidationError("JSON plugin not loaded")
+            
+        # Parse the JSON string if needed
+        if isinstance(json_data, str):
+            parser = json_plugin.transformers['json_parse']({"strict": True})
+            parsed = parser.transform(json_data)
+            if parsed.failed:
+                raise parsed.error
+            data = parsed.value
+        else:
+            data = json_data
+            
+        # Convert single property to proper pattern format
+        pattern = {
+            "properties": [prop]
+        }
+        extractor = json_plugin.transformers['json_extract']({"pattern": pattern})
+        result = extractor.transform(data)
+        if result.failed:
+            raise result.error
+        return result.value[prop['name']] if prop.get('name') else None
 
 __all__ = ['ToolsTransformer']
