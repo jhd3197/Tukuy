@@ -10,12 +10,72 @@ from ..exceptions import ValidationError, TransformationError, ParseError
 
 class JsonParser(ChainableTransformer[str, JsonType]):
     """
-    Parses JSON strings into Python objects.
+    Description:
+        A transformer that parses JSON strings into Python objects with support for
+        strict/lenient parsing modes and optional schema validation.
     
-    Features:
-    - Strict/lenient parsing modes
-    - Schema validation
-    - Error handling with detailed messages
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        strict (bool): Whether to raise errors for invalid JSON (default: True)
+        schema (Optional[Dict[str, Any]]): JSON schema for validation
+    
+    Returns:
+        JsonType: The parsed JSON data as Python objects (dict, list, str, int, float, bool, None)
+    
+    Raises:
+        ValidationError: If the input value is not a string or if schema validation fails
+        ParseError: If strict=True and the JSON string is invalid
+    
+    Notes:
+        Schema validation supports:
+        - Basic types: object, array, string, number, boolean, null
+        - Required properties
+        - Nested objects and arrays
+        - Property type checking
+    
+    Example:
+        ```python
+        # Basic JSON parsing
+        parser = JsonParser("parser")
+        result = parser.transform('{"name": "John", "age": 30}')
+        assert result.value == {"name": "John", "age": 30}
+        
+        # With schema validation
+        schema = {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "age": {"type": "number"}
+            },
+            "required": ["name"]
+        }
+        
+        validator = JsonParser(
+            "validator",
+            strict=True,
+            schema=schema
+        )
+        
+        # Valid JSON with schema
+        result = validator.transform('{"name": "John", "age": 30}')
+        assert result.value == {"name": "John", "age": 30}
+        
+        # Invalid JSON (will raise ParseError)
+        try:
+            validator.transform('{"name": "John", age: 30}')
+        except ParseError:
+            print("Invalid JSON syntax")
+            
+        # Schema validation failure (will raise ValidationError)
+        try:
+            validator.transform('{"age": 30}')  # Missing required "name"
+        except ValidationError:
+            print("Schema validation failed")
+        ```
     """
     
     def __init__(
@@ -101,13 +161,115 @@ class JsonParser(ChainableTransformer[str, JsonType]):
 
 class JsonExtractor(BaseTransformer[JsonType, Any]):
     """
-    Extracts data from JSON structures using patterns.
+    Description:
+        A transformer that extracts data from JSON structures using a pattern-based
+        approach. Supports complex path expressions, nested property access, array
+        operations, and fallback values.
     
-    Features:
-    - JSONPath-like syntax for data extraction
-    - Nested property access
-    - Array operations
-    - Default values
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        pattern (Pattern): Pattern describing what data to extract
+        default (Any): Default value to use when a property is not found
+    
+    Returns:
+        Any: The extracted data according to the pattern
+    
+    Raises:
+        TransformationError: If extraction fails or transformations fail
+    
+    Notes:
+        Path Expression Syntax:
+        - Simple key: "user.name"
+        - Array index: "users[0].name"
+        - Array wildcard: "users[*].name"
+        - Nested arrays: "data.users[*].posts[*].title"
+        
+        Pattern Structure:
+        ```python
+        {
+            "properties": [
+                {
+                    "name": "output_field_name",
+                    "selector": {
+                        "primary": "path.to.data",
+                        "fallback": ["alternate.path", "another.path"]
+                    },
+                    "type": "string|number|boolean|array|object",
+                    "transform": [
+                        {"function": "transform_name", "params": {...}}
+                    ]
+                }
+            ]
+        }
+        ```
+    
+    Example:
+        ```python
+        # Create an extractor for user data
+        pattern = {
+            "properties": [
+                {
+                    "name": "username",
+                    "selector": "user.profile.username",
+                    "fallback": "user.name"
+                },
+                {
+                    "name": "posts",
+                    "selector": "user.posts[*].title",
+                    "type": "array"
+                },
+                {
+                    "name": "info",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "email",
+                            "selector": "user.email"
+                        },
+                        {
+                            "name": "age",
+                            "selector": "user.age",
+                            "type": "number"
+                        }
+                    ]
+                }
+            ]
+        }
+        
+        extractor = JsonExtractor(
+            "user_extractor",
+            pattern=pattern,
+            default=None
+        )
+        
+        # Sample data
+        data = {
+            "user": {
+                "name": "john_doe",
+                "email": "john@example.com",
+                "age": 30,
+                "posts": [
+                    {"title": "First Post"},
+                    {"title": "Second Post"}
+                ]
+            }
+        }
+        
+        # Extract data
+        result = extractor.transform(data)
+        assert result.value == {
+            "username": "john_doe",
+            "posts": ["First Post", "Second Post"],
+            "info": {
+                "email": "john@example.com",
+                "age": 30
+            }
+        }
+        ```
     """
     
     def __init__(

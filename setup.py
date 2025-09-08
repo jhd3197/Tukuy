@@ -12,6 +12,7 @@ setup(
     install_requires=[
         "beautifulsoup4>=4.9.0",
         "python-slugify>=4.0.0",
+        "html5lib>=1.1",
     ],
     author="Juan Denis",
     author_email="juan@vene.co",

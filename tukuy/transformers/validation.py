@@ -4,12 +4,72 @@ import re
 from typing import Optional, Any, Union
 from decimal import Decimal
 
+
 from ..base import ChainableTransformer
 from ..types import TransformContext
 from ..exceptions import ValidationError
 
 class BooleanTransformer(ChainableTransformer[str, bool]):
-    """Convert string to boolean."""
+    """
+    Description:
+        A transformer that converts string values to boolean based on common
+        true/false representations. Handles various string formats like 'true',
+        'yes', '1', etc.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        Optional[bool]: The boolean value (True, False) or None if conversion fails
+    
+    Raises:
+        ValidationError: If the input value is not a string or boolean
+    
+    Notes:
+        - True values: 'true', '1', 'yes', 'y', 't' (case-insensitive)
+        - False values: 'false', '0', 'no', 'n', 'f' (case-insensitive)
+        - Returns None for values that don't match any of the above
+        - Passes through boolean inputs unchanged
+    
+    Example:
+        ```python
+        # Basic boolean conversion
+        transformer = BooleanTransformer("to_bool")
+        
+        # Convert string to boolean
+        result = transformer.transform("yes")
+        assert result.value is True
+        
+        result = transformer.transform("NO")
+        assert result.value is False
+        
+        # Handle numeric strings
+        result = transformer.transform("1")
+        assert result.value is True
+        
+        result = transformer.transform("0")
+        assert result.value is False
+        
+        # Handle actual booleans
+        result = transformer.transform(True)
+        assert result.value is True
+        
+        # Handle invalid values
+        result = transformer.transform("maybe")
+        assert result.value is None
+        
+        # Chain with other transformers
+        default = DefaultValueTransformer("default_false", default_value=False)
+        pipeline = transformer.chain(default)
+        
+        result = pipeline.transform("maybe")  # Invalid value
+        assert result.value is False  # Uses default
+        ```
+    """
     
     TRUE_VALUES = {'true', '1', 'yes', 'y', 't'}
     FALSE_VALUES = {'false', '0', 'no', 'n', 'f'}
@@ -31,7 +91,69 @@ class BooleanTransformer(ChainableTransformer[str, bool]):
         return None
 
 class EmailValidator(ChainableTransformer[str, str]):
-    """Validate email address."""
+    """
+    Description:
+        A transformer that validates email addresses using a simple regex pattern
+        and optional domain restrictions. Returns the email if valid or None if invalid.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        allowed_domains (Optional[list]): List of allowed email domains (e.g., ['example.com'])
+    
+    Returns:
+        Optional[str]: The validated email address or None if validation fails
+    
+    Raises:
+        ValidationError: If the input value is not a string
+    
+    Notes:
+        - Uses a basic regex pattern to validate email format
+        - Optionally restricts to specific domains
+        - Returns None for invalid emails instead of raising an exception
+        - Trims whitespace from input
+    
+    Example:
+        ```python
+        # Basic email validation
+        transformer = EmailValidator("validate_email")
+        
+        # Valid email
+        result = transformer.transform("user@example.com")
+        assert result.value == "user@example.com"
+        
+        # Invalid email
+        result = transformer.transform("not-an-email")
+        assert result.value is None
+        
+        # With domain restrictions
+        restricted = EmailValidator(
+            "company_email",
+            allowed_domains=["company.com", "company.org"]
+        )
+        
+        # Valid domain
+        result = restricted.transform("user@company.com")
+        assert result.value == "user@company.com"
+        
+        # Invalid domain
+        result = restricted.transform("user@gmail.com")
+        assert result.value is None
+        
+        # Chain with other transformers
+        default = DefaultValueTransformer(
+            "default_email",
+            default_value="unknown@example.com"
+        )
+        pipeline = transformer.chain(default)
+        
+        result = pipeline.transform("invalid-email")
+        assert result.value == "unknown@example.com"
+        ```
+    """
     
     def __init__(self, name: str, allowed_domains: Optional[list] = None):
         super().__init__(name)
@@ -54,7 +176,66 @@ class EmailValidator(ChainableTransformer[str, str]):
         return value
 
 class PhoneFormatter(ChainableTransformer[str, str]):
-    """Format phone number."""
+    """
+    Description:
+        A transformer that formats phone numbers according to a specified pattern.
+        Extracts digits from the input and formats them into a standardized format.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        format (str): Format string with placeholders for area code, prefix, and line
+            (default: '({area}) {prefix}-{line}')
+    
+    Returns:
+        str: The formatted phone number
+    
+    Raises:
+        ValidationError: If the input value is not a string or doesn't contain
+            exactly 10 digits (or 11 digits starting with '1')
+    
+    Notes:
+        - Removes all non-digit characters from input
+        - Handles US/Canada numbers (10 digits)
+        - Automatically strips leading '1' from 11-digit numbers
+        - Format string can use {area}, {prefix}, and {line} placeholders
+    
+    Example:
+        ```python
+        # Basic phone formatting
+        transformer = PhoneFormatter("format_phone")
+        
+        # Format with default pattern: (XXX) XXX-XXXX
+        result = transformer.transform("1234567890")
+        assert result.value == "(123) 456-7890"
+        
+        # Handle input with non-digit characters
+        result = transformer.transform("(123) 456-7890")
+        assert result.value == "(123) 456-7890"
+        
+        # Handle 11-digit number with leading 1
+        result = transformer.transform("11234567890")
+        assert result.value == "(123) 456-7890"
+        
+        # Custom format
+        custom = PhoneFormatter(
+            "custom_format",
+            format="{area}-{prefix}-{line}"
+        )
+        result = custom.transform("1234567890")
+        assert result.value == "123-456-7890"
+        
+        # Chain with other transformers
+        uppercase = UppercaseTransformer("uppercase")
+        pipeline = custom.chain(uppercase)
+        
+        result = pipeline.transform("1234567890")
+        assert result.value == "123-456-7890"  # No effect on digits
+        ```
+    """
     
     def __init__(self, name: str, format: str = '({area}) {prefix}-{line}'):
         super().__init__(name)
@@ -80,7 +261,68 @@ class PhoneFormatter(ChainableTransformer[str, str]):
         )
 
 class CreditCardValidator(ChainableTransformer[str, str]):
-    """Validate credit card number using Luhn algorithm."""
+    """
+    Description:
+        A transformer that validates credit card numbers using the Luhn algorithm
+        and optionally masks the number for security. Returns the validated number
+        (original or masked) or None if invalid.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        mask (bool): Whether to mask the middle digits of the card number (default: False)
+    
+    Returns:
+        Optional[str]: The validated credit card number (original or masked) or None if invalid
+    
+    Raises:
+        ValidationError: If the input value is not a string
+    
+    Notes:
+        - Removes all non-digit characters from input
+        - Validates using the Luhn algorithm (checksum)
+        - Checks that length is between 13-19 digits (standard card lengths)
+        - When masking, shows first and last 4 digits, masks the rest
+        - Returns None for invalid card numbers instead of raising an exception
+    
+    Example:
+        ```python
+        # Basic credit card validation
+        transformer = CreditCardValidator("validate_cc")
+        
+        # Valid card (test number)
+        result = transformer.transform("4111 1111 1111 1111")
+        assert result.value == "4111 1111 1111 1111"  # Returns original format
+        
+        # Invalid card
+        result = transformer.transform("1234 5678 9012 3456")
+        assert result.value is None
+        
+        # With masking
+        masked = CreditCardValidator("masked_cc", mask=True)
+        
+        # Valid card with masking
+        result = masked.transform("4111-1111-1111-1111")
+        assert result.value == "4111********1111"
+        
+        # Handle input with spaces, dashes, etc.
+        result = masked.transform("4111 1111 1111 1111")
+        assert result.value == "4111********1111"
+        
+        # Chain with other transformers
+        default = DefaultValueTransformer(
+            "default_cc",
+            default_value="INVALID"
+        )
+        pipeline = transformer.chain(default)
+        
+        result = pipeline.transform("1234 5678 9012 3456")  # Invalid
+        assert result.value == "INVALID"
+        ```
+    """
     
     def __init__(self, name: str, mask: bool = False):
         super().__init__(name)
@@ -123,7 +365,73 @@ class CreditCardValidator(ChainableTransformer[str, str]):
         return original
 
 class TypeEnforcer(ChainableTransformer[Any, Any]):
-    """Enforce type conversion."""
+    """
+    Description:
+        A transformer that enforces type conversion of input values to a specified
+        target type. Supports conversion to int, float, str, bool, and decimal types.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+            name (str): Unique identifier for this transformer
+            ``target_type`` (str): The target type to convert to ('int', 'float', 'str', 'bool', 'decimal')
+    
+    Returns:
+        Any: The converted value in the target type
+    
+    Raises:
+        ValidationError: If the conversion fails or if the target type is not supported
+    
+    Notes:
+        - Supported target types: 'int', 'float', 'str', 'bool', 'decimal'
+        - For 'int' conversion of string values, handles float strings (e.g., "10.5" → 10)
+        - For 'bool' conversion of string values, uses common true/false representations
+        - For 'decimal' conversion, uses Python's Decimal type for precise decimal arithmetic
+    
+    Example:
+        ```python
+        # Integer conversion
+        transformer = TypeEnforcer("to_int", ``target_type``="int")
+        
+        # Convert string to int
+        result = transformer.transform("123")
+        assert result.value == 123
+        
+        # Convert float to int
+        result = transformer.transform(45.67)
+        assert result.value == 45
+        
+        # Float conversion
+        float_converter = TypeEnforcer("to_float", ``target_type``="float")
+        
+        # Convert string to float
+        result = float_converter.transform("123.45")
+        assert result.value == 123.45
+        
+        # Boolean conversion
+        bool_converter = TypeEnforcer("to_bool", ``target_type``="bool")
+        
+        # Convert string to bool
+        result = bool_converter.transform("yes")
+        assert result.value is True
+        
+        # Decimal conversion
+        decimal_converter = TypeEnforcer("to_decimal", ``target_type``="decimal")
+        
+        # Convert string to Decimal
+        result = decimal_converter.transform("123.45")
+        assert str(result.value) == "123.45"
+        
+        # Chain with other transformers
+        round_transformer = RoundTransformer("round", decimals=2)
+        pipeline = float_converter.chain(round_transformer)
+        
+        result = pipeline.transform("123.456")
+        assert result.value == 123.46
+        ```
+    """
     
     def __init__(self, name: str, target_type: str):
         super().__init__(name)

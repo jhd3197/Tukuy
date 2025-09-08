@@ -10,14 +10,44 @@ logger = getLogger(__name__)
 
 class BaseTransformer(Generic[T, U], ABC):
     """
-    Abstract base class for all transformers.
+    Description:
+        Abstract base class for all transformers. Provides common functionality and defines 
+        the interface that all transformers must implement.
     
-    Provides common functionality and defines the interface that all transformers
-    must implement.
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
     
     Type Parameters:
         T: The input type that this transformer accepts
         U: The output type that this transformer produces
+    
+    Methods:
+        __init__(name: str, options: Optional[TransformOptions] = None):
+            Initialize the transformer with a ``name`` and optional configuration.
+            
+        validate(value: T) -> bool:
+            Validate if the input value is acceptable for this transformer.
+            
+        transform(value: T, context: Optional[TransformContext] = None) -> TransformResult[U]:
+            Transform the input value according to the transformer's rules.
+            
+        _transform(value: T, context: Optional[TransformContext] = None) -> U:
+            Internal transformation method that subclasses must implement.
+    
+    Example::
+
+        class NumberSquareTransformer(BaseTransformer[int, int]):
+            def validate(self, value: int) -> bool:
+                return isinstance(value, int)
+            
+            def _transform(self, value: int, context: Optional[TransformContext] = None) -> int:
+                return value * value
+        
+        transformer = NumberSquareTransformer("square")
+        result = transformer.transform(5)
+        assert result.value == 25
+
     """
     
     def __init__(self, name: str, options: Optional[TransformOptions] = None):
@@ -109,10 +139,41 @@ class BaseTransformer(Generic[T, U], ABC):
 
 class ChainableTransformer(BaseTransformer[T, U]):
     """
-    A transformer that can be chained with other transformers.
+    Description:
+        A transformer that can be chained with other transformers. Allows for creating pipelines 
+        of transformations where the output of one transformer becomes the input to the next.
     
-    Allows for creating pipelines of transformations where the output of one
-    transformer becomes the input to the next.
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Type Parameters:
+        T: The input type that this transformer accepts
+        U: The output type that this transformer produces
+    
+    Methods:
+        __init__(name: str, next_transformer: Optional[BaseTransformer] = None, options: Optional[TransformOptions] = None):
+            Initialize the transformer with a ``name``, optional next transformer, and configuration.
+            
+        chain(next_transformer: BaseTransformer) -> ChainableTransformer:
+            Chain this transformer with another transformer.
+            
+        transform(value: T, context: Optional[TransformContext] = None) -> TransformResult:
+            Transform the value and pass it through the chain.
+    
+    Example::
+
+        # Create a pipeline that converts text to lowercase then strips whitespace
+        lowercase = LowercaseTransformer("lowercase")
+        strip = StripTransformer("strip")
+        
+        # Chain the transformers
+        pipeline = lowercase.chain(strip)
+        
+        # Transform text through the pipeline
+        result = pipeline.transform("  Hello World  ")
+        assert result.value == "hello world"
+
     """
     
     def __init__(
@@ -158,9 +219,45 @@ class ChainableTransformer(BaseTransformer[T, U]):
 
 class CompositeTransformer(BaseTransformer[T, U]):
     """
-    A transformer that combines multiple transformers into a single unit.
+    Description:
+        A transformer that combines multiple transformers into a single unit. Useful for creating 
+        complex transformations from simpler ones by composing multiple transformers together.
     
-    Useful for creating complex transformations from simpler ones.
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Type Parameters:
+        T: The input type that this transformer accepts
+        U: The output type that this transformer produces
+    
+    Methods:
+        __init__(name: str, transformers: List[BaseTransformer], options: Optional[TransformOptions] = None):
+            Initialize the transformer with a ``name``, list of transformers, and optional configuration.
+            
+        validate(value: Any) -> bool:
+            Validate input through all contained transformers.
+            
+        _transform(value: Any, context: Optional[TransformContext] = None) -> Any:
+            Apply all transformations in sequence.
+    
+    Example::
+
+        # Create individual transformers
+        lowercase = LowercaseTransformer("lowercase")
+        strip = StripTransformer("strip")
+        slugify = SlugifyTransformer("slugify")
+        
+        # Combine them into a composite transformer
+        text_processor = CompositeTransformer(
+            "text_processor",
+            transformers=[lowercase, strip, slugify]
+        )
+        
+        # Process text through all transformers
+        result = text_processor.transform("  Hello World!  ")
+        assert result.value == "hello-world"
+
     """
     
     def __init__(
@@ -190,7 +287,50 @@ class CompositeTransformer(BaseTransformer[T, U]):
         return current_value
 
 class RegexTransformer(ChainableTransformer[str, str]):
-    """Apply regex pattern to text."""
+    """
+    Description:
+        A transformer that applies a regular expression pattern to text and optionally 
+        formats the result using a template.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        pattern (str): Regular expression pattern to match against the input text
+        template (Optional[str]): Optional template for formatting the matched groups.
+            Use {1}, {2}, etc. to reference captured groups.
+    
+    Returns:
+        str: The transformed text after applying the regex pattern and template
+    
+    Raises:
+        ValidationError: If the input value is not a string
+        TransformationError: If the regex pattern is invalid
+    
+    Example::
+
+        # Extract and format a date
+        transformer = RegexTransformer(
+            "date_format",
+            pattern=r"(\d{4})-(\d{2})-(\d{2})",
+            template="{2}/{3}/{1}"  # MM/DD/YYYY
+        )
+        
+        result = transformer.transform("Date: 2024-03-24")
+        assert result.value == "03/24/2024"
+        
+        # Simple pattern matching without template
+        finder = RegexTransformer(
+            "find_email",
+            pattern=r"\b[\w\.-]+@[\w\.-]+\.\w+\b"
+        )
+        
+        result = finder.transform("Contact: user@example.com")
+        assert result.value == "user@example.com"
+
+    """
     
     def __init__(self, name: str, pattern: str, template: Optional[str] = None):
         super().__init__(name)
@@ -217,7 +357,45 @@ class RegexTransformer(ChainableTransformer[str, str]):
         return match.group(1) if match.groups() else match.group(0)
 
 class ReplaceTransformer(ChainableTransformer[str, str]):
-    """Replace text."""
+    """
+    Description:
+        A transformer that replaces all occurrences of a specified text with new text.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        old (str): The text to find and replace
+        new (str): The text to replace with
+    
+    Returns:
+        str: The text with all occurrences of ``old`` replaced with ``new``
+    
+    Raises:
+        ValidationError: If the input value is not a string
+    
+    Example::
+
+        # Replace specific text
+        transformer = ReplaceTransformer(
+            "fix_typo",
+            old="teh",
+            new="the"
+        )
+        
+        result = transformer.transform("teh quick brown fox")
+        assert result.value == "the quick brown fox"
+        
+        # Chain with other transformers
+        capitalize = UppercaseTransformer("uppercase")
+        pipeline = transformer.chain(capitalize)
+        
+        result = pipeline.transform("teh quick brown fox")
+        assert result.value == "THE QUICK BROWN FOX"
+
+    """
     
     def __init__(self, name: str, old: str, new: str):
         super().__init__(name)
@@ -232,10 +410,61 @@ class ReplaceTransformer(ChainableTransformer[str, str]):
 
 class CoreToolsTransformer(BaseTransformer[Any, Any]):
     """
-    Coordinates the application of multiple transformations using existing transformers.
+    Description:
+        Coordinates the application of multiple transformations using existing transformers.
+        This transformer takes a value and a list of transform operations, creates the
+        appropriate transformers, and chains them together to produce the final result.
     
-    This transformer takes a value and a list of transform operations, creates the
-    appropriate transformers, and chains them together to produce the final result.
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Supported Operations:
+        regex:
+            pattern (str): Regular expression pattern to match
+            template (Optional[str]): Optional template for formatting matches
+            
+        replace:
+            find (str): Text to find
+            replace (str): Text to replace with
+            
+        average:
+            Calculates the average of a list of numbers
+    
+    Returns:
+        Any: The transformed value after applying all operations
+    
+    Raises:
+        ValidationError: If an unknown transform function is specified or if input validation fails
+        TransformationError: If any transformation operation fails
+    
+    Example::
+
+        transformer = CoreToolsTransformer()
+        
+        # Apply multiple transformations
+        transforms = [
+            {
+                'function': 'regex',
+                'pattern': r'(\d+)',
+                'template': 'Number: {1}'
+            },
+            {
+                'function': 'replace',
+                'find': 'Number',
+                'replace': 'Value'
+            }
+        ]
+        
+        result = transformer.transform("Age: 25", transforms)
+        assert result.value == "Value: 25"
+        
+        # Calculate average
+        numbers = [1, 2, 3, 4, 5]
+        transforms = [{'function': 'average'}]
+        result = transformer.transform(numbers, transforms)
+        assert result.value == 3.0
+
     """
     
     def __init__(self):
@@ -269,10 +498,3 @@ class CoreToolsTransformer(BaseTransformer[Any, Any]):
                 return round(total / len(current_value), 2)
             else:
                 raise ValidationError(f"Unknown transform function: {func}", value)
-                
-            result = transformer.transform(current_value)
-            if result.failed:
-                raise result.error
-            current_value = result.value
-            
-        return current_value

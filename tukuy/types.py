@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional, Protocol, TypeVar, Union, Generic
 from dataclasses import dataclass
 from datetime import datetime
+from abc import ABC, abstractmethod
 
 # Type variables for generic transformers
 T = TypeVar('T')  # Input type
@@ -10,9 +11,28 @@ U = TypeVar('U')  # Output type
 JsonType = Union[Dict[str, Any], List[Any], str, int, float, bool, None]
 TransformContext = Dict[str, Any]
 
-# Transform result types
 class TransformResult(Generic[T]):
-    """Container for transformation results with error handling."""
+    """
+    Description:
+        Container for transformation results with error handling.
+
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+
+    Type Parameters:
+        T: The type of the transformed value
+
+    Methods:
+        __init__(value: Optional[T] = None, error: Optional[Exception] = None):
+            Initialize a new TransformResult with an optional value or error.
+            
+        failed: bool
+            Property indicating if the transformation failed.
+            
+        __str__() -> str:
+            String representation of the result.
+    """
     
     def __init__(self, value: Optional[T] = None, error: Optional[Exception] = None):
         self.value = value
@@ -21,6 +41,7 @@ class TransformResult(Generic[T]):
 
     @property
     def failed(self) -> bool:
+        """:no-index:"""
         return not self.success
 
     def __str__(self) -> str:
@@ -30,7 +51,14 @@ class TransformResult(Generic[T]):
 
 @dataclass
 class TransformOptions:
-    """Base class for transformer options."""
+    """
+    Description:
+        Base class for transformer options.
+
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    """
     pass
 
 @dataclass
@@ -66,11 +94,35 @@ class ExtractorOptions(TransformOptions):
     fallback: Optional[Union[str, List[str]]] = None
 
 class TransformerProtocol(Protocol[T, U]):
-    """Protocol defining the interface for transformers."""
+    """
+    Description:
+        Protocol defining the interface for transformers.
+
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+
+    Type Parameters:
+        T: The input type that this transformer accepts
+        U: The output type that this transformer produces
+
+    Methods:
+        name() -> str:
+            Get the transformer name.
+            
+        transform(value: T, context: Optional[TransformContext] = None) -> TransformResult[U]:
+            Transform the input value according to the transformer's rules.
+            
+        validate(value: T) -> bool:
+            Validate if the input value is acceptable for this transformer.
+            
+        get_validation_errors(value: T) -> List[str]:
+            Get list of validation errors for the input value.
+    """
     
     @property
     def name(self) -> str:
-        """Get the transformer name."""
+        """:no-index:"""
         return "base_transformer"
     
     def transform(self, value: T, context: Optional[TransformContext] = None) -> TransformResult[U]:

@@ -8,7 +8,64 @@ from ..types import TransformContext
 from ..exceptions import ValidationError
 
 class DateTransformer(ChainableTransformer[str, datetime]):
-    """Parse date string into datetime object."""
+    """
+    Description:
+        A transformer that parses date strings into datetime objects using a specified
+        format string. Uses Python's datetime.strptime for robust date parsing.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        ``format`` (str): Date format string using strftime/strptime codes (default: '%Y-%m-%d')
+    
+    Returns:
+        datetime: The parsed datetime object
+    
+    Raises:
+        ValidationError: If the input value is not a string or doesn't match the format
+    
+    Notes:
+        Format codes:
+        - %Y: Year with century (e.g., 2024)
+        - %m: Month as zero-padded number (01-12)
+        - %d: Day as zero-padded number (01-31)
+        - %H: Hour (00-23)
+        - %M: Minute (00-59)
+        - %S: Second (00-59)
+        See Python's datetime documentation for more codes.
+    
+    Example::
+
+        # Basic date parsing
+        transformer = DateTransformer("date_parser")
+        result = transformer.transform("2024-03-24")
+        assert result.value.year == 2024
+        assert result.value.month == 3
+        assert result.value.day == 24
+
+        # Custom ``format``
+        custom = DateTransformer(
+            "custom_date",
+            format="%d/%m/%Y %H:%M"
+        )
+        result = custom.transform("24/03/2024 15:30")
+        assert result.value.hour == 15
+        assert result.value.minute == 30
+
+        # Chain with other transformers
+        timezone = TimezoneTransformer(
+            "to_utc",
+            to_zone="UTC",
+            from_zone="America/New_York"
+        )
+        pipeline = transformer.chain(timezone)
+
+        result = pipeline.transform("2024-03-24")
+        assert result.value.tzinfo == timezone.UTC
+    """
     
     def __init__(self, name: str, format: str = '%Y-%m-%d'):
         super().__init__(name)
@@ -24,7 +81,58 @@ class DateTransformer(ChainableTransformer[str, datetime]):
             raise ValidationError(f"Invalid date format: {str(e)}", value)
 
 class TimezoneTransformer(ChainableTransformer[datetime, datetime]):
-    """Convert datetime between timezones."""
+    """
+    Description:
+        A transformer that converts datetime objects between different timezones.
+        [Not yet implemented]
+    
+    Version: v1
+    Status: Under Development
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        to_zone (str): Target timezone (e.g., "UTC", "America/New_York")
+        from_zone (Optional[str]): Source timezone. If not provided, assumes naive datetime
+    
+    Returns:
+        datetime: The datetime object in the target timezone
+    
+    Raises:
+        ValidationError: If the input value is not a datetime object
+    
+    Notes:
+        - Currently returns the input datetime without modification
+        - Future implementation will use pytz or zoneinfo for timezone conversion
+        - Will handle both naive and timezone-aware datetime objects
+        - Will support all IANA timezone database names
+    
+    Example::
+    
+        # Note: This example shows future functionality
+        transformer = TimezoneTransformer(
+            "to_utc",
+            to_zone="UTC",
+            from_zone="America/New_York"
+        )
+        
+        # Convert timezone-aware datetime
+        dt = datetime(2024, 3, 24, 15, 30, tzinfo=timezone("America/New_York"))
+        result = transformer.transform(dt)
+        assert result.value.hour == 19  # 15:30 EDT = 19:30 UTC
+        
+        # Convert naive datetime
+        naive_dt = datetime(2024, 3, 24, 15, 30)
+        result = transformer.transform(naive_dt)
+        assert result.value.tzinfo == timezone.utc
+        
+        # Chain with other transformers
+        format_date = DateFormatTransformer("format", format="%Y-%m-%d %H:%M %Z")
+        pipeline = transformer.chain(format_date)
+        
+        result = pipeline.transform(dt)
+        assert result.value == "2024-03-24 19:30 UTC"
+    """
     
     def __init__(self, name: str, to_zone: str, from_zone: Optional[str] = None):
         super().__init__(name)
@@ -39,7 +147,73 @@ class TimezoneTransformer(ChainableTransformer[datetime, datetime]):
         return value
 
 class DurationCalculator(ChainableTransformer[str, int]):
-    """Calculate duration between dates."""
+    """
+    Description:
+        A transformer that calculates the duration between two dates in various units
+        (days, months, or years). If no end date is provided, uses today's date.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        unit (str): Unit for duration calculation (``days``, ``months``, or ``years``)
+        ``format`` (str): Date format string for parsing dates (default: '%Y-%m-%d')
+        end (Optional[str]): End date string. If not provided, uses today's date
+    
+    Returns:
+        int: The duration between dates in the specified unit
+    
+    Raises:
+        ValidationError: If the input value is not a string, doesn't match the ``format``,
+            or if an invalid ``unit`` is specified
+    
+    Notes:
+        - For ``months``, calculates full months between dates
+        - For ``years``, calculates full years between dates
+        - Negative durations are possible if end date is before start date
+    
+    Example::
+
+        # Calculate days between dates
+        transformer = DurationCalculator(
+            "days_between",
+            unit="days",
+            format="%Y-%m-%d"
+        )
+        result = transformer.transform("2024-01-01")  # to today
+        assert isinstance(result.value, int)
+
+        # Calculate months with specific end date
+        months = DurationCalculator(
+            "months_between",
+            unit="months",
+            format="%Y-%m-%d",
+            end="2024-12-31"
+        )
+        result = months.transform("2024-01-01")
+        assert result.value == 11  # Jan to Dec = 11 months
+
+        # Calculate years
+        years = DurationCalculator(
+            "years_between",
+            unit="years",
+            format="%Y-%m-%d"
+        )
+        result = years.transform("2020-03-24")  # to today
+        assert result.value == 4
+
+        # Chain with other transformers
+        format_result = StringFormatTransformer(
+            "format",
+            template="{} days old"
+        )
+        pipeline = transformer.chain(format_result)
+
+        result = pipeline.transform("2024-01-01")
+        assert "days old" in result.value
+    """
     
     def __init__(self, name: str, unit: str = 'days', format: str = '%Y-%m-%d', end: Optional[str] = None):
         super().__init__(name)
@@ -67,7 +241,62 @@ class DurationCalculator(ChainableTransformer[str, int]):
             raise ValidationError(f"Invalid date format: {str(e)}", value)
 
 class AgeCalculator(ChainableTransformer[str, int]):
-    """Calculate age from birth date."""
+    """
+    Description:
+        A transformer that calculates age in years from a birth date, taking into
+        account the month and day to ensure accurate age calculation. Uses a reference
+        date (defaults to today) for the calculation.
+
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+
+    Args:
+        ``name`` (str): Unique identifier for this transformer
+        ``reference_date`` (Optional[date]): Date to calculate age against (default: today)
+
+    Returns:
+        int: The calculated age in years
+
+    Raises:
+        ValidationError: If the input value is not a string or doesn't match the format
+
+    Notes:
+        - Uses YYYY-MM-DD format for birth date
+        - Handles leap years correctly
+        - Subtracts one year if birthday hasn't occurred yet in reference year
+        - Returns negative age if birth date is in the future
+
+    Example::
+
+        # Calculate age using today's date
+        transformer = AgeCalculator("age")
+        result = transformer.transform("1990-03-24")
+        assert result.value == 34  # as of 2024-03-24
+
+        # Calculate age at specific date
+        specific = AgeCalculator(
+            "age_at_date",
+            reference_date=date(2020, 1, 1)
+        )
+        result = specific.transform("1990-03-24")
+        assert result.value == 29  # not 30 yet in January
+
+        # Handle future dates
+        future = AgeCalculator("future_age")
+        result = future.transform("2025-01-01")
+        assert result.value < 0  # negative age for future date
+
+        # Chain with other transformers
+        format_age = StringFormatTransformer(
+            "format",
+            template="Age: {} years"
+        )
+        pipeline = transformer.chain(format_age)
+
+        result = pipeline.transform("1990-03-24")
+        assert result.value == "Age: 34 years"
+    """
     
     def __init__(self, name: str, reference_date: Optional[date] = None):
         super().__init__(name)

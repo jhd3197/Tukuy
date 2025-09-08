@@ -11,13 +11,6 @@ Tukuy (meaning "to transform" or "to become" in Quechua) is a powerful and exten
 - 🧩 **Plugin System**: Easily extend functionality with custom plugins
 - 🔄 **Chainable Transformers**: Compose multiple transformations in sequence
 - 🧪 **Type-safe Transformations**: With built-in validation
-- 📊 **Rich Set of Built-in Transformers**:
-  - 📝 Text manipulation (case conversion, trimming, regex, etc.)
-  - 🌐 HTML processing and extraction
-  - 📅 Date parsing and calculations
-  - 🔢 Numerical operations
-  - ✅ Data validation
-  - 📋 JSON parsing and extraction
 - 🔍 **Pattern-based Data Extraction**: Extract structured data from HTML and JSON
 - 🛡️ **Error Handling**: Comprehensive error handling with detailed messages
 
@@ -63,68 +56,6 @@ print(age)  # 1
 email = "test@example.com"
 valid = TUKUY.transform(email, ["email_validator"])
 print(valid)  # "test@example.com" or None if invalid
-```
-
-## 🧩 Plugin System
-
-Tukuy uses a plugin system to organize transformers into logical groups and make it easy to extend functionality.
-
-### 📚 Built-in Plugins
-
-- 📝 **text**: Basic text transformations (strip, lowercase, regex, etc.)
-- 🌐 **html**: HTML manipulation and extraction
-- 📅 **date**: Date parsing and calculations
-- ✅ **validation**: Data validation and formatting
-- 🔢 **numerical**: Number manipulation and calculations
-- 📋 **json**: JSON parsing and extraction
-
-### 🔌 Creating Custom Plugins
-
-You can create custom plugins by extending the `TransformerPlugin` class:
-
-```python
-from tukuy.plugins import TransformerPlugin
-from tukuy.base import ChainableTransformer
-
-class ReverseTransformer(ChainableTransformer[str, str]):
-    def validate(self, value: str) -> bool:
-        return isinstance(value, str)
-    
-    def _transform(self, value: str, context=None) -> str:
-        return value[::-1]
-
-class MyPlugin(TransformerPlugin):
-    def __init__(self):
-        super().__init__("my_plugin")
-    
-    @property
-    def transformers(self):
-        return {
-            'reverse': lambda _: ReverseTransformer('reverse')
-        }
-
-# Usage
-TUKUY = TukuyTransformer()
-TUKUY.register_plugin(MyPlugin())
-
-result = TUKUY.transform("hello", ["reverse"])  # "olleh"
-```
-
-See the [example plugin](tukuy/plugins/example/__init__.py) for a more detailed example.
-
-### 🔄 Plugin Lifecycle
-
-Plugins can implement `initialize()` and `cleanup()` methods for setup and teardown:
-
-```python
-class MyPlugin(TransformerPlugin):
-    def initialize(self) -> None:
-        super().initialize()
-        # Load resources, connect to databases, etc.
-    
-    def cleanup(self) -> None:
-        super().cleanup()
-        # Close connections, free resources, etc.
 ```
 
 ## 🔍 Pattern-based Extraction
@@ -223,3 +154,122 @@ Contributions are welcome! Here's how you can help:
 6. 🔄 Commit your changes (`git commit -m 'Add amazing feature'`)
 7. 🚀 Push to the branch (`git push origin feature/amazing-feature`)
 8. 🔍 Open a Pull Request
+
+## 🧩 Plugin System Documentation
+
+Tukuy's plugin system is the core of its extensibility. Below is a comprehensive list of all available plugins and their features.
+
+### 📚 Built-in Plugins
+
+#### 📝 Text Plugin (`text`)
+- **Description**: Handles text manipulation and string operations
+- **Key Transformers**:
+  - `strip`: Remove leading/trailing whitespace
+  - `lowercase`: Convert text to lowercase
+  - `uppercase`: Convert text to uppercase
+  - `truncate`: Truncate text to specified length
+  - `replace`: Replace text patterns
+  - `regex_replace`: Replace using regular expressions
+  - `split`: Split text into array
+  - `join`: Join array into text
+  - `normalize`: Normalize text (remove diacritics)
+
+#### 🌐 HTML Plugin (`html`)
+- **Description**: Process and extract data from HTML content
+- **Key Transformers**:
+  - `strip_html_tags`: Remove HTML tags
+  - `extract_text`: Extract text content
+  - `select`: Extract content using CSS selectors
+  - `extract_links`: Get all links from HTML
+  - `extract_tables`: Extract tables to structured data
+  - `clean_html`: Sanitize HTML content
+
+#### 📅 Date Plugin (`date`)
+- **Description**: Handle date parsing, formatting, and calculations
+- **Key Transformers**:
+  - `parse_date`: Convert string to date object
+  - `format_date`: Format date to string
+  - `age_calc`: Calculate age from date
+  - `add_days`: Add days to date
+  - `diff_days`: Calculate days between dates
+  - `is_weekend`: Check if date is weekend
+  - `to_timezone`: Convert between timezones
+
+#### 🔢 Numerical Plugin (`numerical`)
+- **Description**: Mathematical operations and number formatting
+- **Key Transformers**:
+  - `round`: Round number to decimals
+  - `format_number`: Format with thousand separators
+  - `to_currency`: Format as currency
+  - `percentage`: Convert to percentage
+  - `math_eval`: Evaluate mathematical expressions
+  - `scale`: Scale number to range
+  - `statistics`: Calculate basic statistics
+
+#### ✅ Validation Plugin (`validation`)
+- **Description**: Data validation and verification
+- **Key Transformers**:
+  - `email_validator`: Validate email addresses
+  - `url_validator`: Validate URLs
+  - `phone_validator`: Validate phone numbers
+  - `length_validator`: Validate string length
+  - `range_validator`: Validate number ranges
+  - `regex_validator`: Validate against regex pattern
+  - `type_validator`: Validate data types
+
+#### 📋 JSON Plugin (`json`)
+- **Description**: JSON manipulation and extraction
+- **Key Transformers**:
+  - `parse_json`: Parse JSON string
+  - `stringify`: Convert to JSON string
+  - `extract`: Extract values using JSON path
+  - `flatten`: Flatten nested JSON
+  - `merge`: Merge multiple JSON objects
+  - `validate_schema`: Validate against JSON schema
+
+### 🔌 Creating Custom Plugins
+
+You can create custom plugins by extending the `TransformerPlugin` class:
+
+```python
+from tukuy.plugins import TransformerPlugin
+from tukuy.base import ChainableTransformer
+
+class ReverseTransformer(ChainableTransformer[str, str]):
+    def validate(self, value: str) -> bool:
+        return isinstance(value, str)
+    
+    def _transform(self, value: str, context=None) -> str:
+        return value[::-1]
+
+class MyPlugin(TransformerPlugin):
+    def __init__(self):
+        super().__init__("my_plugin")
+    
+    @property
+    def transformers(self):
+        return {
+            'reverse': lambda _: ReverseTransformer('reverse')
+        }
+
+# Usage
+TUKUY = TukuyTransformer()
+TUKUY.register_plugin(MyPlugin())
+
+result = TUKUY.transform("hello", ["reverse"])  # "olleh"
+```
+
+### 🔄 Plugin Lifecycle
+
+Plugins can implement `initialize()` and `cleanup()` methods for setup and teardown:
+
+```python
+class MyPlugin(TransformerPlugin):
+    def initialize(self) -> None:
+        super().initialize()
+        # Load resources, connect to databases, etc.
+    
+    def cleanup(self) -> None:
+        super().cleanup()
+        # Close connections, free resources, etc.
+```
