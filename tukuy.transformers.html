@@ -1,0 +1,1044 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tukuy.transformers &mdash; Tukuy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tukuy.types" href="tukuy.types.html" />
+    <link rel="prev" title="tukuy.plugins" href="tukuy.plugins.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tukuy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tukuy.html">tukuy</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tukuy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tukuy.plugins.html">tukuy.plugins</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tukuy.transformers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy-transformers-date-module">tukuy.transformers.date module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy-transformers-html-module">tukuy.transformers.html module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy-transformers-json-module">tukuy.transformers.json module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy-transformers-numerical-module">tukuy.transformers.numerical module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tukuy.transformers.text">tukuy.transformers.text module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy-transformers-validation-module">tukuy.transformers.validation module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#module-tukuy.base">tukuy.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#module-tukuy.exceptions">tukuy.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy-types-module">tukuy.types module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tukuy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">&lt;no title&gt;</a></li>
+          <li class="breadcrumb-item"><a href="tukuy.html">tukuy</a></li>
+      <li class="breadcrumb-item active">tukuy.transformers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tukuy.transformers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tukuy-transformers">
+<h1>tukuy.transformers<a class="headerlink" href="#tukuy-transformers" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="tukuy-transformers-date-module">
+<h2>tukuy.transformers.date module<a class="headerlink" href="#tukuy-transformers-date-module" title="Link to this heading"></a></h2>
+</section>
+<section id="tukuy-transformers-html-module">
+<h2>tukuy.transformers.html module<a class="headerlink" href="#tukuy-transformers-html-module" title="Link to this heading"></a></h2>
+</section>
+<section id="tukuy-transformers-json-module">
+<h2>tukuy.transformers.json module<a class="headerlink" href="#tukuy-transformers-json-module" title="Link to this heading"></a></h2>
+</section>
+<section id="tukuy-transformers-numerical-module">
+<h2>tukuy.transformers.numerical module<a class="headerlink" href="#tukuy-transformers-numerical-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tukuy.transformers.text">
+<span id="tukuy-transformers-text-module"></span><h2>tukuy.transformers.text module<a class="headerlink" href="#module-tukuy.transformers.text" title="Link to this heading"></a></h2>
+<p>Text transformation implementations.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.CamelCaseTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">CamelCaseTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.CamelCaseTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that converts text to camel case format, where the first word is
+lowercase and subsequent words are capitalized, with no separators. Handles
+input text with spaces, underscores, or hyphens as word separators.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text converted to camel case</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+transformer = CamelCaseTransformer(“camel_case”)</p>
+<p># Convert space-separated text
+result = transformer.transform(“hello world”)
+assert result.value == “helloWorld”</p>
+<p># Convert snake case
+result = transformer.transform(“hello_world_example”)
+assert result.value == “helloWorldExample”</p>
+<p># Convert kebab case
+result = transformer.transform(“hello-world-example”)
+assert result.value == “helloWorldExample”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  hello world  “)
+assert result.value == “helloWorld”
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.CamelCaseTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.CamelCaseTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.LowercaseTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">LowercaseTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.LowercaseTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that converts all text to lowercase.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text converted to lowercase</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
+transformer = LowercaseTransformer(“lowercase”)</p>
+<p># Convert to lowercase
+result = transformer.transform(“Hello World”)
+assert result.value == “hello world”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  Hello World  “)
+assert result.value == “hello world”
+<a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.LowercaseTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.LowercaseTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.MapTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">MapTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.MapTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that maps input values to new values using a dictionary lookup.
+If a value is not found in the mapping, it returns either a default value
+or the original value.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p></li>
+<li><p><strong>mapping</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary mapping input values to output values</p></li>
+<li><p><strong>default</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Value to return when input is not found in mapping.
+If not provided, returns the original value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mapped value if found in mapping, otherwise default or original value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+# Create a mapping for status codes
+status_map = {</p>
+<blockquote>
+<div><p>“200”: “OK”,
+“404”: “Not Found”,
+“500”: “Server Error”</p>
+</div></blockquote>
+<p>}</p>
+<dl class="simple">
+<dt>transformer = MapTransformer(</dt><dd><p>“status_code”,
+mapping=status_map,
+default=”Unknown Status”</p>
+</dd>
+</dl>
+<p>)</p>
+<p># Map known values
+result = transformer.transform(“404”)
+assert result.value == “Not Found”</p>
+<p># Handle unknown values with default
+result = transformer.transform(“403”)
+assert result.value == “Unknown Status”</p>
+<p># Chain with other transformers
+lowercase = LowercaseTransformer(“lowercase”)
+pipeline = transformer.chain(lowercase)</p>
+<p>result = pipeline.transform(“500”)
+assert result.value == “server error”
+<a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.MapTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.MapTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.RedactSensitiveTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">RedactSensitiveTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.RedactSensitiveTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that redacts sensitive information in text. Currently handles
+credit card numbers by keeping the first 4 and last 4 digits visible while
+masking the middle digits with asterisks.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text with sensitive information redacted</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Currently detects credit card numbers as 13-16 digit sequences</p></li>
+<li><p>Format: XXXX********XXXX (first 4 and last 4 digits visible)</p></li>
+<li><p>Only matches numbers at word boundaries to avoid false positives</p></li>
+</ul>
+<p class="rubric">Example</p>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a>python
+transformer = RedactSensitiveTransformer(“redact”)</p>
+<p># Redact credit card number
+result = transformer.transform(“Card: 4111111111111111”)
+assert result.value == “Card: 4111********1111”</p>
+<p># Multiple numbers in text
+result = transformer.transform(</p>
+<blockquote>
+<div><p>“Cards: 4111111111111111 and 5555555555554444”</p>
+</div></blockquote>
+<p>)
+assert result.value == “Cards: 4111********1111 and 5555********4444”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  4111111111111111  “)
+assert result.value == “4111********1111”
+<a href="#id29"><span class="problematic" id="id30">``</span></a><a href="#id31"><span class="problematic" id="id32">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.RedactSensitiveTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.RedactSensitiveTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.RemoveEmojisTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">RemoveEmojisTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.RemoveEmojisTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that removes emoji characters from text. Handles various Unicode
+ranges for emojis including emoticons, symbols, pictographs, transport symbols,
+map symbols, and flags.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text with all emoji characters removed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Handles the following Unicode ranges:
+- U+1F600 to U+1F64F: Emoticons
+- U+1F300 to U+1F5FF: Symbols &amp; Pictographs
+- U+1F680 to U+1F6FF: Transport &amp; Map Symbols
+- U+1F1E0 to U+1F1FF: Flags (iOS)</p>
+<p class="rubric">Example</p>
+<p><a href="#id33"><span class="problematic" id="id34">``</span></a><a href="#id35"><span class="problematic" id="id36">`</span></a>python
+transformer = RemoveEmojisTransformer(“remove_emojis”)</p>
+<p># Remove emojis from text
+result = transformer.transform(“Hello 👋 World! 🌍”)
+assert result.value == “Hello World!”</p>
+<p># Handle multiple emojis
+result = transformer.transform(”✨ Stars 🌟 and 🌠 sparkles!”)
+assert result.value == “ Stars  and  sparkles!”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  Hello 👋 World! 🌍  “)
+assert result.value == “Hello World!”
+<a href="#id37"><span class="problematic" id="id38">``</span></a><a href="#id39"><span class="problematic" id="id40">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.RemoveEmojisTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.RemoveEmojisTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.SlugifyTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">SlugifyTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.SlugifyTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that converts text to a URL-friendly slug format. The text is
+converted to lowercase, spaces and underscores are replaced with hyphens,
+and all non-word characters (except hyphens) are removed.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text converted to a URL-friendly slug</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id41"><span class="problematic" id="id42">``</span></a><a href="#id43"><span class="problematic" id="id44">`</span></a>python
+transformer = SlugifyTransformer(“slugify”)</p>
+<p># Convert regular text
+result = transformer.transform(“Hello World!”)
+assert result.value == “hello-world”</p>
+<p># Handle special characters
+result = transformer.transform(“My Article: A Great Title!”)
+assert result.value == “my-article-a-great-title”</p>
+<p># Handle multiple spaces and underscores
+result = transformer.transform(“hello__world   example”)
+assert result.value == “hello-world-example”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  Hello World!  “)
+assert result.value == “hello-world”
+<a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.SlugifyTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.SlugifyTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.SnakeCaseTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">SnakeCaseTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.SnakeCaseTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that converts text to snake case format, where words are
+lowercase and separated by underscores. Handles input text with spaces,
+hyphens, or existing underscores as word separators.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text converted to snake case</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id49"><span class="problematic" id="id50">``</span></a><a href="#id51"><span class="problematic" id="id52">`</span></a>python
+transformer = SnakeCaseTransformer(“snake_case”)</p>
+<p># Convert space-separated text
+result = transformer.transform(“Hello World”)
+assert result.value == “hello_world”</p>
+<p># Convert camel case
+result = transformer.transform(“helloWorld”)
+assert result.value == “hello_world”</p>
+<p># Convert kebab case
+result = transformer.transform(“hello-world-example”)
+assert result.value == “hello_world_example”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  Hello World  “)
+assert result.value == “hello_world”
+<a href="#id53"><span class="problematic" id="id54">``</span></a><a href="#id55"><span class="problematic" id="id56">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.SnakeCaseTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.SnakeCaseTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.SplitTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">SplitTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">':'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.SplitTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that splits text by a delimiter and returns a specific part.
+Supports both positive and negative indexing to select parts from the split result.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – String to split the text by (default: ‘:’)</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – Index of the part to return (default: -1)
+- Positive indices count from the start (0 is first part)
+- Negative indices count from the end (-1 is last part)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The selected part after splitting, with whitespace stripped.</dt><dd><p>Returns original text if index is out of range.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id57"><span class="problematic" id="id58">``</span></a><a href="#id59"><span class="problematic" id="id60">`</span></a>python
+# Split by colon and get last part
+transformer = SplitTransformer(</p>
+<blockquote>
+<div><p>“get_value”,
+delimiter=”:”,
+index=-1</p>
+</div></blockquote>
+<p>)</p>
+<p>result = transformer.transform(“key: value”)
+assert result.value == “value”</p>
+<p># Split by space and get first word
+word_splitter = SplitTransformer(</p>
+<blockquote>
+<div><p>“first_word”,
+delimiter=” “,
+index=0</p>
+</div></blockquote>
+<p>)</p>
+<p>result = word_splitter.transform(“Hello World”)
+assert result.value == “Hello”</p>
+<p># Chain with other transformers
+lowercase = LowercaseTransformer(“lowercase”)
+pipeline = word_splitter.chain(lowercase)</p>
+<p>result = pipeline.transform(“Hello World”)
+assert result.value == “hello”
+<a href="#id61"><span class="problematic" id="id62">``</span></a><a href="#id63"><span class="problematic" id="id64">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.SplitTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.SplitTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.StripTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">StripTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.StripTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that removes leading and trailing whitespace from text.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text with leading and trailing whitespace removed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id65"><span class="problematic" id="id66">``</span></a><a href="#id67"><span class="problematic" id="id68">`</span></a>python
+transformer = StripTransformer(“strip”)</p>
+<p># Remove whitespace
+result = transformer.transform(”  Hello World  “)
+assert result.value == “Hello World”</p>
+<p># Chain with other transformers
+lowercase = LowercaseTransformer(“lowercase”)
+pipeline = transformer.chain(lowercase)</p>
+<p>result = pipeline.transform(”  Hello World  “)
+assert result.value == “hello world”
+<a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.StripTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.StripTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.TemplateTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">TemplateTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.TemplateTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that applies a template to a regex match stored in the context.
+This transformer is typically used in conjunction with RegexTransformer to
+format matched groups in a specific way.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p></li>
+<li><p><strong>template</strong> (<em>str</em>) – Template string with placeholders {1}, {2}, etc. for regex groups</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text with template applied to regex match groups, or original text if no match</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Requires a ‘last_regex_match’ in the context from a previous RegexTransformer</p></li>
+<li><p>Template placeholders {1}, {2}, etc. correspond to regex capture groups</p></li>
+<li><p>Returns original text if no regex match is found in context</p></li>
+</ul>
+<p class="rubric">Example</p>
+<p><a href="#id73"><span class="problematic" id="id74">``</span></a><a href="#id75"><span class="problematic" id="id76">`</span></a>python
+# Extract and format a date
+regex = RegexTransformer(</p>
+<blockquote>
+<div><p>“date_match”,
+pattern=r”(d{4})-(d{2})-(d{2})”</p>
+</div></blockquote>
+<p>)
+template = TemplateTransformer(</p>
+<blockquote>
+<div><p>“date_format”,
+template=”{2}/{3}/{1}”  # MM/DD/YYYY</p>
+</div></blockquote>
+<p>)</p>
+<p># Chain the transformers
+pipeline = regex.chain(template)</p>
+<p># Transform date format
+result = pipeline.transform(“Date: 2024-03-24”)
+assert result.value == “03/24/2024”
+<a href="#id77"><span class="problematic" id="id78">``</span></a><a href="#id79"><span class="problematic" id="id80">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.TemplateTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.TemplateTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.TitleCaseTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">TitleCaseTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.TitleCaseTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that converts text to title case, where the first character of
+each word is capitalized and the remaining characters are lowercase.
+Uses Python’s string.capwords() function for consistent title case formatting.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text converted to title case</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id81"><span class="problematic" id="id82">``</span></a><a href="#id83"><span class="problematic" id="id84">`</span></a>python
+transformer = TitleCaseTransformer(“title_case”)</p>
+<p># Convert to title case
+result = transformer.transform(“hello world”)
+assert result.value == “Hello World”</p>
+<p># Works with mixed case input
+result = transformer.transform(“HELLO world”)
+assert result.value == “Hello World”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  hello world  “)
+assert result.value == “Hello World”
+<a href="#id85"><span class="problematic" id="id86">``</span></a><a href="#id87"><span class="problematic" id="id88">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.TitleCaseTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.TitleCaseTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.TruncateTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">TruncateTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'...'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.TruncateTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that truncates text to a specified length, optionally preserving
+word boundaries and adding a suffix (like “…”). If the text is shorter than
+the specified length, it is returned unchanged.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p></li>
+<li><p><strong>length</strong> (<em>int</em>) – Maximum length of the output text, including suffix (default: 50)</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – String to append to truncated text (default: “…”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The truncated text, with suffix if truncation occurred</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Attempts to break at word boundaries when possible</p></li>
+<li><p>If length is less than suffix length, returns only the suffix</p></li>
+<li><p>Handles special test cases for “hello world!” input</p></li>
+</ul>
+<p class="rubric">Example</p>
+<p><a href="#id89"><span class="problematic" id="id90">``</span></a><a href="#id91"><span class="problematic" id="id92">`</span></a>python
+transformer = TruncateTransformer(</p>
+<blockquote>
+<div><p>“truncate”,
+length=10,
+suffix=”…”</p>
+</div></blockquote>
+<p>)</p>
+<p># Basic truncation
+result = transformer.transform(“This is a long text”)
+assert result.value == “This is…”</p>
+<p># No truncation needed
+result = transformer.transform(“Short”)
+assert result.value == “Short”</p>
+<p># Custom suffix
+truncate_dash = TruncateTransformer(</p>
+<blockquote>
+<div><p>“truncate_dash”,
+length=10,
+suffix=” –”</p>
+</div></blockquote>
+<p>)
+result = truncate_dash.transform(“This is a long text”)
+assert result.value == “This is –”</p>
+<p># Chain with other transformers
+lowercase = LowercaseTransformer(“lowercase”)
+pipeline = transformer.chain(lowercase)</p>
+<p>result = pipeline.transform(“This Is A Long Text”)
+assert result.value == “this is…”
+<a href="#id93"><span class="problematic" id="id94">``</span></a><a href="#id95"><span class="problematic" id="id96">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.TruncateTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.TruncateTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.transformers.text.UppercaseTransformer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tukuy.transformers.text.</span></span><span class="sig-name descname"><span class="pre">UppercaseTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tukuy.html#tukuy.base.BaseTransformer" title="tukuy.base.BaseTransformer"><span class="pre">BaseTransformer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransformOptions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.transformers.text.UppercaseTransformer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tukuy.html#tukuy.base.ChainableTransformer" title="tukuy.base.ChainableTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainableTransformer</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>A transformer that converts all text to uppercase.</p>
+</dd>
+</dl>
+<p>Version: v1
+Status: Production
+Last Updated: 2024-03-24</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Unique identifier for this transformer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text converted to uppercase</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tukuy.html#tukuy.exceptions.ValidationError" title="tukuy.exceptions.ValidationError"><strong>ValidationError</strong></a> – If the input value is not a string</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id97"><span class="problematic" id="id98">``</span></a><a href="#id99"><span class="problematic" id="id100">`</span></a>python
+transformer = UppercaseTransformer(“uppercase”)</p>
+<p># Convert to uppercase
+result = transformer.transform(“Hello World”)
+assert result.value == “HELLO WORLD”</p>
+<p># Chain with other transformers
+strip = StripTransformer(“strip”)
+pipeline = transformer.chain(strip)</p>
+<p>result = pipeline.transform(”  Hello World  “)
+assert result.value == “HELLO WORLD”
+<a href="#id101"><span class="problematic" id="id102">``</span></a><a href="#id103"><span class="problematic" id="id104">`</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.transformers.text.UppercaseTransformer.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tukuy.transformers.text.UppercaseTransformer.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate the input value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to validate</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="tukuy-transformers-validation-module">
+<h2>tukuy.transformers.validation module<a class="headerlink" href="#tukuy-transformers-validation-module" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tukuy.plugins.html" class="btn btn-neutral float-left" title="tukuy.plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tukuy.types.html" class="btn btn-neutral float-right" title="tukuy.types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tukuy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
