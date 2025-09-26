@@ -71,8 +71,8 @@ class BooleanTransformer(ChainableTransformer[str, bool]):
         ```
     """
     
-    TRUE_VALUES = {'true', '1', 'yes', 'y', 't'}
-    FALSE_VALUES = {'false', '0', 'no', 'n', 'f'}
+    TRUE_VALUES = {'true', '1', 'yes', 'y', 't', "on", "si", "sí", "verdadero"}
+    FALSE_VALUES = {'false', '0', 'no', 'n', 'f', "off", "falso"}
     
     def validate(self, value: str) -> bool:
         if isinstance(value, bool):
