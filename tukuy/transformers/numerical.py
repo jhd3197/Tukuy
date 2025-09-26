@@ -1,13 +1,165 @@
 """Numerical transformation implementations."""
 
 import re
-from decimal import Decimal
-from typing import Optional, Union, Any
-
+import math
+import random
+from decimal import Decimal, InvalidOperation
+from statistics import mean, median, stdev
+from typing import Optional, Union, Any, List, Mapping
 
 from ..base import ChainableTransformer
 from ..types import TransformContext
 from ..exceptions import ValidationError
+
+# Shorthand number constants and utilities
+_SUFFIX_MAP: Mapping[str, int] = {
+    "k": 1_000,
+    "m": 1_000_000,
+    "b": 1_000_000_000,
+    "t": 1_000_000_000_000,
+    "bn": 1_000_000_000,
+    "mm": 1_000_000,           # common in ES: "2.5mm" = 2.5 million
+    "tr": 1_000_000_000_000,
+}
+
+_NUM_STRIP_RE = re.compile(r"[,\s_]")
+_CURRENCY_PREFIX = tuple("$€£¥₿₽₹₩₫₪₴₦₲₵₡₱₺₸")
+_NUMBER_RE = re.compile(
+    r"""
+    ^\s*
+    (?P<sign>[-+]?)\s*
+    (?P<body>
+        (?:\d+(?:[,_]\d+)*|\d*\.\d+|\d+)
+        (?:e[-+]?\d+)?     # scientific notation
+    )
+    \s*(?P<suffix>[a-z]{1,2})?
+    \s*$
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+
+def _strip_currency_prefix(s: str) -> str:
+    """Remove currency symbol prefix from string if present."""
+    return s[1:].lstrip() if s and s[0] in _CURRENCY_PREFIX else s
+
+def parse_shorthand_number(
+    value: Any,
+    *,
+    allow_currency: bool = True,
+    allow_percent: bool = True,
+    percent_base: float = 1.0,
+    as_decimal: bool | None = None,
+) -> int | float | Decimal:
+    """
+    Parse numbers with shorthand notations.
+
+    Description:
+        Parses numeric values with various formats including currency symbols,
+        separators, scientific notation, suffixes, and percentages.
+
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+
+    Args:
+        value: Input value (str/num)
+        allow_currency: Accept currency prefix
+        allow_percent: Accept '%' suffix
+        percent_base: Base for percentage (1.0 => fraction, 100 => 12% -> 12)
+        as_decimal: True => Decimal, False => float/int, None => infer
+
+    Returns:
+        int | float | Decimal (collapses to int if exact integer)
+
+    Raises:
+        ValueError: If the input is invalid or cannot be parsed
+
+    Notes:
+        - Handles currency symbols: $1,200
+        - Handles separators: 1_200 / 1,200
+        - Handles scientific notation: 1e3
+        - Handles suffixes: k, m, b, t, bn, mm, tr (2.5m -> 2_500_000)
+        - Handles percentages: '12%' (multiplies by percent_base, default 1.0 => 0.12)
+
+    Example:
+        ```python
+        # Basic number parsing
+        result = parse_shorthand_number("1.23k")
+        assert result == 1230
+
+        # Currency handling
+        result = parse_shorthand_number("$1,234.56")
+        assert result == 1234.56
+
+        # Percentage handling
+        result = parse_shorthand_number("12%", percent_base=1.0)
+        assert result == 0.12
+
+        # Scientific notation
+        result = parse_shorthand_number("1.23e3")
+        assert result == 1230.0
+
+        # Decimal output
+        from decimal import Decimal
+        result = parse_shorthand_number("1.23", as_decimal=True)
+        assert isinstance(result, Decimal)
+        assert result == Decimal("1.23")
+        ```
+    """
+    if value is None:
+        raise ValueError("None value invalid")
+
+    if isinstance(value, (int, float, Decimal)):
+        return value
+
+    s = str(value).strip()
+    if not s:
+        raise ValueError("Empty string")
+
+    if allow_currency:
+        s = _strip_currency_prefix(s)
+
+    # Handle percentage
+    is_percent = False
+    if allow_percent and s.endswith("%"):
+        is_percent = True
+        s = s[:-1].strip()
+
+    core = _NUM_STRIP_RE.sub("", s)
+    m = _NUMBER_RE.match(core)
+    if not m:
+        raise ValueError(f"Invalid number format: {value!r}")
+
+    body = m.group("body")
+    suffix = (m.group("suffix") or "").lower()
+
+    multiplier = 1
+    if suffix:
+        multiplier = _SUFFIX_MAP.get(suffix)
+        if multiplier is None:
+            raise ValueError(f"Unknown numeric suffix '{suffix}' in {value!r}")
+
+    want_decimal = as_decimal is True or (as_decimal is None and ("." in body or "e" in body.lower()))
+    ctor = Decimal if want_decimal else float
+
+    try:
+        num = ctor(body)
+    except (InvalidOperation, ValueError) as e:
+        raise ValueError(f"Invalid number '{body}': {e}") from e
+
+    num = num * (ctor(multiplier) if multiplier != 1 else 1)
+
+    if is_percent:
+        num = num * ctor(percent_base) / ctor(100)
+
+    if ctor is float:
+        if abs(num - round(num)) < 1e-12:
+            return int(round(num))
+        return num
+    else:
+        if num == num.to_integral_value():
+            return int(num)
+        return num
 
 class IntegerTransformer(ChainableTransformer[str, int]):
     """
@@ -501,38 +653,33 @@ class MathOperationTransformer(ChainableTransformer[Union[int, float, Decimal], 
         'add': lambda x, y: x + y,
         'subtract': lambda x, y: x - y,
         'multiply': lambda x, y: x * y,
-        'divide': lambda x, y: x / y if y != 0 else None,
+        'divide': lambda x, y: x / y if y != 0 else float('inf'),
     }
     
     def __init__(self, name: str, operation: str = 'add', operand: Union[int, float, Decimal] = 0):
         super().__init__(name)
-        self.operation = operation.lower()
+        if operation not in self.OPERATIONS:
+            raise ValueError(f"Invalid operation '{operation}'. Must be one of: {', '.join(self.OPERATIONS.keys())}")
+        self.operation = operation
         self.operand = operand
-        
-        if self.operation not in self.OPERATIONS:
-            raise ValueError(f"Invalid operation: {operation}")
     
     def validate(self, value: Any) -> bool:
         return isinstance(value, (int, float, Decimal))
     
     def _transform(self, value: Union[int, float, Decimal], context: Optional[TransformContext] = None) -> float:
         try:
-            value = float(value)
-            operand = float(self.operand)
-            
-            result = self.OPERATIONS[self.operation](value, operand)
-            if result is None:
+            result = self.OPERATIONS[self.operation](float(value), float(self.operand))
+            if math.isinf(result):
                 raise ValidationError("Division by zero", value)
-                
             return result
         except (ValueError, TypeError) as e:
-            raise ValidationError(f"Invalid value for math operation: {str(e)}", value)
+            raise ValidationError(f"Invalid numeric value: {str(e)}", value)
 
-class PercentageCalculator(ChainableTransformer[Union[int, float, Decimal], float]):
+class ExtractNumbersTransformer(ChainableTransformer[str, list]):
     """
     Description:
-        A transformer that converts decimal values to percentages by multiplying by 100.
-        Supports integers, floats, and Decimal objects as input.
+        A transformer that extracts all numbers from text input. Handles both
+        integer and decimal numbers.
     
     Version: v1
     Status: Production
@@ -542,40 +689,863 @@ class PercentageCalculator(ChainableTransformer[Union[int, float, Decimal], floa
         name (str): Unique identifier for this transformer
     
     Returns:
-        float: The percentage value (input * 100)
+        list[str]: List of extracted number strings
+    
+    Raises:
+        ValidationError: If the input is not a string
+    
+    Notes:
+        - Extracts both integer and decimal numbers
+        - Returns numbers as strings to preserve original format
+        - Does not handle scientific notation or special number formats
+    
+    Example:
+        ```python
+        transformer = ExtractNumbersTransformer("extract_nums")
+        
+        # Basic extraction
+        result = transformer.transform("A=12.3, B=9")
+        assert result.value == ['12.3', '9']
+        
+        # Multiple numbers
+        result = transformer.transform("Price: $123.45, Qty: 5")
+        assert result.value == ['123.45', '5']
+        
+        # No numbers
+        result = transformer.transform("No numbers here")
+        assert result.value == []
+        ```
+    """
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.pattern = re.compile(r"\d+(?:\.\d+)?")
+        
+    def validate(self, value: str) -> bool:
+        return isinstance(value, str)
+        
+    def _transform(self, value: str, context: TransformContext = None) -> list:
+        return self.pattern.findall(value)
+
+class AbsTransformer(ChainableTransformer[float, float]):
+    """
+    Description:
+        A transformer that computes the absolute value of a number.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        float: The absolute value of the input
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns a float value
+    
+    Example:
+        ```python
+        transformer = AbsTransformer("abs")
+        
+        # Positive number
+        result = transformer.transform(5.5)
+        assert result.value == 5.5
+        
+        # Negative number
+        result = transformer.transform(-10.2)
+        assert result.value == 10.2
+        
+        # Zero
+        result = transformer.transform(0)
+        assert result.value == 0.0
+        ```
+    """
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        return abs(float(value))
+
+class FloorTransformer(ChainableTransformer[float, int]):
+    """
+    Description:
+        A transformer that rounds a number down to the nearest integer.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        int: The floor value of the input
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns an integer value
+        - Uses math.floor() for consistent behavior
+    
+    Example:
+        ```python
+        transformer = FloorTransformer("floor")
+        
+        # Basic floor
+        result = transformer.transform(3.7)
+        assert result.value == 3
+        
+        # Negative number
+        result = transformer.transform(-2.3)
+        assert result.value == -3
+        
+        # Integer input
+        result = transformer.transform(5)
+        assert result.value == 5
+        ```
+    """
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        return math.floor(float(value))
+
+class CeilTransformer(ChainableTransformer[float, int]):
+    """
+    Description:
+        A transformer that rounds a number up to the nearest integer.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        int: The ceiling value of the input
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns an integer value
+        - Uses math.ceil() for consistent behavior
+    
+    Example:
+        ```python
+        transformer = CeilTransformer("ceil")
+        
+        # Basic ceiling
+        result = transformer.transform(3.2)
+        assert result.value == 4
+        
+        # Negative number
+        result = transformer.transform(-2.8)
+        assert result.value == -2
+        
+        # Integer input
+        result = transformer.transform(5)
+        assert result.value == 5
+        ```
+    """
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        return math.ceil(float(value))
+
+class ClampTransformer(ChainableTransformer[float, float]):
+    """
+    Description:
+        A transformer that clamps a number between minimum and maximum values.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        min_value (Optional[float]): Minimum allowed value (inclusive)
+        max_value (Optional[float]): Maximum allowed value (inclusive)
+    
+    Returns:
+        float: The clamped value
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns a float value
+        - If min_value is None, no lower bound is applied
+        - If max_value is None, no upper bound is applied
+    
+    Example:
+        ```python
+        transformer = ClampTransformer("clamp", min_value=0, max_value=100)
+        
+        # Within range
+        result = transformer.transform(50)
+        assert result.value == 50.0
+        
+        # Below minimum
+        result = transformer.transform(-10)
+        assert result.value == 0.0
+        
+        # Above maximum
+        result = transformer.transform(150)
+        assert result.value == 100.0
+        ```
+    """
+    def __init__(self, name: str, min_value=None, max_value=None):
+        super().__init__(name)
+        self.min_value = min_value
+        self.max_value = max_value
+        
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        v = float(value)
+        if self.min_value is not None:
+            v = max(v, self.min_value)
+        if self.max_value is not None:
+            v = min(v, self.max_value)
+        return v
+
+class ScaleTransformer(ChainableTransformer[float, float]):
+    """
+    Description:
+        A transformer that scales a value from one range to another.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        src_min (float): Source range minimum value
+        src_max (float): Source range maximum value
+        dst_min (float): Destination range minimum value
+        dst_max (float): Destination range maximum value
+    
+    Returns:
+        float: The scaled value
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns a float value
+        - If src_max equals src_min, returns dst_min to avoid division by zero
+        - Linear scaling using the formula: dst_min + (v - src_min) * (dst_max - dst_min) / (src_max - src_min)
+    
+    Example:
+        ```python
+        # Scale 0-100 to 0-1
+        transformer = ScaleTransformer(
+            "percentage_to_ratio",
+            src_min=0,
+            src_max=100,
+            dst_min=0,
+            dst_max=1
+        )
+        result = transformer.transform(50)
+        assert result.value == 0.5
+        
+        # Scale temperature Celsius to Fahrenheit
+        c_to_f = ScaleTransformer(
+            "celsius_to_fahrenheit",
+            src_min=0,
+            src_max=100,
+            dst_min=32,
+            dst_max=212
+        )
+        result = c_to_f.transform(20)
+        assert result.value == 68.0
+        ```
+    """
+    def __init__(self, name: str, src_min=0, src_max=1, dst_min=0, dst_max=1):
+        super().__init__(name)
+        self.src_min, self.src_max = src_min, src_max
+        self.dst_min, self.dst_max = dst_min, dst_max
+        
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        v = float(value)
+        if self.src_max == self.src_min:
+            return self.dst_min
+        return self.dst_min + (v - self.src_min) * (self.dst_max - self.dst_min) / (self.src_max - self.src_min)
+
+class StatsTransformer(ChainableTransformer[list, dict]):
+    """
+    Description:
+        A transformer that computes basic statistical measures over a list of numbers.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        dict: Dictionary containing statistical measures
+    
+    Raises:
+        ValidationError: If the input is not a list or tuple
+    
+    Notes:
+        - Supports lists/tuples containing integers, floats, and Decimals
+        - Non-numeric values in the input are ignored
+        - Returns empty dict if no valid numbers found
+        - Standard deviation (stdev) only included if 2+ numbers
+        - All results are converted to float
+    
+    Example:
+        ```python
+        transformer = StatsTransformer("stats")
+        
+        # Basic stats
+        result = transformer.transform([1, 2, 3, 4, 5])
+        assert result.value == {
+            "count": 5,
+            "sum": 15.0,
+            "mean": 3.0,
+            "median": 3.0,
+            "min": 1.0,
+            "max": 5.0,
+            "stdev": 1.5811388300841898
+        }
+        
+        # Mixed numeric types
+        result = transformer.transform([1, 2.5, Decimal('3.5')])
+        assert result.value["mean"] == 2.3333333333333335
+        
+        # Ignore non-numeric values
+        result = transformer.transform([1, "two", 3.0])
+        assert result.value["count"] == 2
+        ```
+    """
+    def validate(self, value) -> bool:
+        return isinstance(value, (list, tuple))
+        
+    def _transform(self, value, context=None):
+        nums = [float(v) for v in value if isinstance(v, (int, float, Decimal))]
+        if not nums:
+            return {}
+        out = {
+            "count": len(nums),
+            "sum": sum(nums),
+            "mean": mean(nums),
+            "median": median(nums),
+            "min": min(nums),
+            "max": max(nums),
+        }
+        if len(nums) > 1:
+            out["stdev"] = stdev(nums)
+        return out
+
+class FormatNumberTransformer(ChainableTransformer[float, str]):
+    """
+    Description:
+        A transformer that formats numbers with thousand separators and fixed
+        decimal places.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        decimals (int): Number of decimal places (default: 2)
+    
+    Returns:
+        str: The formatted number string
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Uses comma as thousand separator
+        - Rounds to specified decimal places
+        - Always shows specified decimals even if zero
+    
+    Example:
+        ```python
+        transformer = FormatNumberTransformer("format", decimals=2)
+        
+        # Basic formatting
+        result = transformer.transform(1234.5678)
+        assert result.value == "1,234.57"
+        
+        # Integer with decimals
+        result = transformer.transform(1000)
+        assert result.value == "1,000.00"
+        
+        # Different decimal places
+        precise = FormatNumberTransformer("precise", decimals=3)
+        result = precise.transform(1234.5678)
+        assert result.value == "1,234.568"
+        ```
+    """
+    def __init__(self, name: str, decimals: int = 2):
+        super().__init__(name)
+        self.decimals = decimals
+        
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        return f"{float(value):,.{self.decimals}f}"
+
+class RandomNumberTransformer(ChainableTransformer[None, float]):
+    """
+    Description:
+        A transformer that generates random numbers within a specified range.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        min_value (float): Minimum value (inclusive)
+        max_value (float): Maximum value (inclusive)
+        seed (Optional[int]): Random seed for reproducibility
+    
+    Returns:
+        float: A random number in [min_value, max_value]
+    
+    Notes:
+        - Uses Python's random.uniform() for float generation
+        - Setting seed enables reproducible results
+        - Input value is ignored (can be None)
+    
+    Example:
+        ```python
+        # Basic random number
+        transformer = RandomNumberTransformer(
+            "random",
+            min_value=0,
+            max_value=1
+        )
+        result = transformer.transform(None)
+        assert 0 <= result.value <= 1
+        
+        # With seed for reproducibility
+        seeded = RandomNumberTransformer(
+            "seeded_random",
+            min_value=1,
+            max_value=10,
+            seed=42
+        )
+        result1 = seeded.transform(None)
+        result2 = seeded.transform(None)
+        assert result1.value != result2.value  # Different calls
+        
+        # Custom range
+        dice = RandomNumberTransformer(
+            "d6",
+            min_value=1,
+            max_value=6
+        )
+        result = dice.transform(None)
+        assert 1 <= result.value <= 6
+        ```
+    """
+    def __init__(self, name: str, min_value=0, max_value=1, seed=None):
+        super().__init__(name)
+        self.min_value, self.max_value = min_value, max_value
+        if seed is not None:
+            random.seed(seed)
+            
+    def validate(self, value) -> bool:
+        return True
+        
+    def _transform(self, value, context=None):
+        return random.uniform(self.min_value, self.max_value)
+
+class PowerTransformer(ChainableTransformer[float, float]):
+    """
+    Description:
+        A transformer that raises a number to a specified power.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        exponent (float): Power to raise the input to (default: 2.0)
+    
+    Returns:
+        float: The input raised to the specified power
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns a float value
+        - Uses Python's built-in power operator (**)
+    
+    Example:
+        ```python
+        # Square (default)
+        transformer = PowerTransformer("square")
+        result = transformer.transform(3)
+        assert result.value == 9.0
+        
+        # Cube
+        cube = PowerTransformer("cube", exponent=3)
+        result = cube.transform(2)
+        assert result.value == 8.0
+        
+        # Square root (power of 0.5)
+        sqrt = PowerTransformer("sqrt", exponent=0.5)
+        result = sqrt.transform(16)
+        assert result.value == 4.0
+        ```
+    """
+    def __init__(self, name: str, exponent: float = 2.0):
+        super().__init__(name)
+        self.exponent = exponent
+        
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        return float(value) ** float(self.exponent)
+
+class SqrtTransformer(ChainableTransformer[float, float]):
+    """
+    Description:
+        A transformer that computes the square root of a number.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        float: The square root of the input
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+        ValueError: If the input is negative
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns a float value
+        - Only works with non-negative numbers
+        - Uses math.sqrt() for computation
+    
+    Example:
+        ```python
+        transformer = SqrtTransformer("sqrt")
+        
+        # Basic square root
+        result = transformer.transform(16)
+        assert result.value == 4.0
+        
+        # Decimal number
+        result = transformer.transform(2)
+        assert result.value == 1.4142135623730951
+        
+        # Zero
+        result = transformer.transform(0)
+        assert result.value == 0.0
+        
+        # Negative number raises error
+        try:
+            transformer.transform(-1)
+            assert False, "Should raise ValueError"
+        except ValueError:
+            pass
+        ```
+    """
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        v = float(value)
+        if v < 0:
+            raise ValueError("sqrt not defined for negative values")
+        return math.sqrt(v)
+
+class LogTransformer(ChainableTransformer[float, float]):
+    """
+    Description:
+        A transformer that computes the logarithm of a number with optional base.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        base (Optional[float]): Logarithm base (None for natural log)
+    
+    Returns:
+        float: The logarithm of the input
+    
+    Raises:
+        ValidationError: If the input is not a numeric type
+        ValueError: If the input is not positive
+    
+    Notes:
+        - Supports integers, floats, and Decimal inputs
+        - Always returns a float value
+        - Only works with positive numbers
+        - Uses math.log() with optional base
+        - Natural logarithm (base e) used when base is None
+    
+    Example:
+        ```python
+        # Natural logarithm
+        transformer = LogTransformer("ln")
+        result = transformer.transform(2.718281828459045)
+        assert abs(result.value - 1.0) < 1e-10
+        
+        # Base 10 logarithm
+        log10 = LogTransformer("log10", base=10)
+        result = log10.transform(100)
+        assert result.value == 2.0
+        
+        # Base 2 logarithm
+        log2 = LogTransformer("log2", base=2)
+        result = log2.transform(8)
+        assert result.value == 3.0
+        
+        # Non-positive input raises error
+        try:
+            transformer.transform(0)
+            assert False, "Should raise ValueError"
+        except ValueError:
+            pass
+        ```
+    """
+    def __init__(self, name: str, base: float | None = None):
+        super().__init__(name)
+        self.base = base
+        
+    def validate(self, value) -> bool:
+        return isinstance(value, (int, float, Decimal))
+        
+    def _transform(self, value, context=None):
+        v = float(value)
+        if v <= 0:
+            raise ValueError("log requires v > 0")
+        if self.base is None:
+            return math.log(v)
+        return math.log(v, self.base)
+
+class ShorthandNumberTransformer(ChainableTransformer[Any, int | float]):
+    """
+    Description:
+        A transformer that parses shorthand number notations into numeric values.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        allow_currency (bool): Accept currency symbols (default: True)
+        allow_percent (bool): Accept percentage notation (default: True)
+        percent_base (float): Base for percentage conversion (default: 1.0)
+    
+    Returns:
+        Union[int, float]: The parsed numeric value
+    
+    Raises:
+        ValidationError: If the input cannot be parsed
+    
+    Notes:
+        - Handles currency symbols, separators, suffixes (k/m/b/t)
+        - Returns int for exact integers, float otherwise
+        - Percentage handling depends on percent_base
+        - Already numeric inputs returned as-is
+    
+    Example:
+        ```python
+        transformer = ShorthandNumberTransformer("parse")
+        
+        # Basic parsing
+        result = transformer.transform("1.23k")
+        assert result.value == 1230
+        
+        # Currency
+        result = transformer.transform("$1,234.56")
+        assert result.value == 1234.56
+        
+        # Percentage
+        result = transformer.transform("50%")
+        assert result.value == 0.5  # with default percent_base=1.0
+        
+        # Different percent base
+        percent = ShorthandNumberTransformer(
+            "percent",
+            percent_base=100
+        )
+        result = percent.transform("50%")
+        assert result.value == 50.0
+        ```
+    """
+    def __init__(self, name: str, allow_currency=True, allow_percent=True, percent_base=1.0):
+        super().__init__(name)
+        self.allow_currency = allow_currency
+        self.allow_percent = allow_percent
+        self.percent_base = percent_base
+        
+    def validate(self, value) -> bool:
+        return True
+        
+    def _transform(self, value, context=None):
+        if isinstance(value, (int, float)):
+            return value
+        out = parse_shorthand_number(
+            value,
+            allow_currency=self.allow_currency,
+            allow_percent=self.allow_percent,
+            percent_base=float(self.percent_base),
+            as_decimal=False,
+        )
+        return float(out) if isinstance(out, Decimal) else out
+
+class ShorthandDecimalTransformer(ChainableTransformer[Any, Decimal | int]):
+    """
+    Description:
+        A transformer that parses shorthand number notations into Decimal values.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+        allow_currency (bool): Accept currency symbols (default: True)
+        allow_percent (bool): Accept percentage notation (default: True)
+        percent_base (float): Base for percentage conversion (default: 1.0)
+    
+    Returns:
+        Union[Decimal, int]: The parsed numeric value
+    
+    Raises:
+        ValidationError: If the input cannot be parsed
+    
+    Notes:
+        - Similar to ShorthandNumberTransformer but preserves decimal precision
+        - Returns int for exact integers, Decimal otherwise
+        - Handles currency symbols, separators, suffixes (k/m/b/t)
+        - Already Decimal/int inputs returned as-is
+    
+    Example:
+        ```python
+        transformer = ShorthandDecimalTransformer("parse_decimal")
+        
+        # Basic parsing
+        result = transformer.transform("1.23")
+        assert isinstance(result.value, Decimal)
+        assert result.value == Decimal("1.23")
+        
+        # Currency
+        result = transformer.transform("$1,234.56")
+        assert result.value == Decimal("1234.56")
+        
+        # Percentage
+        result = transformer.transform("50%")
+        assert result.value == Decimal("0.5")  # with default percent_base=1.0
+        
+        # Integer collapse
+        result = transformer.transform("1000")
+        assert isinstance(result.value, int)
+        assert result.value == 1000
+        ```
+    """
+    def __init__(self, name: str, allow_currency=True, allow_percent=True, percent_base=1.0):
+        super().__init__(name)
+        self.allow_currency = allow_currency
+        self.allow_percent = allow_percent
+        self.percent_base = percent_base
+        
+    def validate(self, value) -> bool:
+        return True
+        
+    def _transform(self, value, context=None):
+        if isinstance(value, (Decimal, int)):
+            return value
+        return parse_shorthand_number(
+            value,
+            allow_currency=self.allow_currency,
+            allow_percent=self.allow_percent,
+            percent_base=float(self.percent_base),
+            as_decimal=True,
+        )
+
+class PercentageCalculator(ChainableTransformer[Union[int, float, Decimal], float]):
+    """
+    Description:
+        A transformer that converts numeric values to percentages. Can handle
+        integers, floats, and Decimal objects as input.
+    
+    Version: v1
+    Status: Production
+    Last Updated: 2024-03-24
+    
+    Args:
+        name (str): Unique identifier for this transformer
+    
+    Returns:
+        float: The calculated percentage value
     
     Raises:
         ValidationError: If the input value is not a numeric type or cannot be converted
     
     Notes:
-        - Multiplies the input value by 100
-        - For example, 0.25 becomes 25.0
+        - Converts decimal fractions to percentages (e.g., 0.5 -> 50.0)
+        - Preserves existing percentage values (e.g., 50 -> 50.0)
+        - Handles integers, floats, and Decimal inputs
         - Always returns a float value
     
     Example:
         ```python
-        # Basic percentage conversion
-        transformer = PercentageCalculator("to_percent")
-        
         # Convert decimal to percentage
+        transformer = PercentageCalculator("to_percent")
         result = transformer.transform(0.75)
         assert result.value == 75.0
         
         # Handle integer input
-        result = transformer.transform(1)
-        assert result.value == 100.0
+        result = transformer.transform(50)
+        assert result.value == 50.0
         
         # Handle Decimal input
         from decimal import Decimal
-        result = transformer.transform(Decimal('0.5'))
-        assert result.value == 50.0
+        result = transformer.transform(Decimal('0.25'))
+        assert result.value == 25.0
         
         # Chain with other transformers
         round_transformer = RoundTransformer("round", decimals=1)
         pipeline = transformer.chain(round_transformer)
         
         result = pipeline.transform(0.333)
-        assert result.value == 33.3  # 0.333 * 100 = 33.3
+        assert result.value == 33.3
         ```
     """
     
@@ -584,6 +1554,10 @@ class PercentageCalculator(ChainableTransformer[Union[int, float, Decimal], floa
     
     def _transform(self, value: Union[int, float, Decimal], context: Optional[TransformContext] = None) -> float:
         try:
-            return float(value) * 100.0
+            float_value = float(value)
+            # If value is less than or equal to 1, assume it's a decimal fraction
+            if abs(float_value) <= 1:
+                return float_value * 100
+            return float_value
         except (ValueError, TypeError) as e:
             raise ValidationError(f"Invalid value for percentage calculation: {str(e)}", value)

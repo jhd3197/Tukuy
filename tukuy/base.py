@@ -475,22 +475,30 @@ class CoreToolsTransformer(BaseTransformer[Any, Any]):
         
     def _transform(self, value: Any, transforms: List[Dict[str, Any]]) -> Any:
         current_value = value
-        
+
         for transform in transforms:
             func = transform.get('function')
-            
+
             if func == 'regex':
                 transformer = RegexTransformer(
                     'regex',
                     pattern=transform['pattern'],
                     template=transform.get('template')
                 )
+                result = transformer.transform(current_value)
+                if result.failed:
+                    raise result.error
+                current_value = result.value
             elif func == 'replace':
                 transformer = ReplaceTransformer(
                     'replace',
                     old=transform['find'],
                     new=transform['replace']
                 )
+                result = transformer.transform(current_value)
+                if result.failed:
+                    raise result.error
+                current_value = result.value
             elif func == 'average':
                 if not isinstance(current_value, list):
                     raise ValidationError("Average requires a list of numbers", value)
@@ -498,3 +506,5 @@ class CoreToolsTransformer(BaseTransformer[Any, Any]):
                 return round(total / len(current_value), 2)
             else:
                 raise ValidationError(f"Unknown transform function: {func}", value)
+
+        return current_value

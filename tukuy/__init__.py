@@ -6,7 +6,17 @@ from .plugins.base import TransformerPlugin, PluginRegistry
 from .exceptions import ValidationError, TransformationError
 from .types import TransformContext, TransformResult
 
-__version__ = '0.2.0'
+# New decorator-based registration system
+from .core.registration import (
+    tukuy_plugin,
+    transformer,
+    register_plugin,
+    hot_reload,
+    get_plugin_info,
+    extract_metadata
+)
+
+__version__ = '0.3.0'
 
 __all__ = [
     'TukuyTransformer',
@@ -18,4 +28,11 @@ __all__ = [
     'TransformationError',
     'TransformContext',
     'TransformResult',
+    # New registration system
+    'tukuy_plugin',
+    'transformer',
+    'register_plugin',
+    'hot_reload',
+    'get_plugin_info',
+    'extract_metadata',
 ]
