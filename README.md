@@ -307,6 +307,74 @@ t.transform("hello", ["reverse"])  # "olleh"
 
 Plugins support lifecycle hooks (`initialize()` / `cleanup()`) and can expose skills alongside transformers via the `skills` property.
 
+### Dynamic Tool Registration
+
+Tukuy makes it easy to add tools at runtime without restarting your application.
+
+**Register a plugin on the fly:**
+
+```python
+from tukuy import TukuyTransformer, TransformerPlugin
+
+class MyPlugin(TransformerPlugin):
+    def __init__(self):
+        super().__init__("my_plugin")
+
+    @property
+    def transformers(self):
+        return {"reverse": lambda _: ReverseTransformer("reverse")}
+
+t = TukuyTransformer()
+t.register_plugin(MyPlugin())       # available immediately
+t.transform("hello", ["reverse"])   # "olleh"
+t.unregister_plugin("my_plugin")    # remove when no longer needed
+```
+
+**Create skills at runtime:**
+
+```python
+from tukuy import skill, to_openai_tools
+
+@skill(name="sentiment", description="Classify sentiment", category="nlp")
+def sentiment(text: str) -> str:
+    return "positive" if "good" in text.lower() else "negative"
+
+# Instantly usable — invoke directly or convert to agent tool format
+result = sentiment.__skill__.invoke("This is good!")
+tools = to_openai_tools([sentiment])  # ready for OpenAI function-calling
+```
+
+**Use the `@tukuy_plugin` decorator for metadata:**
+
+```python
+from tukuy import tukuy_plugin
+
+@tukuy_plugin("analytics", "Real-time analytics transforms", "1.0.0")
+class AnalyticsPlugin(TransformerPlugin):
+    @property
+    def transformers(self):
+        return {"moving_avg": lambda p: MovingAvgTransformer("moving_avg", **p)}
+```
+
+**Hot-reload plugins without restarting:**
+
+```python
+from tukuy import hot_reload
+
+hot_reload("my_plugin")  # reload a specific plugin
+hot_reload()             # reload all plugins
+```
+
+**Discover what's available:**
+
+```python
+from tukuy import browse_tools, get_tool_details, search_tools
+
+index = browse_tools()                      # compact index of all tools
+details = get_tool_details("reverse")       # full metadata for a specific tool
+results = search_tools("date", limit=5)     # keyword search across all tools
+```
+
 ---
 
 ## Pattern-based Extraction

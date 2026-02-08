@@ -19,6 +19,14 @@ from .html_validate import HtmlValidatePlugin
 from .color import ColorPlugin
 from .minify import MinifyPlugin
 from .env import EnvPlugin
+from .diff import DiffPlugin
+from .schema import SchemaPlugin
+from .markdown import MarkdownPlugin
+from .image import ImagePlugin
+from .compression import CompressionPlugin
+from .git import GitPlugin
+from .sql import SqlPlugin
+from .prompt import PromptPlugin
 
 # Built-in plugins
 BUILTIN_PLUGINS = {
@@ -40,6 +48,14 @@ BUILTIN_PLUGINS = {
     'color': ColorPlugin,
     'minify': MinifyPlugin,
     'env': EnvPlugin,
+    'diff': DiffPlugin,
+    'schema': SchemaPlugin,
+    'markdown': MarkdownPlugin,
+    'image': ImagePlugin,
+    'compression': CompressionPlugin,
+    'git': GitPlugin,
+    'sql': SqlPlugin,
+    'prompt': PromptPlugin,
 }
 
 __all__ = [
@@ -63,5 +79,13 @@ __all__ = [
     'ColorPlugin',
     'MinifyPlugin',
     'EnvPlugin',
+    'DiffPlugin',
+    'SchemaPlugin',
+    'MarkdownPlugin',
+    'ImagePlugin',
+    'CompressionPlugin',
+    'GitPlugin',
+    'SqlPlugin',
+    'PromptPlugin',
     'BUILTIN_PLUGINS',
 ]
