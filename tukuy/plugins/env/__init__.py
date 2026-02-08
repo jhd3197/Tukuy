@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -56,6 +57,7 @@ def _mask_value(value: str, value_type: str = "api_key") -> str:
 )
 def env_read(path: str = ".env", mask: bool = False) -> dict:
     """Read a .env file and return its contents."""
+    path = check_read_path(path)
     env_path = Path(path)
     if not env_path.exists():
         return {"path": str(env_path), "values": {}, "exists": False}
@@ -82,6 +84,7 @@ def env_read(path: str = ".env", mask: bool = False) -> dict:
 )
 def env_write(key: str, value: str, path: str = ".env") -> dict:
     """Set a key=value pair in a .env file."""
+    path = check_write_path(path)
     env_path = Path(path)
     content = env_path.read_text(encoding="utf-8") if env_path.exists() else ""
 
@@ -111,6 +114,7 @@ def env_write(key: str, value: str, path: str = ".env") -> dict:
 )
 def env_remove(key: str, path: str = ".env") -> dict:
     """Comment out a key in a .env file and remove from environment."""
+    path = check_write_path(path)
     env_path = Path(path)
     if not env_path.exists():
         return {"key": key, "path": str(env_path), "action": "not_found"}
@@ -134,6 +138,7 @@ def env_remove(key: str, path: str = ".env") -> dict:
 )
 def env_list(path: str = ".env") -> dict:
     """List all keys defined in a .env file with masked values."""
+    path = check_read_path(path)
     env_path = Path(path)
     if not env_path.exists():
         return {"path": str(env_path), "keys": [], "exists": False}

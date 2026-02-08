@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -136,6 +137,7 @@ class QueryBuilderTransformer(ChainableTransformer[dict, str]):
 )
 def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dict:
     """Execute a read-only query on a SQLite database."""
+    db_path = check_read_path(db_path)
     p = Path(db_path)
     if not p.exists():
         return {"error": f"Database not found: {db_path}", "rows": [], "success": False}
@@ -169,6 +171,7 @@ def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dic
 )
 def sqlite_execute(db_path: str, sql: str, params: Optional[list] = None) -> dict:
     """Execute a write SQL statement on a SQLite database."""
+    db_path = check_write_path(db_path)
     conn = sqlite3.connect(db_path)
     try:
         cursor = conn.execute(sql, params or [])
@@ -195,6 +198,7 @@ def sqlite_execute(db_path: str, sql: str, params: Optional[list] = None) -> dic
 )
 def sqlite_tables(db_path: str) -> dict:
     """List tables in a SQLite database."""
+    db_path = check_read_path(db_path)
     p = Path(db_path)
     if not p.exists():
         return {"error": f"Database not found: {db_path}", "tables": [], "success": False}

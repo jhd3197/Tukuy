@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_host
 from ...skill import skill
 
 
@@ -46,6 +47,7 @@ async def http_request(
     timeout: int = 30,
 ) -> dict:
     """Perform an HTTP request using httpx."""
+    check_host(url)
     try:
         import httpx
     except ImportError:

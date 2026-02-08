@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -149,6 +150,7 @@ class PdfExtractTablesTransformer(ChainableTransformer[str, list]):
 )
 def pdf_read(path: str, pages: Optional[list] = None) -> dict:
     """Read a PDF file and return its content."""
+    path = check_read_path(path)
     p = Path(path)
     if not p.exists():
         return {"path": path, "error": "File not found", "exists": False}
@@ -202,6 +204,9 @@ def pdf_read(path: str, pages: Optional[list] = None) -> dict:
 )
 def pdf_merge(paths: list, output: str = "merged.pdf") -> dict:
     """Merge multiple PDF files into a single PDF."""
+    for pdf_p in paths:
+        check_read_path(pdf_p)
+    output = check_write_path(output)
     try:
         from pypdf import PdfWriter, PdfReader
     except ImportError:
@@ -250,6 +255,8 @@ def pdf_split(
     output_dir: str = ".",
 ) -> dict:
     """Split a PDF into separate page files."""
+    path = check_read_path(path)
+    output_dir = check_write_path(output_dir)
     try:
         from pypdf import PdfWriter, PdfReader
     except ImportError:
@@ -298,6 +305,7 @@ def pdf_split(
 )
 def pdf_page_count(path: str) -> dict:
     """Get page count of a PDF file."""
+    path = check_read_path(path)
     p = Path(path)
     if not p.exists():
         return {"path": path, "error": "File not found", "exists": False}

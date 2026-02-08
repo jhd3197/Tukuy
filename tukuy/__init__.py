@@ -19,6 +19,8 @@ from .chain import Chain, Branch, Parallel, branch, parallel
 from .safety import (
     SafetyViolation, SafetyError, SafetyManifest, SafetyPolicy,
     set_policy, get_policy, reset_policy,
+    SecurityError, SecurityContext,
+    set_security_context, get_security_context, reset_security_context,
 )
 
 # Two-phase discovery
@@ -75,6 +77,12 @@ __all__ = [
     'set_policy',
     'get_policy',
     'reset_policy',
+    # Security
+    'SecurityError',
+    'SecurityContext',
+    'set_security_context',
+    'get_security_context',
+    'reset_security_context',
     # Two-phase discovery
     'browse_tools',
     'get_tool_details',

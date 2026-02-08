@@ -12,6 +12,7 @@ import subprocess
 from typing import Any, Dict, Optional
 
 from ...plugins.base import TransformerPlugin
+from ...safety import check_command, get_security_context
 from ...skill import skill
 
 
@@ -31,6 +32,10 @@ def shell_execute(
     shell: bool = True,
 ) -> dict:
     """Execute a shell command and return its output."""
+    check_command(command)
+    ctx = get_security_context()
+    if ctx and ctx.working_directory and not cwd:
+        cwd = ctx.working_directory
     kwargs: Dict[str, Any] = {
         "capture_output": True,
         "text": True,

@@ -11,11 +11,13 @@ import subprocess
 from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path
 from ...skill import skill
 
 
 def _run_git(args: List[str], cwd: str = ".") -> Dict[str, Any]:
     """Run a git command and return structured output."""
+    check_read_path(cwd)
     try:
         result = subprocess.run(
             ["git"] + args,

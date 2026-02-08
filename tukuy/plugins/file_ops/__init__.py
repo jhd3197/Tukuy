@@ -14,6 +14,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -27,6 +28,7 @@ from ...skill import skill
 )
 def file_read(path: str) -> dict:
     """Read a file and return its contents."""
+    path = check_read_path(path)
     with open(path, "r", encoding="utf-8") as f:
         content = f.read()
     return {"path": path, "content": content, "size": len(content)}
@@ -42,6 +44,7 @@ def file_read(path: str) -> dict:
 )
 def file_write(path: str, content: str = "", append: bool = False) -> dict:
     """Write content to a file."""
+    path = check_write_path(path)
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     mode = "a" if append else "w"
     with open(path, mode, encoding="utf-8") as f:
@@ -62,6 +65,7 @@ def file_edit(path: str, search: str = "", replace: str = "", count: int = -1) -
 
     *count* limits the number of replacements (-1 = all).
     """
+    path = check_write_path(path)
     with open(path, "r", encoding="utf-8") as f:
         original = f.read()
 
@@ -88,6 +92,7 @@ def file_edit(path: str, search: str = "", replace: str = "", count: int = -1) -
 )
 def file_list(pattern: str) -> dict:
     """List files matching a glob pattern."""
+    check_read_path(pattern.split("*")[0] or ".")
     matches = sorted(_glob.glob(pattern, recursive=True))
     return {"pattern": pattern, "matches": matches, "count": len(matches)}
 
@@ -102,6 +107,7 @@ def file_list(pattern: str) -> dict:
 )
 def file_info(path: str) -> dict:
     """Return metadata about a file."""
+    path = check_read_path(path)
     st = os.stat(path)
     return {
         "path": path,

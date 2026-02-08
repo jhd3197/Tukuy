@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional, Union
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -170,6 +171,7 @@ def xlsx_read(
     max_rows: int = 1000,
 ) -> dict:
     """Read an Excel file and return its content."""
+    path = check_read_path(path)
     p = Path(path)
     if not p.exists():
         return {"path": path, "error": "File not found", "exists": False}
@@ -233,6 +235,7 @@ def xlsx_write(
     headers: Optional[list] = None,
 ) -> dict:
     """Write data to an Excel file."""
+    path = check_write_path(path)
     try:
         from openpyxl import Workbook
     except ImportError:
@@ -283,6 +286,7 @@ def xlsx_write(
 )
 def xlsx_sheets(path: str) -> dict:
     """List sheets in an Excel file."""
+    path = check_read_path(path)
     p = Path(path)
     if not p.exists():
         return {"path": path, "error": "File not found", "exists": False}

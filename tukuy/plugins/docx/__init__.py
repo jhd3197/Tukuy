@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -188,6 +189,7 @@ class DocxExtractMetadataTransformer(ChainableTransformer[str, dict]):
 )
 def docx_read(path: str) -> dict:
     """Read a Word document."""
+    path = check_read_path(path)
     p = Path(path)
     if not p.exists():
         return {"path": path, "error": "File not found", "exists": False}
@@ -259,6 +261,7 @@ def docx_write(
       - {"type": "list", "items": ["...", "..."]}
       - {"type": "table", "headers": [...], "rows": [[...], ...]}
     """
+    path = check_write_path(path)
     try:
         from docx import Document
     except ImportError:

@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_host
 from ...skill import skill
 
 
@@ -87,6 +88,7 @@ class ExtractMetadataTransformer(ChainableTransformer[str, dict]):
 )
 async def web_fetch(url: str, headers: dict = None, timeout: int = 30) -> dict:
     """Fetch a URL and return its text content."""
+    check_host(url)
     try:
         import httpx
     except ImportError:

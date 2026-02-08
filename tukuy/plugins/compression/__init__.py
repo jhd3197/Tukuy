@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
+from ...safety import check_read_path, check_write_path
 from ...skill import skill
 
 
@@ -65,6 +66,9 @@ def zip_create(
     base_dir: str = "",
 ) -> dict:
     """Create a zip archive."""
+    for p in paths:
+        check_read_path(p)
+    output = check_write_path(output)
     out_path = Path(output)
     files_added = []
 
@@ -100,6 +104,8 @@ def zip_create(
 )
 def zip_extract(path: str, output_dir: str = ".") -> dict:
     """Extract a zip archive."""
+    path = check_read_path(path)
+    output_dir = check_write_path(output_dir)
     src = Path(path)
     if not src.exists():
         return {"path": path, "error": "File not found"}
@@ -134,6 +140,7 @@ def zip_extract(path: str, output_dir: str = ".") -> dict:
 )
 def zip_list(path: str) -> dict:
     """List zip archive contents."""
+    path = check_read_path(path)
     src = Path(path)
     if not src.exists():
         return {"path": path, "error": "File not found"}
@@ -170,6 +177,9 @@ def tar_create(
     compress: bool = True,
 ) -> dict:
     """Create a tar archive."""
+    for p in paths:
+        check_read_path(p)
+    output = check_write_path(output)
     mode = "w:gz" if compress else "w"
     out_path = Path(output)
     files_added = 0
@@ -202,6 +212,8 @@ def tar_create(
 )
 def tar_extract(path: str, output_dir: str = ".") -> dict:
     """Extract a tar archive."""
+    path = check_read_path(path)
+    output_dir = check_write_path(output_dir)
     src = Path(path)
     if not src.exists():
         return {"path": path, "error": "File not found"}
