@@ -1,106 +1,102 @@
 """Plugin system for Tukuy transformers."""
 
-from .base import TransformerPlugin, PluginRegistry
-from .text import TextTransformersPlugin
-from .html import HtmlTransformersPlugin
-from .date import DateTransformersPlugin
-from .validation import ValidationTransformersPlugin
-from .numerical import NumericalTransformersPlugin
-from .json import JsonTransformersPlugin
-from .crypto import CryptoPlugin
-from .llm import LlmPlugin
-from .conversion import ConversionPlugin
-from .file_ops import FileOpsPlugin
-from .shell import ShellPlugin
-from .http import HttpPlugin
-from .web import WebPlugin
-from .code_extract import CodeExtractPlugin
-from .html_validate import HtmlValidatePlugin
-from .color import ColorPlugin
-from .minify import MinifyPlugin
-from .env import EnvPlugin
-from .diff import DiffPlugin
-from .schema import SchemaPlugin
-from .markdown import MarkdownPlugin
-from .image import ImagePlugin
-from .compression import CompressionPlugin
-from .git import GitPlugin
-from .sql import SqlPlugin
-from .prompt import PromptPlugin
-from .pdf import PdfPlugin
-from .xlsx import XlsxPlugin
-from .docx import DocxPlugin
-from .mermaid import MermaidPlugin
-from .local_plugins import LocalPluginsPlugin
+import importlib
+from typing import Iterator, Tuple, Type
 
-# Built-in plugins
-BUILTIN_PLUGINS = {
-    'text': TextTransformersPlugin,
-    'html': HtmlTransformersPlugin,
-    'date': DateTransformersPlugin,
-    'validation': ValidationTransformersPlugin,
-    'numerical': NumericalTransformersPlugin,
-    'json': JsonTransformersPlugin,
-    'crypto': CryptoPlugin,
-    'llm': LlmPlugin,
-    'conversion': ConversionPlugin,
-    'file_ops': FileOpsPlugin,
-    'shell': ShellPlugin,
-    'http': HttpPlugin,
-    'web': WebPlugin,
-    'code_extract': CodeExtractPlugin,
-    'html_validate': HtmlValidatePlugin,
-    'color': ColorPlugin,
-    'minify': MinifyPlugin,
-    'env': EnvPlugin,
-    'diff': DiffPlugin,
-    'schema': SchemaPlugin,
-    'markdown': MarkdownPlugin,
-    'image': ImagePlugin,
-    'compression': CompressionPlugin,
-    'git': GitPlugin,
-    'sql': SqlPlugin,
-    'prompt': PromptPlugin,
-    'pdf': PdfPlugin,
-    'xlsx': XlsxPlugin,
-    'docx': DocxPlugin,
-    'mermaid': MermaidPlugin,
-    'local_plugins': LocalPluginsPlugin,
+from .base import TransformerPlugin, PluginRegistry
+
+
+# ---------------------------------------------------------------------------
+# Lazy built-in plugin loading
+# ---------------------------------------------------------------------------
+
+_BUILTIN_PLUGIN_PATHS = {
+    'text': ('tukuy.plugins.text', 'TextTransformersPlugin'),
+    'html': ('tukuy.plugins.html', 'HtmlTransformersPlugin'),
+    'date': ('tukuy.plugins.date', 'DateTransformersPlugin'),
+    'validation': ('tukuy.plugins.validation', 'ValidationTransformersPlugin'),
+    'numerical': ('tukuy.plugins.numerical', 'NumericalTransformersPlugin'),
+    'json': ('tukuy.plugins.json', 'JsonTransformersPlugin'),
+    'crypto': ('tukuy.plugins.crypto', 'CryptoPlugin'),
+    'llm': ('tukuy.plugins.llm', 'LlmPlugin'),
+    'conversion': ('tukuy.plugins.conversion', 'ConversionPlugin'),
+    'file_ops': ('tukuy.plugins.file_ops', 'FileOpsPlugin'),
+    'shell': ('tukuy.plugins.shell', 'ShellPlugin'),
+    'http': ('tukuy.plugins.http', 'HttpPlugin'),
+    'web': ('tukuy.plugins.web', 'WebPlugin'),
+    'code_extract': ('tukuy.plugins.code_extract', 'CodeExtractPlugin'),
+    'html_validate': ('tukuy.plugins.html_validate', 'HtmlValidatePlugin'),
+    'color': ('tukuy.plugins.color', 'ColorPlugin'),
+    'minify': ('tukuy.plugins.minify', 'MinifyPlugin'),
+    'env': ('tukuy.plugins.env', 'EnvPlugin'),
+    'diff': ('tukuy.plugins.diff', 'DiffPlugin'),
+    'schema': ('tukuy.plugins.schema', 'SchemaPlugin'),
+    'markdown': ('tukuy.plugins.markdown', 'MarkdownPlugin'),
+    'image': ('tukuy.plugins.image', 'ImagePlugin'),
+    'compression': ('tukuy.plugins.compression', 'CompressionPlugin'),
+    'git': ('tukuy.plugins.git', 'GitPlugin'),
+    'sql': ('tukuy.plugins.sql', 'SqlPlugin'),
+    'prompt': ('tukuy.plugins.prompt', 'PromptPlugin'),
+    'pdf': ('tukuy.plugins.pdf', 'PdfPlugin'),
+    'xlsx': ('tukuy.plugins.xlsx', 'XlsxPlugin'),
+    'docx': ('tukuy.plugins.docx', 'DocxPlugin'),
+    'mermaid': ('tukuy.plugins.mermaid', 'MermaidPlugin'),
+    'local_plugins': ('tukuy.plugins.local_plugins', 'LocalPluginsPlugin'),
 }
+
+
+class _LazyBuiltinPlugins:
+    """Dict-like object that imports plugin classes on first access.
+
+    This avoids importing every plugin module (and their heavy
+    dependencies like PIL, openpyxl, etc.) at ``import tukuy`` time.
+    """
+
+    def __init__(self):
+        self._loaded: dict = {}
+
+    def _load(self, key: str) -> Type[TransformerPlugin]:
+        if key not in self._loaded:
+            module_path, class_name = _BUILTIN_PLUGIN_PATHS[key]
+            module = importlib.import_module(module_path)
+            self._loaded[key] = getattr(module, class_name)
+        return self._loaded[key]
+
+    def __getitem__(self, key: str) -> Type[TransformerPlugin]:
+        if key not in _BUILTIN_PLUGIN_PATHS:
+            raise KeyError(key)
+        return self._load(key)
+
+    def __contains__(self, key: object) -> bool:
+        return key in _BUILTIN_PLUGIN_PATHS
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(_BUILTIN_PLUGIN_PATHS)
+
+    def __len__(self) -> int:
+        return len(_BUILTIN_PLUGIN_PATHS)
+
+    def keys(self):
+        return _BUILTIN_PLUGIN_PATHS.keys()
+
+    def values(self):
+        return [self[k] for k in _BUILTIN_PLUGIN_PATHS]
+
+    def items(self) -> Iterator[Tuple[str, Type[TransformerPlugin]]]:
+        for key in _BUILTIN_PLUGIN_PATHS:
+            yield key, self[key]
+
+    def get(self, key: str, default=None):
+        if key in _BUILTIN_PLUGIN_PATHS:
+            return self._load(key)
+        return default
+
+
+BUILTIN_PLUGINS = _LazyBuiltinPlugins()
+
 
 __all__ = [
     'TransformerPlugin',
     'PluginRegistry',
-    'TextTransformersPlugin',
-    'HtmlTransformersPlugin',
-    'DateTransformersPlugin',
-    'ValidationTransformersPlugin',
-    'NumericalTransformersPlugin',
-    'JsonTransformersPlugin',
-    'CryptoPlugin',
-    'LlmPlugin',
-    'ConversionPlugin',
-    'FileOpsPlugin',
-    'ShellPlugin',
-    'HttpPlugin',
-    'WebPlugin',
-    'CodeExtractPlugin',
-    'HtmlValidatePlugin',
-    'ColorPlugin',
-    'MinifyPlugin',
-    'EnvPlugin',
-    'DiffPlugin',
-    'SchemaPlugin',
-    'MarkdownPlugin',
-    'ImagePlugin',
-    'CompressionPlugin',
-    'GitPlugin',
-    'SqlPlugin',
-    'PromptPlugin',
-    'PdfPlugin',
-    'XlsxPlugin',
-    'DocxPlugin',
-    'MermaidPlugin',
-    'LocalPluginsPlugin',
     'BUILTIN_PLUGINS',
 ]

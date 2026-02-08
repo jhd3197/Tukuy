@@ -142,7 +142,7 @@ class TransformerFormatter:
                 desc = metadata.description
                 if len(desc) > 60:
                     desc = desc[:57] + "..."
-                lines.append("11")
+                lines.append(f"  {metadata.plugin}.{metadata.name}: {desc}")
         else:
             # Detailed format
             for metadata in sorted(transformers, key=lambda x: f"{x.plugin}.{x.name}"):

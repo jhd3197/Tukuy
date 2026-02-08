@@ -38,6 +38,7 @@ from logging import getLogger
 from .types import TransformContext
 from .context import SkillContext
 from .plugins.base import PluginRegistry
+from .registry import get_shared_registry
 from .base import BaseTransformer
 from .async_base import AsyncBaseTransformer
 
@@ -57,23 +58,6 @@ def _ensure_skill_context(context: dict) -> SkillContext:
     ctx = SkillContext.from_dict(context)
     context["__skill_context__"] = ctx
     return ctx
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def _load_default_registry() -> PluginRegistry:
-    """Create a PluginRegistry with all built-in plugins loaded."""
-    from .plugins import BUILTIN_PLUGINS
-
-    registry = PluginRegistry()
-    for name, plugin_class in BUILTIN_PLUGINS.items():
-        try:
-            registry.register(plugin_class())
-        except Exception:
-            logger.debug("Failed to load built-in plugin %s", name)
-    return registry
 
 
 def _step_name(step: Any) -> str:
@@ -284,7 +268,7 @@ class Chain:
     @property
     def registry(self) -> PluginRegistry:
         if self._registry is None:
-            self._registry = _load_default_registry()
+            self._registry = get_shared_registry()
         return self._registry
 
     def run(self, value: Any, context: Optional[Dict[str, Any]] = None) -> Any:

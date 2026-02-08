@@ -7,39 +7,32 @@ from logging import getLogger
 from ..base import BaseTransformer
 from ..types import TransformContext, JsonType
 from ..exceptions import ValidationError, TransformationError
-from ..plugins import (
-    PluginRegistry,
-    BUILTIN_PLUGINS
-)
+from ..plugins.base import PluginRegistry, PluginSource
+from ..registry import get_shared_registry
 
 logger = getLogger(__name__)
 
 class TukuyTransformer:
     """
     Main transformer class that provides access to all transformation tools.
-    
+
     This class serves as the main entry point for the transformation library,
     providing a unified interface to all available transformers through a plugin system.
     """
-    
-    def __init__(self):
-        """Initialize the transformer registry."""
-        self.registry = PluginRegistry()
-        self._load_builtin_plugins()
-    
-    def _load_builtin_plugins(self):
-        """Load all built-in plugins."""
-        for name, plugin_class in BUILTIN_PLUGINS.items():
-            try:
-                plugin = plugin_class()
-                self.registry.register(plugin)
-            except Exception as e:
-                logger.error(f"Failed to load plugin {name}: {str(e)}")
-    
+
+    def __init__(self, registry: Optional[PluginRegistry] = None):
+        """Initialize the transformer.
+
+        Args:
+            registry: Optional plugin registry.  If *None* (the default),
+                the process-wide shared registry is used.
+        """
+        self.registry = registry if registry is not None else get_shared_registry()
+
     def register_plugin(self, plugin):
         """
         Register a custom plugin.
-        
+
         Args:
             plugin: The plugin to register
         """
@@ -220,17 +213,8 @@ class AsyncTukuyTransformer:
     and calls sync ones normally.
     """
 
-    def __init__(self):
-        self.registry = PluginRegistry()
-        self._load_builtin_plugins()
-
-    def _load_builtin_plugins(self):
-        for name, plugin_class in BUILTIN_PLUGINS.items():
-            try:
-                plugin = plugin_class()
-                self.registry.register(plugin)
-            except Exception as e:
-                logger.error(f"Failed to load plugin {name}: {str(e)}")
+    def __init__(self, registry: Optional[PluginRegistry] = None):
+        self.registry = registry if registry is not None else get_shared_registry()
 
     def register_plugin(self, plugin):
         self.registry.register(plugin)

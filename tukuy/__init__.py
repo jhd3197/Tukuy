@@ -2,20 +2,8 @@
 
 from .transformers import TukuyTransformer, AsyncTukuyTransformer
 from .base import BaseTransformer, ChainableTransformer
-from .async_base import AsyncBaseTransformer, AsyncChainableTransformer, AsyncCompositeTransformer
-from .plugins.base import TransformerPlugin, PluginRegistry
-from .plugins.crypto import CryptoPlugin
-from .plugins.llm import LlmPlugin
-from .plugins.conversion import ConversionPlugin
-from .plugins.file_ops import FileOpsPlugin
-from .plugins.shell import ShellPlugin
-from .plugins.http import HttpPlugin
-from .plugins.web import WebPlugin
-from .plugins.code_extract import CodeExtractPlugin
-from .plugins.html_validate import HtmlValidatePlugin
-from .plugins.color import ColorPlugin
-from .plugins.minify import MinifyPlugin
-from .plugins.env import EnvPlugin
+from .async_base import AsyncBaseTransformer, AsyncChainableTransformer
+from .plugins.base import TransformerPlugin, PluginRegistry, PluginSource
 from .exceptions import ValidationError, TransformationError
 from .types import TransformContext, TransformResult
 from .skill import SkillDescriptor, SkillExample, SkillResult, Skill, skill
@@ -33,32 +21,24 @@ from .safety import (
     set_policy, get_policy, reset_policy,
 )
 
-# New decorator-based registration system
-from .core.registration import (
-    tukuy_plugin,
-    transformer,
-    register_plugin,
-    hot_reload,
-    get_plugin_info,
-    extract_metadata
-)
-
-# Two-phase discovery & usage tracking
+# Two-phase discovery
 from .core.unified import browse_tools, get_tool_details, search_tools
-from .core.usage import UsageTracker, get_usage_tracker
 
-__version__ = '0.1.0'
+__version__ = '0.0.17'
 
 __all__ = [
+    # Core
     'TukuyTransformer',
     'AsyncTukuyTransformer',
     'BaseTransformer',
     'ChainableTransformer',
     'AsyncBaseTransformer',
     'AsyncChainableTransformer',
-    'AsyncCompositeTransformer',
+    # Plugin system
     'TransformerPlugin',
     'PluginRegistry',
+    'PluginSource',
+    # Errors & types
     'ValidationError',
     'TransformationError',
     'TransformContext',
@@ -69,7 +49,6 @@ __all__ = [
     'SkillResult',
     'Skill',
     'skill',
-    # Context
     'SkillContext',
     # Agent bridges
     'to_openai_tool',
@@ -96,30 +75,8 @@ __all__ = [
     'set_policy',
     'get_policy',
     'reset_policy',
-    # New registration system
-    'tukuy_plugin',
-    'transformer',
-    'register_plugin',
-    'hot_reload',
-    'get_plugin_info',
-    'extract_metadata',
-    # New plugins
-    'CryptoPlugin',
-    'LlmPlugin',
-    'ConversionPlugin',
-    'FileOpsPlugin',
-    'ShellPlugin',
-    'HttpPlugin',
-    'WebPlugin',
-    'CodeExtractPlugin',
-    'HtmlValidatePlugin',
-    'ColorPlugin',
-    'MinifyPlugin',
-    'EnvPlugin',
-    # Two-phase discovery & usage tracking
+    # Two-phase discovery
     'browse_tools',
     'get_tool_details',
     'search_tools',
-    'UsageTracker',
-    'get_usage_tracker',
 ]

@@ -12,11 +12,10 @@ import sys
 from typing import Dict, List, Optional, Any, Callable, Set, Union
 from logging import getLogger
 
-from .registration import get_registration_manager, tukuy_plugin
 from .introspection import TransformerMetadata, TransformerIntrospector
 from .usage import get_usage_tracker
-from ..plugins.base import TransformerPlugin, PluginRegistry
-from ..base import ChainableTransformer
+from ..plugins.base import TransformerPlugin, PluginRegistry, PluginSource
+from ..registry import get_shared_registry
 
 logger = getLogger(__name__)
 
@@ -25,47 +24,22 @@ class UnifiedRegistry:
     """Unified registry that bridges plugins and transformers from different sources."""
 
     def __init__(self):
-        self.registry = PluginRegistry()
+        self.registry = get_shared_registry()
         self.introspector = TransformerIntrospector(self.registry)
-        self.registration_manager = get_registration_manager()
         self.discovered_plugins: Dict[str, TransformerPlugin] = {}
         self.transformer_to_plugin_map: Dict[str, str] = {}
         self.metadata_cache: Dict[str, TransformerMetadata] = {}
 
     def discover_plugins(self) -> None:
-        """Discover plugins from both the plugins/ and transformers/ directories."""
-        self._load_builtin_plugins()
-        self._register_all_discovered_plugins()
+        """Index plugins already loaded in the shared registry."""
+        self._index_registered_plugins()
 
-    def _load_builtin_plugins(self) -> None:
-        """Load built-in plugins from the plugins/ directory structure."""
-        try:
-            from ..plugins import BUILTIN_PLUGINS
-
-            for plugin_name, plugin_class in BUILTIN_PLUGINS.items():
-                try:
-                    plugin_instance = plugin_class()
-                    self.discovered_plugins[plugin_name] = plugin_instance
-                    logger.info(f"Discovered built-in plugin: {plugin_name}")
-
-                    # Map each transformer to its plugin
-                    for transformer_name in plugin_instance.transformers.keys():
-                        self.transformer_to_plugin_map[transformer_name] = plugin_name
-
-                except Exception as e:
-                    logger.warning(f"Failed to load built-in plugin {plugin_name}: {e}")
-
-        except ImportError as e:
-            logger.warning(f"Could not import BUILTIN_PLUGINS: {e}")
-
-    def _register_all_discovered_plugins(self) -> None:
-        """Register all discovered plugins with the main registry."""
-        for plugin_name, plugin in self.discovered_plugins.items():
-            try:
-                self.registry.register(plugin)
-                logger.info(f"Registered plugin: {plugin_name}")
-            except Exception as e:
-                logger.error(f"Failed to register plugin {plugin_name}: {e}")
+    def _index_registered_plugins(self) -> None:
+        """Build the discovered_plugins and transformer_to_plugin_map from the shared registry."""
+        for plugin_name, plugin in self.registry.plugins.items():
+            self.discovered_plugins[plugin_name] = plugin
+            for transformer_name in plugin.transformers.keys():
+                self.transformer_to_plugin_map[transformer_name] = plugin_name
 
     def get_transformer_plugin(self, transformer_name: str) -> Optional[str]:
         """Get the plugin name that provides a specific transformer."""
@@ -168,9 +142,13 @@ class UnifiedRegistry:
                 desc = metadata.description if metadata else "No description available"
                 tools_map[t_name] = self._truncate_description(desc)
                 total += 1
+            # Determine plugin source
+            plugin_obj = self.registry.get_plugin(plugin_name)
+            source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
             plugins_index[plugin_name] = {
                 "tool_count": len(tools_map),
                 "tools": tools_map,
+                "source": source,
             }
 
         return {
@@ -195,9 +173,14 @@ class UnifiedRegistry:
 
             tracker.record(name)
 
+            # Determine source
+            plugin_obj = self.registry.get_plugin(plugin_name) if plugin_name else None
+            source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
+
             tool_info: Dict[str, Any] = {
                 "name": name,
                 "plugin": plugin_name or "unknown",
+                "source": source,
                 "description": metadata.description,
                 "category": (
                     metadata.category.value
@@ -284,9 +267,12 @@ class UnifiedRegistry:
 
         results: List[Dict[str, Any]] = []
         for score, _usage, name, plugin, desc in scored[:limit]:
+            plugin_obj = self.registry.get_plugin(plugin) if plugin else None
+            source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
             results.append({
                 "name": name,
                 "plugin": plugin,
+                "source": source,
                 "description": self._truncate_description(desc),
                 "score": score,
             })
@@ -304,6 +290,12 @@ def get_unified_registry() -> UnifiedRegistry:
         _unified_registry = UnifiedRegistry()
         _unified_registry.discover_plugins()
     return _unified_registry
+
+
+def reset_unified_registry() -> None:
+    """Discard the cached unified registry (useful for tests)."""
+    global _unified_registry
+    _unified_registry = None
 
 
 def list_all_tools() -> List[Dict[str, Any]]:

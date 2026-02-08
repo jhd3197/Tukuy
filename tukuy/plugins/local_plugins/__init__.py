@@ -16,7 +16,7 @@ import textwrap
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ...plugins.base import TransformerPlugin, PluginRegistry
+from ...plugins.base import TransformerPlugin, PluginRegistry, PluginSource
 from ...skill import skill
 
 # ---------------------------------------------------------------------------
@@ -640,7 +640,7 @@ def local_load(name: str) -> dict:
     # Register with the global registry if available
     if _registry is not None:
         try:
-            _registry.register(instance)
+            _registry.register(instance, source=PluginSource.LOCAL)
         except ValueError as exc:
             sys.modules.pop(module_name, None)
             return {"loaded": False, "error": str(exc)}
