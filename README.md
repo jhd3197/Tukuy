@@ -1,8 +1,31 @@
-# 🌀 Tukuy
+<p align="center">
+  <h1 align="center">🌀 Tukuy</h1>
+  <p align="center">Portable agent skills library and data transformation toolkit for Python.</p>
+</p>
 
-A portable agent skills library and data transformation toolkit for Python.
+<p align="center">
+  <a href="https://pypi.org/project/tukuy/"><img src="https://badge.fury.io/py/tukuy.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/tukuy/"><img src="https://img.shields.io/pypi/pyversions/tukuy.svg" alt="Python versions"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://pepy.tech/project/tukuy"><img src="https://static.pepy.tech/badge/tukuy" alt="Downloads"></a>
+  <a href="https://github.com/jhd3197/Tukuy"><img src="https://img.shields.io/github/stars/jhd3197/Tukuy?style=social" alt="GitHub stars"></a>
+</p>
 
-Tukuy (meaning "to transform" or "to become" in Quechua) is a cross-platform skills layer that any Python agent framework can use. It provides typed skill descriptors, agent-framework bridges (OpenAI, Anthropic), async-first execution, smart composition, and runtime safety enforcement — all built on top of a proven plugin-based transformation engine.
+---
+
+**Tukuy** (meaning "to transform" or "to become" in Quechua) is a cross-platform skills layer that any Python agent framework can use. It provides typed skill descriptors, agent-framework bridges (OpenAI, Anthropic), async-first execution, smart composition, and runtime safety enforcement — all built on top of a proven plugin-based transformation engine.
+
+```python
+from tukuy import skill
+
+@skill(name="parse_date", description="Parse a date string into ISO format")
+def parse_date(text: str) -> str:
+    from dateutil import parser
+    return parser.parse(text).isoformat()
+
+result = parse_date.__skill__.invoke("January 15, 2025")
+print(result.value)  # "2025-01-15T00:00:00"
+```
 
 ## Installation
 
