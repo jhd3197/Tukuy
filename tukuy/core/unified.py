@@ -34,7 +34,6 @@ class UnifiedRegistry:
     def discover_plugins(self) -> None:
         """Discover plugins from both the plugins/ and transformers/ directories."""
         self._load_builtin_plugins()
-        self._discovered_file_plugins()
         self._register_all_discovered_plugins()
 
     def _load_builtin_plugins(self) -> None:
@@ -57,16 +56,6 @@ class UnifiedRegistry:
 
         except ImportError as e:
             logger.warning(f"Could not import BUILTIN_PLUGINS: {e}")
-
-    def _discovered_file_plugins(self) -> None:
-        """Discover additional plugins from individual transformer files.
-
-        This method looks for transformer classes in tukuy/transformers/ directory
-        and automatically creates plugins for them if they don't already exist.
-        """
-        # This is a placeholder for discovering transformers from files
-        # The current structure already has all transformers organized through plugins
-        pass
 
     def _register_all_discovered_plugins(self) -> None:
         """Register all discovered plugins with the main registry."""

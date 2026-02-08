@@ -4,7 +4,19 @@ import re
 from typing import Optional, Dict, Any, List
 from urllib.parse import urljoin, urlparse
 
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
+
+
+def _check_bs4():
+    if BeautifulSoup is None:
+        raise ImportError(
+            "beautifulsoup4 is required for HTML transformers. "
+            "Install it with: pip install tukuy[html]"
+        )
+
 
 from ..base import ChainableTransformer
 from ..types import TransformContext
@@ -56,6 +68,7 @@ class StripHtmlTagsTransformer(ChainableTransformer[str, str]):
         return isinstance(value, str)
     
     def _transform(self, value: str, context: Optional[TransformContext] = None) -> str:
+        _check_bs4()
         soup = BeautifulSoup(value, 'html.parser')
         return soup.get_text()
 
@@ -92,6 +105,7 @@ class HtmlSanitizationTransformer(ChainableTransformer[str, str]):
     
     def _transform(self, value: str, context: Optional[TransformContext] = None) -> str:
         # Use html5lib parser for better HTML handling
+        _check_bs4()
         soup = BeautifulSoup(value, 'html5lib')
         
         # Remove dangerous tags
@@ -179,6 +193,7 @@ class LinkExtractionTransformer(ChainableTransformer[str, List[str]]):
         return isinstance(value, str)
     
     def _transform(self, value: str, context: Optional[TransformContext] = None) -> List[str]:
+        _check_bs4()
         soup = BeautifulSoup(value, 'html.parser')
         links = []
         for a in soup.find_all('a', href=True):
@@ -438,6 +453,7 @@ class HtmlExtractor(ChainableTransformer[str, Dict[str, Any]]):
         return isinstance(value, str)
     
     def _transform(self, value: str, context: Optional[TransformContext] = None) -> Dict[str, Any]:
+        _check_bs4()
         soup = BeautifulSoup(value, 'html.parser')
         if not self.pattern:
             return {}

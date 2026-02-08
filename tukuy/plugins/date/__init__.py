@@ -7,7 +7,6 @@ from ...base import BaseTransformer
 from ...plugins.base import TransformerPlugin
 from ...transformers.date import (
     DateTransformer,
-    TimezoneTransformer,
     DurationCalculator,
     AgeCalculator
 )
@@ -26,11 +25,6 @@ class DateTransformersPlugin(TransformerPlugin):
             # Date parsing
             'date': lambda params: DateTransformer('date',
                 format=params.get('format', '%Y-%m-%d')),
-                
-            # Timezone conversion
-            'timezone_convert': lambda params: TimezoneTransformer('timezone_convert',
-                to_zone=params.get('to_zone'),
-                from_zone=params.get('from_zone')),
                 
             # Date calculations
             'duration_calc': lambda params: DurationCalculator('duration_calc',

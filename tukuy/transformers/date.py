@@ -56,15 +56,11 @@ class DateTransformer(ChainableTransformer[str, datetime]):
         assert result.value.minute == 30
 
         # Chain with other transformers
-        timezone = TimezoneTransformer(
-            "to_utc",
-            to_zone="UTC",
-            from_zone="America/New_York"
+        duration = DurationCalculator(
+            "days_since",
+            unit="days"
         )
-        pipeline = transformer.chain(timezone)
-
-        result = pipeline.transform("2024-03-24")
-        assert result.value.tzinfo == timezone.UTC
+        pipeline = transformer.chain(duration)
     """
     
     def __init__(self, name: str, format: str = '%Y-%m-%d'):
@@ -79,72 +75,6 @@ class DateTransformer(ChainableTransformer[str, datetime]):
             return datetime.strptime(value, self.format)
         except ValueError as e:
             raise ValidationError(f"Invalid date format: {str(e)}", value)
-
-class TimezoneTransformer(ChainableTransformer[datetime, datetime]):
-    """
-    Description:
-        A transformer that converts datetime objects between different timezones.
-        [Not yet implemented]
-    
-    Version: v1
-    Status: Under Development
-    Last Updated: 2024-03-24
-    
-    Args:
-        name (str): Unique identifier for this transformer
-        to_zone (str): Target timezone (e.g., "UTC", "America/New_York")
-        from_zone (Optional[str]): Source timezone. If not provided, assumes naive datetime
-    
-    Returns:
-        datetime: The datetime object in the target timezone
-    
-    Raises:
-        ValidationError: If the input value is not a datetime object
-    
-    Notes:
-        - Currently returns the input datetime without modification
-        - Future implementation will use pytz or zoneinfo for timezone conversion
-        - Will handle both naive and timezone-aware datetime objects
-        - Will support all IANA timezone database names
-    
-    Example::
-    
-        # Note: This example shows future functionality
-        transformer = TimezoneTransformer(
-            "to_utc",
-            to_zone="UTC",
-            from_zone="America/New_York"
-        )
-        
-        # Convert timezone-aware datetime
-        dt = datetime(2024, 3, 24, 15, 30, tzinfo=timezone("America/New_York"))
-        result = transformer.transform(dt)
-        assert result.value.hour == 19  # 15:30 EDT = 19:30 UTC
-        
-        # Convert naive datetime
-        naive_dt = datetime(2024, 3, 24, 15, 30)
-        result = transformer.transform(naive_dt)
-        assert result.value.tzinfo == timezone.utc
-        
-        # Chain with other transformers
-        format_date = DateFormatTransformer("format", format="%Y-%m-%d %H:%M %Z")
-        pipeline = transformer.chain(format_date)
-        
-        result = pipeline.transform(dt)
-        assert result.value == "2024-03-24 19:30 UTC"
-    """
-    
-    def __init__(self, name: str, to_zone: str, from_zone: Optional[str] = None):
-        super().__init__(name)
-        self.to_zone = to_zone
-        self.from_zone = from_zone
-    
-    def validate(self, value: datetime) -> bool:
-        return isinstance(value, datetime)
-    
-    def _transform(self, value: datetime, context: Optional[TransformContext] = None) -> datetime:
-        # TODO: Implement timezone conversion
-        return value
 
 class DurationCalculator(ChainableTransformer[str, int]):
     """

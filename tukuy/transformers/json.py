@@ -4,7 +4,7 @@ import json
 from typing import Any, Dict, List, Optional, Union
 import re
 
-from ..base import BaseTransformer, ChainableTransformer, CoreToolsTransformer
+from ..base import BaseTransformer, ChainableTransformer, RegexTransformer, ReplaceTransformer
 from ..types import JsonType, Pattern, TransformContext
 from ..exceptions import ValidationError, TransformationError, ParseError
 
@@ -346,12 +346,8 @@ class JsonExtractor(BaseTransformer[JsonType, Any]):
             
             # Apply transformations if any
             if value is not None and transforms:
-                tools = CoreToolsTransformer()
                 try:
-                    value = tools.transform(value, transforms)
-                    # Extract the actual value from TransformResult if needed
-                    if hasattr(value, 'value') and hasattr(value, 'failed'):
-                        value = value.value
+                    value = self._apply_transforms(value, transforms)
                 except Exception as e:
                     raise TransformationError(f"Failed to apply transformation: {str(e)}", value)
                         
@@ -359,6 +355,32 @@ class JsonExtractor(BaseTransformer[JsonType, Any]):
         
         return result
     
+    def _apply_transforms(self, value: Any, transforms: list) -> Any:
+        """Apply a list of transform operations to a value."""
+        current = value
+        for transform in transforms:
+            func = transform.get('function')
+            if func == 'regex':
+                t = RegexTransformer('regex', pattern=transform['pattern'], template=transform.get('template'))
+                result = t.transform(current)
+                if result.failed:
+                    raise result.error
+                current = result.value
+            elif func == 'replace':
+                t = ReplaceTransformer('replace', old=transform['find'], new=transform['replace'])
+                result = t.transform(current)
+                if result.failed:
+                    raise result.error
+                current = result.value
+            elif func == 'average':
+                if not isinstance(current, list):
+                    raise ValidationError("Average requires a list of numbers", current)
+                total = sum(float(x) for x in current)
+                current = round(total / len(current), 2)
+            else:
+                raise ValidationError(f"Unknown transform function: {func}", current)
+        return current
+
     def _get_value(self, data: JsonType, path: Optional[str]) -> Optional[Any]:
         """Get a value using a path expression."""
         if not path or data is None:
