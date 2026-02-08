@@ -1,8 +1,11 @@
 """Base classes and utilities for the plugin system."""
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 from logging import getLogger
+
+if TYPE_CHECKING:
+    from ..skill import Skill
 
 logger = getLogger(__name__)
 
@@ -43,10 +46,20 @@ class TransformerPlugin(ABC):
         """
         logger.info(f"Initializing plugin: {self.name}")
         
+    @property
+    def skills(self) -> Dict[str, "Skill"]:
+        """Get the skills provided by this plugin.
+
+        Returns:
+            A dictionary mapping skill names to Skill instances.
+            Defaults to an empty dict for backward compatibility.
+        """
+        return {}
+
     def cleanup(self) -> None:
         """
         Called when the plugin is unloaded.
-        
+
         Override this method to perform any cleanup required by the plugin.
         """
         logger.info(f"Cleaning up plugin: {self.name}")
@@ -64,6 +77,7 @@ class PluginRegistry:
         """Initialize an empty plugin registry."""
         self._plugins: Dict[str, TransformerPlugin] = {}
         self._transformers: Dict[str, callable] = {}
+        self._skills: Dict[str, "Skill"] = {}
         
     def register(self, plugin: TransformerPlugin) -> None:
         """
@@ -81,6 +95,13 @@ class PluginRegistry:
         logger.info(f"Registering plugin: {plugin.name}")
         self._plugins[plugin.name] = plugin
         self._transformers.update(plugin.transformers)
+
+        # Merge skills (backward-compatible: old plugins won't have skills)
+        try:
+            self._skills.update(plugin.skills)
+        except Exception:
+            pass
+
         plugin.initialize()
         
     def unregister(self, name: str) -> None:
@@ -100,7 +121,14 @@ class PluginRegistry:
         # Remove transformers
         for key in plugin.transformers:
             self._transformers.pop(key, None)
-            
+
+        # Remove skills (backward-compatible)
+        try:
+            for key in plugin.skills:
+                self._skills.pop(key, None)
+        except Exception:
+            pass
+
         del self._plugins[name]
         
     def get_transformer(self, name: str) -> Optional[callable]:
@@ -136,3 +164,19 @@ class PluginRegistry:
     def transformers(self) -> Dict[str, callable]:
         """Get all registered transformers."""
         return self._transformers.copy()
+
+    def get_skill(self, name: str) -> Optional["Skill"]:
+        """Get a skill by name.
+
+        Args:
+            name: Name of the skill
+
+        Returns:
+            The Skill instance, or None if not found
+        """
+        return self._skills.get(name)
+
+    @property
+    def skills(self) -> Dict[str, "Skill"]:
+        """Get all registered skills."""
+        return self._skills.copy()

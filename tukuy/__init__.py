@@ -5,6 +5,7 @@ from .base import BaseTransformer, ChainableTransformer
 from .plugins.base import TransformerPlugin, PluginRegistry
 from .exceptions import ValidationError, TransformationError
 from .types import TransformContext, TransformResult
+from .skill import SkillDescriptor, SkillExample, SkillResult, Skill
 
 # New decorator-based registration system
 from .core.registration import (
@@ -28,6 +29,11 @@ __all__ = [
     'TransformationError',
     'TransformContext',
     'TransformResult',
+    # Skill system
+    'SkillDescriptor',
+    'SkillExample',
+    'SkillResult',
+    'Skill',
     # New registration system
     'tukuy_plugin',
     'transformer',
