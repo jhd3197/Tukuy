@@ -27,6 +27,11 @@ from .compression import CompressionPlugin
 from .git import GitPlugin
 from .sql import SqlPlugin
 from .prompt import PromptPlugin
+from .pdf import PdfPlugin
+from .xlsx import XlsxPlugin
+from .docx import DocxPlugin
+from .mermaid import MermaidPlugin
+from .local_plugins import LocalPluginsPlugin
 
 # Built-in plugins
 BUILTIN_PLUGINS = {
@@ -56,6 +61,11 @@ BUILTIN_PLUGINS = {
     'git': GitPlugin,
     'sql': SqlPlugin,
     'prompt': PromptPlugin,
+    'pdf': PdfPlugin,
+    'xlsx': XlsxPlugin,
+    'docx': DocxPlugin,
+    'mermaid': MermaidPlugin,
+    'local_plugins': LocalPluginsPlugin,
 }
 
 __all__ = [
@@ -87,5 +97,10 @@ __all__ = [
     'GitPlugin',
     'SqlPlugin',
     'PromptPlugin',
+    'PdfPlugin',
+    'XlsxPlugin',
+    'DocxPlugin',
+    'MermaidPlugin',
+    'LocalPluginsPlugin',
     'BUILTIN_PLUGINS',
 ]
