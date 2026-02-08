@@ -1,0 +1,305 @@
+"""Agent bridge — converts Tukuy skills to OpenAI and Anthropic tool formats."""
+
+import inspect
+import json
+from typing import Any, Callable, Dict, List, Union
+
+from .skill import Skill, SkillDescriptor, SkillResult
+
+
+# ---------------------------------------------------------------------------
+# Private helpers
+# ---------------------------------------------------------------------------
+
+
+def _get_first_param_name(fn: Callable) -> str:
+    """Return the first real parameter name of *fn*, skipping ``self``/``cls``.
+
+    Falls back to ``"input"`` when no suitable parameter exists.
+    """
+    sig = inspect.signature(fn)
+    for name in sig.parameters:
+        if name in ("self", "cls"):
+            continue
+        return name
+    return "input"
+
+
+def _normalize(skill_or_fn: Any) -> Skill:
+    """Accept a ``Skill`` instance **or** a ``@skill``-decorated function and
+    return the underlying ``Skill``.  Raises ``TypeError`` otherwise.
+    """
+    if isinstance(skill_or_fn, Skill):
+        return skill_or_fn
+    if callable(skill_or_fn) and hasattr(skill_or_fn, "__skill__"):
+        return skill_or_fn.__skill__
+    raise TypeError(
+        f"Expected a Skill instance or @skill-decorated function, got {type(skill_or_fn).__name__}"
+    )
+
+
+def _wrap_as_parameters(skill_obj: Skill) -> dict:
+    """Ensure the skill's ``input_schema`` is a JSON Schema *object* suitable
+    for the ``parameters`` / ``input_schema`` field of a tool definition.
+
+    Three cases:
+    * ``None``            → ``{"type": "object", "properties": {}}``
+    * Already an object with ``"properties"`` → passthrough
+    * Simple type schema  → wrapped with the function's actual param name
+    """
+    schema = skill_obj.descriptor.input_schema
+
+    if schema is None:
+        return {"type": "object", "properties": {}}
+
+    if isinstance(schema, dict) and "properties" in schema:
+        return schema
+
+    # Simple type (e.g. {"type": "string"}) — wrap with param name.
+    param_name = _get_first_param_name(skill_obj.fn)
+    return {
+        "type": "object",
+        "properties": {param_name: schema},
+        "required": [param_name],
+    }
+
+
+def _serialize_result_value(result: SkillResult) -> str:
+    """Convert a ``SkillResult`` to a string for an API ``content`` field."""
+    if not result.success:
+        return result.error or "Unknown error"
+    if result.value is None:
+        return ""
+    try:
+        return json.dumps(result.value)
+    except (TypeError, ValueError):
+        return str(result.value)
+
+
+def _unwrap_single_param(skill_obj: Skill, args: dict) -> Union[dict, Any]:
+    """Handle parameter-name mismatch between a wrapped schema and the actual
+    function signature.
+
+    If *args* has exactly one key and the function has exactly one non-self/cls
+    parameter whose name differs from that key, remap to the correct name.
+    Otherwise return *args* unchanged.
+    """
+    if not isinstance(args, dict) or len(args) != 1:
+        return args
+
+    sig = inspect.signature(skill_obj.fn)
+    real_params = [n for n in sig.parameters if n not in ("self", "cls")]
+
+    if len(real_params) != 1:
+        return args
+
+    arg_key = next(iter(args))
+    real_name = real_params[0]
+
+    if arg_key != real_name:
+        return {real_name: args[arg_key]}
+    return args
+
+
+# ---------------------------------------------------------------------------
+# Tool definitions
+# ---------------------------------------------------------------------------
+
+
+def to_openai_tool(skill_or_fn: Any) -> dict:
+    """Convert a skill to an OpenAI function-calling tool definition."""
+    skill_obj = _normalize(skill_or_fn)
+    desc = skill_obj.descriptor
+    return {
+        "type": "function",
+        "function": {
+            "name": desc.name,
+            "description": desc.description,
+            "parameters": _wrap_as_parameters(skill_obj),
+        },
+    }
+
+
+def to_anthropic_tool(skill_or_fn: Any) -> dict:
+    """Convert a skill to an Anthropic tool definition."""
+    skill_obj = _normalize(skill_or_fn)
+    desc = skill_obj.descriptor
+    return {
+        "name": desc.name,
+        "description": desc.description,
+        "input_schema": _wrap_as_parameters(skill_obj),
+    }
+
+
+def to_openai_tools(skills: List[Any]) -> List[dict]:
+    """Batch-convert skills to OpenAI tool definitions."""
+    return [to_openai_tool(s) for s in skills]
+
+
+def to_anthropic_tools(skills: List[Any]) -> List[dict]:
+    """Batch-convert skills to Anthropic tool definitions."""
+    return [to_anthropic_tool(s) for s in skills]
+
+
+# ---------------------------------------------------------------------------
+# Result formatting
+# ---------------------------------------------------------------------------
+
+
+def format_result_openai(tool_call_id: str, result: SkillResult) -> dict:
+    """Format a ``SkillResult`` as an OpenAI tool-result message."""
+    return {
+        "role": "tool",
+        "tool_call_id": tool_call_id,
+        "content": _serialize_result_value(result),
+    }
+
+
+def format_result_anthropic(tool_use_id: str, result: SkillResult) -> dict:
+    """Format a ``SkillResult`` as an Anthropic tool-result content block."""
+    msg: Dict[str, Any] = {
+        "type": "tool_result",
+        "tool_use_id": tool_use_id,
+        "content": _serialize_result_value(result),
+    }
+    if not result.success:
+        msg["is_error"] = True
+    return msg
+
+
+# ---------------------------------------------------------------------------
+# Dispatch
+# ---------------------------------------------------------------------------
+
+
+def dispatch_openai(tool_call: dict, skills: Dict[str, Any]) -> dict:
+    """Look up a skill by name, invoke it, and return a formatted OpenAI
+    tool-result message.
+
+    *skills* maps tool names to ``Skill`` instances or ``@skill``-decorated
+    functions.
+    """
+    call_id = tool_call.get("id", "")
+    func = tool_call.get("function", {})
+    name = func.get("name", "")
+    raw_args = func.get("arguments", "{}")
+
+    # Unknown tool
+    if name not in skills:
+        error_result = SkillResult(error=f"Unknown tool: {name}", success=False)
+        return format_result_openai(call_id, error_result)
+
+    # Parse JSON arguments
+    try:
+        args = json.loads(raw_args)
+    except (json.JSONDecodeError, TypeError):
+        error_result = SkillResult(error=f"Invalid JSON arguments: {raw_args}", success=False)
+        return format_result_openai(call_id, error_result)
+
+    skill_obj = _normalize(skills[name])
+    args = _unwrap_single_param(skill_obj, args)
+
+    if isinstance(args, dict):
+        result = skill_obj.invoke(**args)
+    else:
+        result = skill_obj.invoke(args)
+
+    return format_result_openai(call_id, result)
+
+
+def dispatch_anthropic(tool_use: dict, skills: Dict[str, Any]) -> dict:
+    """Look up a skill by name, invoke it, and return a formatted Anthropic
+    tool-result content block.
+
+    *skills* maps tool names to ``Skill`` instances or ``@skill``-decorated
+    functions.
+    """
+    use_id = tool_use.get("id", "")
+    name = tool_use.get("name", "")
+    args = tool_use.get("input", {})
+
+    # Unknown tool
+    if name not in skills:
+        error_result = SkillResult(error=f"Unknown tool: {name}", success=False)
+        return format_result_anthropic(use_id, error_result)
+
+    skill_obj = _normalize(skills[name])
+    args = _unwrap_single_param(skill_obj, args)
+
+    if isinstance(args, dict):
+        result = skill_obj.invoke(**args)
+    else:
+        result = skill_obj.invoke(args)
+
+    return format_result_anthropic(use_id, result)
+
+
+async def async_dispatch_openai(tool_call: dict, skills: Dict[str, Any]) -> dict:
+    """Async variant of :func:`dispatch_openai`.
+
+    Uses :meth:`Skill.ainvoke` so async skills are properly awaited while
+    sync skills still work transparently.
+    """
+    call_id = tool_call.get("id", "")
+    func = tool_call.get("function", {})
+    name = func.get("name", "")
+    raw_args = func.get("arguments", "{}")
+
+    if name not in skills:
+        error_result = SkillResult(error=f"Unknown tool: {name}", success=False)
+        return format_result_openai(call_id, error_result)
+
+    try:
+        args = json.loads(raw_args)
+    except (json.JSONDecodeError, TypeError):
+        error_result = SkillResult(error=f"Invalid JSON arguments: {raw_args}", success=False)
+        return format_result_openai(call_id, error_result)
+
+    skill_obj = _normalize(skills[name])
+    args = _unwrap_single_param(skill_obj, args)
+
+    if isinstance(args, dict):
+        result = await skill_obj.ainvoke(**args)
+    else:
+        result = await skill_obj.ainvoke(args)
+
+    return format_result_openai(call_id, result)
+
+
+async def async_dispatch_anthropic(tool_use: dict, skills: Dict[str, Any]) -> dict:
+    """Async variant of :func:`dispatch_anthropic`.
+
+    Uses :meth:`Skill.ainvoke` so async skills are properly awaited while
+    sync skills still work transparently.
+    """
+    use_id = tool_use.get("id", "")
+    name = tool_use.get("name", "")
+    args = tool_use.get("input", {})
+
+    if name not in skills:
+        error_result = SkillResult(error=f"Unknown tool: {name}", success=False)
+        return format_result_anthropic(use_id, error_result)
+
+    skill_obj = _normalize(skills[name])
+    args = _unwrap_single_param(skill_obj, args)
+
+    if isinstance(args, dict):
+        result = await skill_obj.ainvoke(**args)
+    else:
+        result = await skill_obj.ainvoke(args)
+
+    return format_result_anthropic(use_id, result)
+
+
+__all__ = [
+    "to_openai_tool",
+    "to_anthropic_tool",
+    "to_openai_tools",
+    "to_anthropic_tools",
+    "format_result_openai",
+    "format_result_anthropic",
+    "dispatch_openai",
+    "dispatch_anthropic",
+    "async_dispatch_openai",
+    "async_dispatch_anthropic",
+]

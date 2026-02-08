@@ -1,5 +1,6 @@
 """Transformer implementations for different types of data transformations."""
 
+import asyncio
 from typing import Any, Dict, List, Optional, Union
 from logging import getLogger
 
@@ -211,4 +212,95 @@ class TukuyTransformer:
             raise result.error
         return result.value[prop['name']] if prop.get('name') else None
 
-__all__ = ['TukuyTransformer']
+class AsyncTukuyTransformer:
+    """Async counterpart of :class:`TukuyTransformer`.
+
+    Uses the same :class:`PluginRegistry` and built-in plugins.  The
+    :meth:`transform` method is ``async`` — it awaits async transformers
+    and calls sync ones normally.
+    """
+
+    def __init__(self):
+        self.registry = PluginRegistry()
+        self._load_builtin_plugins()
+
+    def _load_builtin_plugins(self):
+        for name, plugin_class in BUILTIN_PLUGINS.items():
+            try:
+                plugin = plugin_class()
+                self.registry.register(plugin)
+            except Exception as e:
+                logger.error(f"Failed to load plugin {name}: {str(e)}")
+
+    def register_plugin(self, plugin):
+        self.registry.register(plugin)
+
+    async def async_register_plugin(self, plugin):
+        """Register a plugin using the async lifecycle."""
+        await self.registry.async_register(plugin)
+
+    def unregister_plugin(self, name: str):
+        self.registry.unregister(name)
+
+    async def async_unregister_plugin(self, name: str):
+        """Unregister a plugin using the async lifecycle."""
+        await self.registry.async_unregister(name)
+
+    async def transform(self, value: Any, transforms: List[Union[str, Dict[str, Any]]]) -> Any:
+        """Async version of :meth:`TukuyTransformer.transform`.
+
+        Each step is awaited if it returns a coroutine; otherwise it is
+        consumed synchronously.  This allows mixing sync and async
+        transformers in the same chain.
+        """
+        from ..exceptions import ParseError, ValidationError
+
+        context: Dict[str, Any] = {}
+        current_value = value
+
+        for transform_spec in transforms:
+            if current_value is None:
+                break
+
+            if isinstance(transform_spec, dict):
+                func_name = transform_spec.get('function')
+                params = {k: v for k, v in transform_spec.items() if k != 'function'}
+            else:
+                func_name = transform_spec
+                params = {}
+
+            factory = self.registry.get_transformer(func_name)
+            if not factory:
+                raise ValidationError(f"Unknown transformer: {func_name}")
+
+            transformer = factory(params)
+
+            try:
+                result = transformer.transform(current_value, context)
+                if asyncio.iscoroutine(result):
+                    result = await result
+
+                if result.failed:
+                    error = result.error
+                    if func_name == "json_parse":
+                        if error.__class__.__name__ == "ValidationError":
+                            raise ValidationError(str(error), current_value)
+                        if params.get('strict', True) and error.__class__.__name__ == "ParseError":
+                            raise ParseError(str(error), current_value)
+                    raise error
+                current_value = result.value
+
+            except (ValidationError, ParseError):
+                raise
+            except Exception as e:
+                if isinstance(e, TransformationError):
+                    raise e
+                raise TransformationError(
+                    f"Transformation '{func_name}' failed: {str(e)}",
+                    current_value,
+                )
+
+        return current_value
+
+
+__all__ = ['TukuyTransformer', 'AsyncTukuyTransformer']

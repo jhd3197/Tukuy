@@ -1,5 +1,6 @@
 """Skill contract system for Tukuy — declared-upfront skill descriptors, results, and invocation."""
 
+import inspect
 import time
 from dataclasses import dataclass, field
 from typing import (
@@ -16,6 +17,34 @@ from typing import (
 from .types import TransformResult
 
 R = TypeVar("R")
+
+
+# ---------------------------------------------------------------------------
+# Context-injection helpers
+# ---------------------------------------------------------------------------
+
+def _has_context_param(fn: Callable) -> Optional[str]:
+    """Return the parameter name annotated as ``SkillContext``, or *None*.
+
+    We check by annotation name string to avoid a hard circular import
+    of ``context.py`` at module level.
+    """
+    try:
+        sig = inspect.signature(fn)
+    except (ValueError, TypeError):
+        return None
+
+    for name, param in sig.parameters.items():
+        if name in ("self", "cls"):
+            continue
+        ann = param.annotation
+        if ann is inspect.Parameter.empty:
+            continue
+        # Check by class identity (if already imported) or name string
+        ann_name = getattr(ann, "__name__", None) or getattr(ann, "__qualname__", str(ann))
+        if ann_name == "SkillContext":
+            return name
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -64,6 +93,49 @@ def _resolve_schema(schema: Any) -> Optional[Dict[str, Any]]:
         f"Cannot resolve schema from {schema!r}. "
         "Expected None, dict, Python type (str/int/…), or Pydantic model class."
     )
+
+
+# ---------------------------------------------------------------------------
+# Schema inference from function signatures
+# ---------------------------------------------------------------------------
+
+
+def _infer_schemas(fn: Callable) -> tuple:
+    """Infer (input_schema, output_schema) from a function's type annotations.
+
+    Skips ``self``, ``cls``, and ``SkillContext`` parameters by name /
+    annotation.  Returns ``None`` for any annotation that
+    ``_resolve_schema`` cannot handle (complex generics, etc.).
+    """
+    sig = inspect.signature(fn)
+
+    # --- input schema: first non-self/cls/context parameter's annotation ---
+    input_schema = None
+    for param_name, param in sig.parameters.items():
+        if param_name in ("self", "cls"):
+            continue
+        # Skip SkillContext parameters
+        ann = param.annotation
+        if ann is not inspect.Parameter.empty:
+            ann_name = getattr(ann, "__name__", None) or getattr(ann, "__qualname__", str(ann))
+            if ann_name == "SkillContext":
+                continue
+        if ann is not inspect.Parameter.empty:
+            try:
+                input_schema = _resolve_schema(ann)
+            except (TypeError, Exception):
+                input_schema = None
+        break  # only consider the first eligible parameter
+
+    # --- output schema: return annotation ----------------------------------
+    output_schema = None
+    if sig.return_annotation is not inspect.Signature.empty:
+        try:
+            output_schema = _resolve_schema(sig.return_annotation)
+        except (TypeError, Exception):
+            output_schema = None
+
+    return (input_schema, output_schema)
 
 
 # ---------------------------------------------------------------------------
@@ -226,17 +298,72 @@ class SkillResult(Generic[R]):
 
 @dataclass
 class Skill:
-    """Binds a :class:`SkillDescriptor` to a callable and provides ``invoke()``."""
+    """Binds a :class:`SkillDescriptor` to a callable and provides ``invoke()``.
+
+    When the wrapped function has a parameter annotated as
+    :class:`~tukuy.context.SkillContext`, it will be automatically injected
+    if a ``context`` keyword argument is passed to :meth:`invoke` /
+    :meth:`ainvoke`.
+    """
 
     descriptor: SkillDescriptor
     fn: Callable
+
+    # Cached on first call
+    _ctx_param: Optional[str] = field(default=None, init=False, repr=False)
+    _ctx_param_checked: bool = field(default=False, init=False, repr=False)
+
+    @property
+    def _context_param_name(self) -> Optional[str]:
+        """Lazily resolve whether ``fn`` expects a SkillContext parameter."""
+        if not self._ctx_param_checked:
+            self._ctx_param = _has_context_param(self.fn)
+            self._ctx_param_checked = True
+        return self._ctx_param
+
+    def _inject_context(self, args: tuple, kwargs: dict) -> tuple:
+        """If the function accepts a SkillContext, inject it from *kwargs*.
+
+        The caller passes ``context=<SkillContext>`` as an extra kwarg.
+        We pop it and inject it under the correct parameter name.
+        Returns ``(args, kwargs)`` — possibly mutated.
+        """
+        ctx = kwargs.pop("context", None)
+        param_name = self._context_param_name
+        if param_name is not None and ctx is not None:
+            kwargs[param_name] = ctx
+        return args, kwargs
 
     def invoke(self, *args: Any, **kwargs: Any) -> SkillResult:
         """Invoke the skill, timing execution and catching exceptions.
 
         If the callable returns a ``TransformResult``, it is automatically
         lifted into a ``SkillResult``.
+
+        Pass ``context=<SkillContext>`` to provide a context instance.  It
+        will be injected into the function if it has a matching parameter.
+
+        Pass ``policy=<SafetyPolicy>`` to validate against a specific policy.
+        If not provided, the active policy from :func:`~tukuy.safety.get_policy`
+        is used.  If no policy is active, the skill runs unrestricted.
         """
+        # Safety enforcement
+        policy = kwargs.pop("policy", None)
+        if policy is None:
+            from .safety import get_policy
+            policy = get_policy()
+        if policy is not None:
+            from .safety import SafetyError
+            violations = policy.validate(self.descriptor)
+            if violations:
+                return SkillResult(
+                    error=str(SafetyError(violations)),
+                    success=False,
+                    retryable=False,
+                    metadata={"safety_violations": [str(v) for v in violations]},
+                )
+
+        args, kwargs = self._inject_context(args, kwargs)
         start = time.perf_counter()
         try:
             raw = self.fn(*args, **kwargs)
@@ -257,10 +384,142 @@ class Skill:
                 retryable=self.descriptor.idempotent,
             )
 
+    async def ainvoke(self, *args: Any, **kwargs: Any) -> SkillResult:
+        """Async version of :meth:`invoke`.
+
+        If the wrapped callable is a coroutine function its result is awaited;
+        otherwise it is called synchronously (so sync skills work with
+        ``ainvoke`` too).
+
+        Pass ``context=<SkillContext>`` to provide a context instance.
+
+        Pass ``policy=<SafetyPolicy>`` to validate against a specific policy.
+        If not provided, the active policy from :func:`~tukuy.safety.get_policy`
+        is used.
+        """
+        # Safety enforcement
+        policy = kwargs.pop("policy", None)
+        if policy is None:
+            from .safety import get_policy
+            policy = get_policy()
+        if policy is not None:
+            from .safety import SafetyError
+            violations = policy.validate(self.descriptor)
+            if violations:
+                return SkillResult(
+                    error=str(SafetyError(violations)),
+                    success=False,
+                    retryable=False,
+                    metadata={"safety_violations": [str(v) for v in violations]},
+                )
+
+        args, kwargs = self._inject_context(args, kwargs)
+        start = time.perf_counter()
+        try:
+            raw = self.fn(*args, **kwargs)
+            if inspect.isawaitable(raw):
+                raw = await raw
+            elapsed_ms = (time.perf_counter() - start) * 1000
+
+            if isinstance(raw, TransformResult):
+                result = SkillResult.from_transform_result(raw)
+                result.duration_ms = elapsed_ms
+                return result
+
+            return SkillResult(value=raw, success=True, duration_ms=elapsed_ms)
+        except Exception as exc:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            return SkillResult(
+                error=str(exc),
+                success=False,
+                duration_ms=elapsed_ms,
+                retryable=self.descriptor.idempotent,
+            )
+
+
+# ---------------------------------------------------------------------------
+# @skill decorator
+# ---------------------------------------------------------------------------
+
+
+def skill(
+    fn=None,
+    *,
+    name=None,
+    description=None,
+    version="0.1.0",
+    input_schema=None,
+    output_schema=None,
+    category="general",
+    tags=None,
+    examples=None,
+    is_async=None,
+    estimated_latency_ms=None,
+    idempotent=False,
+    side_effects=False,
+    required_imports=None,
+    requires_network=False,
+    requires_filesystem=False,
+):
+    """Decorator that turns a function into a skill.
+
+    Supports three calling conventions::
+
+        @skill
+        def my_fn(x: int) -> str: ...
+
+        @skill()
+        def my_fn(x: int) -> str: ...
+
+        @skill(name="custom", tags=["text"])
+        def my_fn(x: int) -> str: ...
+
+    The decorated function remains directly callable.  A ``Skill`` instance is
+    attached as ``fn.__skill__``.
+    """
+
+    def _attach(func):
+        resolved_name = name if name is not None else func.__name__
+        resolved_description = description if description is not None else (func.__doc__ or "").strip()
+        resolved_is_async = is_async if is_async is not None else inspect.iscoroutinefunction(func)
+
+        inferred_input, inferred_output = _infer_schemas(func)
+        resolved_input_schema = input_schema if input_schema is not None else inferred_input
+        resolved_output_schema = output_schema if output_schema is not None else inferred_output
+
+        descriptor = SkillDescriptor(
+            name=resolved_name,
+            description=resolved_description,
+            version=version,
+            input_schema=resolved_input_schema,
+            output_schema=resolved_output_schema,
+            category=category,
+            tags=tags if tags is not None else [],
+            examples=examples if examples is not None else [],
+            is_async=resolved_is_async,
+            estimated_latency_ms=estimated_latency_ms,
+            idempotent=idempotent,
+            side_effects=side_effects,
+            required_imports=required_imports if required_imports is not None else [],
+            requires_network=requires_network,
+            requires_filesystem=requires_filesystem,
+        )
+
+        func.__skill__ = Skill(descriptor=descriptor, fn=func)
+        return func
+
+    if fn is not None:
+        # Bare @skill usage
+        return _attach(fn)
+
+    # @skill() or @skill(name=...) usage
+    return _attach
+
 
 __all__ = [
     "SkillExample",
     "SkillDescriptor",
     "SkillResult",
     "Skill",
+    "skill",
 ]

@@ -1,90 +1,306 @@
 # 🌀 Tukuy
 
-A flexible data transformation library with a plugin system for Python.
+A portable agent skills library and data transformation toolkit for Python.
 
-## 🚀 Overview
+Tukuy (meaning "to transform" or "to become" in Quechua) is a cross-platform skills layer that any Python agent framework can use. It provides typed skill descriptors, agent-framework bridges (OpenAI, Anthropic), async-first execution, smart composition, and runtime safety enforcement — all built on top of a proven plugin-based transformation engine.
 
-Tukuy (meaning "to transform" or "to become" in Quechua) is a powerful and extensible data transformation library that makes it easy to manipulate, validate, and extract data from various formats. With its plugin architecture, Tukuy provides a unified interface for working with text, HTML, JSON, dates, numbers, and more.
-
-## ✨ Features
-
-- 🧩 **Plugin System**: Easily extend functionality with custom plugins
-- 🔄 **Chainable Transformers**: Compose multiple transformations in sequence
-- 🧪 **Type-safe Transformations**: With built-in validation
-- 🔍 **Pattern-based Data Extraction**: Extract structured data from HTML and JSON
-- 🛡️ **Error Handling**: Comprehensive error handling with detailed messages
-
-## 📦 Installation
+## Installation
 
 ```bash
 pip install tukuy
 ```
 
-## 🛠️ Basic Usage
+## Quick Start
+
+### Define a skill
+
+```python
+from tukuy import skill
+
+@skill(
+    name="parse_date",
+    description="Parse a date string into ISO format",
+    category="date",
+    tags=["parsing", "datetime"],
+)
+def parse_date(text: str, format: str = "auto") -> str:
+    """Parse date from text, return ISO 8601."""
+    from dateutil import parser
+    return parser.parse(text).isoformat()
+```
+
+The `@skill` decorator infers input/output schemas from type hints, detects async functions automatically, and attaches a `Skill` instance as `fn.__skill__`.
+
+### Invoke a skill
+
+```python
+result = parse_date.__skill__.invoke("January 15, 2025")
+print(result.value)      # "2025-01-15T00:00:00"
+print(result.success)    # True
+print(result.duration_ms) # 0.42
+```
+
+### Use with an agent framework
+
+```python
+from tukuy import to_openai_tools, to_anthropic_tools
+
+skills = [parse_date, extract_entities, summarize]
+
+# OpenAI function-calling format
+tools = to_openai_tools(skills)
+
+# Anthropic tool_use format
+tools = to_anthropic_tools(skills)
+```
+
+Dispatch tool calls back to skills:
+
+```python
+from tukuy import dispatch_openai, dispatch_anthropic
+
+# OpenAI
+result_msg = dispatch_openai(tool_call, skills)
+
+# Anthropic
+result_block = dispatch_anthropic(tool_use, skills)
+```
+
+---
+
+## Core Concepts
+
+### Skill Descriptors
+
+Every skill has a declared-upfront contract via `SkillDescriptor`:
+
+```python
+from tukuy import SkillDescriptor
+
+descriptor = SkillDescriptor(
+    name="web_scraper",
+    description="Scrape and extract text from a URL",
+    input_schema=str,
+    output_schema=str,
+    category="web",
+    tags=["scraping", "extraction"],
+    is_async=True,
+    requires_network=True,
+    required_imports=["aiohttp", "beautifulsoup4"],
+    idempotent=True,
+    side_effects=False,
+)
+```
+
+Descriptors carry identity, typed I/O schemas, discovery metadata, operational hints, and safety declarations — everything an agent framework needs to discover and invoke a skill.
+
+### Async Support
+
+Skills work with both sync and async functions:
+
+```python
+@skill(name="fetch_page", requires_network=True)
+async def fetch_page(url: str) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            return await resp.text()
+
+# Async invocation
+result = await fetch_page.__skill__.ainvoke("https://example.com")
+```
+
+Sync skills also work with `ainvoke()` — they're called normally without blocking the event loop.
+
+### Composition
+
+Chain, branch, and fan-out skills with `Chain`, `Branch`, and `Parallel`:
+
+```python
+from tukuy import Chain, branch, parallel
+
+# Sequential pipeline
+chain = Chain(["strip", "lowercase", parse_date])
+result = chain.run("  January 15, 2025  ")
+
+# Conditional branching
+chain = Chain([
+    "strip",
+    branch(
+        on_match=lambda v: "@" in v,
+        true_path=["email_validator"],
+        false_path=["url_validator"],
+    ),
+])
+
+# Parallel fan-out with merge
+chain = Chain([
+    parallel(
+        steps=["extract_dates", "extract_emails", "extract_phones"],
+        merge="dict",  # {"extract_dates": [...], "extract_emails": [...], ...}
+    ),
+])
+
+# Async execution with asyncio.gather for parallel steps
+result = await chain.arun(input_text)
+```
+
+Steps can be transformer names (strings), parametrized transforms (dicts), `Skill` instances, `@skill`-decorated functions, plain callables, or nested `Chain` objects.
+
+### Context
+
+Skills share state through a typed, scoped `SkillContext`:
+
+```python
+from tukuy import skill, SkillContext
+
+@skill(name="extract_entities")
+def extract_entities(text: str, ctx: SkillContext) -> dict:
+    entities = do_extraction(text)
+    ctx.set("last_entities", entities)
+    return entities
+
+@skill(name="format_entities")
+def format_entities(ctx: SkillContext) -> str:
+    entities = ctx.get("last_entities")
+    return format_them(entities)
+```
+
+Context supports namespaced scoping (for parallel branches), parent-child delegation, snapshot/merge, and bridging to plain dicts.
+
+### Safety Policy
+
+Each skill declares what resources it needs. The runtime enforces these declarations against an active policy:
+
+```python
+from tukuy import SafetyPolicy, set_policy
+
+# Define what the environment allows
+policy = SafetyPolicy(
+    allowed_imports={"json", "re", "datetime"},
+    blocked_imports={"os", "subprocess"},
+    allow_network=False,
+    allow_filesystem=False,
+)
+
+# Activate globally (async-safe via contextvars)
+set_policy(policy)
+
+# Skills that violate the policy are blocked before execution
+@skill(name="web_scraper", requires_network=True)
+async def web_scraper(url: str) -> str: ...
+
+result = web_scraper.__skill__.invoke("https://example.com")
+# result.success == False
+# result.error == "Safety policy violated: Skill requires network access but policy denies it"
+```
+
+Convenience constructors for common scenarios:
+
+```python
+SafetyPolicy.restrictive()    # No imports, no network, no filesystem
+SafetyPolicy.permissive()     # Everything allowed
+SafetyPolicy.network_only()   # Network yes, filesystem no
+SafetyPolicy.filesystem_only() # Filesystem yes, network no
+```
+
+Policies can be exported/imported as sandbox configurations for integration with external sandbox runtimes:
+
+```python
+config = policy.to_sandbox_config()
+# {"allowed_imports": ["json", "re"], "network": False, "filesystem": False}
+
+policy = SafetyPolicy.from_sandbox_config(config)
+```
+
+---
+
+## Data Transformations
+
+Tukuy includes a full transformation engine with six built-in plugins. This is the foundation that the skills layer is built on.
 
 ```python
 from tukuy import TukuyTransformer
 
-# Create transformer
-TUKUY = TukuyTransformer()
+t = TukuyTransformer()
 
-# Basic text transformation
-text = " Hello World! "
-result = TUKUY.transform(text, [
+# Text
+t.transform("  Hello World!  ", ["strip", "lowercase"])
+# "hello world!"
+
+# HTML
+t.transform("<div>Hello <b>World</b>!</div>", ["strip_html_tags", "lowercase"])
+# "hello world!"
+
+# Chained with parameters
+t.transform("  Hello World!  ", [
     "strip",
     "lowercase",
-    {"function": "truncate", "length": 5}
+    {"function": "truncate", "length": 5},
 ])
-print(result)  # "hello..."
-
-# HTML transformation
-html = "<div>Hello <b>World</b>!</div>"
-result = TUKUY.transform(html, [
-    "strip_html_tags",
-    "lowercase"
-])
-print(result)  # "hello world!"
-
-# Date transformation
-date_str = "2023-01-01"
-age = TUKUY.transform(date_str, [
-    {"function": "age_calc"}
-])
-print(age)  # 1
-
-# Validation
-email = "test@example.com"
-valid = TUKUY.transform(email, ["email_validator"])
-print(valid)  # "test@example.com" or None if invalid
+# "hello..."
 ```
 
-## 🔍 Pattern-based Extraction
+### Built-in Plugins
 
-Tukuy provides powerful pattern-based extraction capabilities for both HTML and JSON data.
+**Text** — `strip`, `lowercase`, `uppercase`, `truncate`, `replace`, `regex_replace`, `split`, `join`, `normalize`
 
-### 🌐 HTML Extraction
+**HTML** — `strip_html_tags`, `extract_text`, `select`, `extract_links`, `extract_tables`, `clean_html`
+
+**JSON** — `parse_json`, `stringify`, `extract`, `flatten`, `merge`, `validate_schema`
+
+**Date** — `parse_date`, `format_date`, `age_calc`, `add_days`, `diff_days`, `is_weekend`
+
+**Numerical** — `round`, `format_number`, `to_currency`, `percentage`, `math_eval`, `scale`, `statistics`
+
+**Validation** — `email_validator`, `url_validator`, `phone_validator`, `length_validator`, `range_validator`, `regex_validator`, `type_validator`
+
+### Custom Plugins
+
+Extend Tukuy with your own transformer plugins:
+
+```python
+from tukuy import TransformerPlugin
+from tukuy.base import ChainableTransformer
+
+class ReverseTransformer(ChainableTransformer):
+    def validate(self, value):
+        return isinstance(value, str)
+
+    def _transform(self, value, context=None):
+        return value[::-1]
+
+class MyPlugin(TransformerPlugin):
+    def __init__(self):
+        super().__init__("my_plugin")
+
+    @property
+    def transformers(self):
+        return {"reverse": lambda _: ReverseTransformer("reverse")}
+
+t = TukuyTransformer()
+t.register_plugin(MyPlugin())
+t.transform("hello", ["reverse"])  # "olleh"
+```
+
+Plugins support lifecycle hooks (`initialize()` / `cleanup()`) and can expose skills alongside transformers via the `skills` property.
+
+---
+
+## Pattern-based Extraction
+
+### HTML
 
 ```python
 pattern = {
     "properties": [
-        {
-            "name": "title",
-            "selector": "h1",
-            "transform": ["strip", "lowercase"]
-        },
-        {
-            "name": "links",
-            "selector": "a",
-            "attribute": "href",
-            "type": "array"
-        }
+        {"name": "title", "selector": "h1", "transform": ["strip", "lowercase"]},
+        {"name": "links", "selector": "a", "attribute": "href", "type": "array"},
     ]
 }
-
-data = TUKUY.extract_html_with_pattern(html, pattern)
+data = t.extract_html_with_pattern(html, pattern)
 ```
 
-### 📋 JSON Extraction
+### JSON
 
 ```python
 pattern = {
@@ -93,47 +309,23 @@ pattern = {
             "name": "user",
             "selector": "data.user",
             "properties": [
-                {
-                    "name": "name",
-                    "selector": "fullName",
-                    "transform": ["strip"]
-                }
-            ]
+                {"name": "name", "selector": "fullName", "transform": ["strip"]},
+            ],
         }
     ]
 }
-
-data = TUKUY.extract_json_with_pattern(json_str, pattern)
+data = t.extract_json_with_pattern(json_str, pattern)
 ```
 
-## 🚀 Use Cases
+---
 
-Tukuy is designed to handle a wide range of data transformation scenarios:
-
-- 🌐 **Web Scraping**: Extract structured data from HTML pages
-- 📊 **Data Cleaning**: Normalize and validate data from various sources
-- 🔄 **Format Conversion**: Transform data between different formats
-- 📝 **Text Processing**: Apply complex text transformations
-- 🔍 **Data Extraction**: Extract specific information from complex structures
-- ✅ **Validation**: Ensure data meets specific criteria
-
-## ⚡ Performance Tips
-
-- 🔗 **Chain Transformations**: Use chained transformations to avoid intermediate objects
-- 🧩 **Use Built-in Transformers**: Built-in transformers are optimized for performance
-- 🔍 **Be Specific with Selectors**: More specific selectors are faster to process
-- 🛠️ **Custom Transformers**: For performance-critical operations, create custom transformers
-- 📦 **Batch Processing**: Process data in batches for better performance
-
-## 🛡️ Error Handling
-
-Tukuy provides comprehensive error handling with detailed error messages:
+## Error Handling
 
 ```python
 from tukuy.exceptions import ValidationError, TransformationError, ParseError
 
 try:
-    result = TUKUY.transform(data, transformations)
+    result = t.transform(data, transformations)
 except ValidationError as e:
     print(f"Validation failed: {e}")
 except ParseError as e:
@@ -142,134 +334,35 @@ except TransformationError as e:
     print(f"Transformation failed: {e}")
 ```
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Here's how you can help:
+## Architecture
 
-1. 🍴 Fork the repository
-2. 🌿 Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. 💻 Make your changes
-4. ✅ Run tests with `pytest`
-5. 📝 Update documentation if needed
-6. 🔄 Commit your changes (`git commit -m 'Add amazing feature'`)
-7. 🚀 Push to the branch (`git push origin feature/amazing-feature`)
-8. 🔍 Open a Pull Request
-
-## 🧩 Plugin System Documentation
-
-Tukuy's plugin system is the core of its extensibility. Below is a comprehensive list of all available plugins and their features.
-
-### 📚 Built-in Plugins
-
-#### 📝 Text Plugin (`text`)
-- **Description**: Handles text manipulation and string operations
-- **Key Transformers**:
-  - `strip`: Remove leading/trailing whitespace
-  - `lowercase`: Convert text to lowercase
-  - `uppercase`: Convert text to uppercase
-  - `truncate`: Truncate text to specified length
-  - `replace`: Replace text patterns
-  - `regex_replace`: Replace using regular expressions
-  - `split`: Split text into array
-  - `join`: Join array into text
-  - `normalize`: Normalize text (remove diacritics)
-
-#### 🌐 HTML Plugin (`html`)
-- **Description**: Process and extract data from HTML content
-- **Key Transformers**:
-  - `strip_html_tags`: Remove HTML tags
-  - `extract_text`: Extract text content
-  - `select`: Extract content using CSS selectors
-  - `extract_links`: Get all links from HTML
-  - `extract_tables`: Extract tables to structured data
-  - `clean_html`: Sanitize HTML content
-
-#### 📅 Date Plugin (`date`)
-- **Description**: Handle date parsing, formatting, and calculations
-- **Key Transformers**:
-  - `parse_date`: Convert string to date object
-  - `format_date`: Format date to string
-  - `age_calc`: Calculate age from date
-  - `add_days`: Add days to date
-  - `diff_days`: Calculate days between dates
-  - `is_weekend`: Check if date is weekend
-  - `to_timezone`: Convert between timezones
-
-#### 🔢 Numerical Plugin (`numerical`)
-- **Description**: Mathematical operations and number formatting
-- **Key Transformers**:
-  - `round`: Round number to decimals
-  - `format_number`: Format with thousand separators
-  - `to_currency`: Format as currency
-  - `percentage`: Convert to percentage
-  - `math_eval`: Evaluate mathematical expressions
-  - `scale`: Scale number to range
-  - `statistics`: Calculate basic statistics
-
-#### ✅ Validation Plugin (`validation`)
-- **Description**: Data validation and verification
-- **Key Transformers**:
-  - `email_validator`: Validate email addresses
-  - `url_validator`: Validate URLs
-  - `phone_validator`: Validate phone numbers
-  - `length_validator`: Validate string length
-  - `range_validator`: Validate number ranges
-  - `regex_validator`: Validate against regex pattern
-  - `type_validator`: Validate data types
-
-#### 📋 JSON Plugin (`json`)
-- **Description**: JSON manipulation and extraction
-- **Key Transformers**:
-  - `parse_json`: Parse JSON string
-  - `stringify`: Convert to JSON string
-  - `extract`: Extract values using JSON path
-  - `flatten`: Flatten nested JSON
-  - `merge`: Merge multiple JSON objects
-  - `validate_schema`: Validate against JSON schema
-
-### 🔌 Creating Custom Plugins
-
-You can create custom plugins by extending the `TransformerPlugin` class:
-
-```python
-from tukuy.plugins import TransformerPlugin
-from tukuy.base import ChainableTransformer
-
-class ReverseTransformer(ChainableTransformer[str, str]):
-    def validate(self, value: str) -> bool:
-        return isinstance(value, str)
-    
-    def _transform(self, value: str, context=None) -> str:
-        return value[::-1]
-
-class MyPlugin(TransformerPlugin):
-    def __init__(self):
-        super().__init__("my_plugin")
-    
-    @property
-    def transformers(self):
-        return {
-            'reverse': lambda _: ReverseTransformer('reverse')
-        }
-
-# Usage
-TUKUY = TukuyTransformer()
-TUKUY.register_plugin(MyPlugin())
-
-result = TUKUY.transform("hello", ["reverse"])  # "olleh"
+```
+tukuy/
+    skill.py          Skill descriptors, @skill decorator, invoke/ainvoke
+    context.py        SkillContext with scoping, snapshot, merge
+    safety.py         SafetyPolicy, manifest validation, sandbox integration
+    bridges.py        OpenAI and Anthropic tool format bridges
+    chain.py          Chain, Branch, Parallel composition
+    async_base.py     Async transformer base classes
+    base.py           Sync transformer base classes
+    plugins/          Built-in plugins (text, html, json, date, numerical, validation)
+    core/             Registration, introspection, unified registry
+    transformers/     Transformer implementations
 ```
 
-### 🔄 Plugin Lifecycle
+## Contributing
 
-Plugins can implement `initialize()` and `cleanup()` methods for setup and teardown:
+Contributions are welcome.
 
-```python
-class MyPlugin(TransformerPlugin):
-    def initialize(self) -> None:
-        super().initialize()
-        # Load resources, connect to databases, etc.
-    
-    def cleanup(self) -> None:
-        super().cleanup()
-        # Close connections, free resources, etc.
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Make your changes
+4. Run tests with `pytest`
+5. Commit and push
+6. Open a Pull Request
+
+## License
+
+See [LICENSE](LICENSE) for details.
