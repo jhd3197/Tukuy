@@ -7,6 +7,13 @@ from .date import DateTransformersPlugin
 from .validation import ValidationTransformersPlugin
 from .numerical import NumericalTransformersPlugin
 from .json import JsonTransformersPlugin
+from .crypto import CryptoPlugin
+from .llm import LlmPlugin
+from .conversion import ConversionPlugin
+from .file_ops import FileOpsPlugin
+from .shell import ShellPlugin
+from .http import HttpPlugin
+from .web import WebPlugin
 
 # Built-in plugins
 BUILTIN_PLUGINS = {
@@ -16,6 +23,13 @@ BUILTIN_PLUGINS = {
     'validation': ValidationTransformersPlugin,
     'numerical': NumericalTransformersPlugin,
     'json': JsonTransformersPlugin,
+    'crypto': CryptoPlugin,
+    'llm': LlmPlugin,
+    'conversion': ConversionPlugin,
+    'file_ops': FileOpsPlugin,
+    'shell': ShellPlugin,
+    'http': HttpPlugin,
+    'web': WebPlugin,
 }
 
 __all__ = [
@@ -27,5 +41,12 @@ __all__ = [
     'ValidationTransformersPlugin',
     'NumericalTransformersPlugin',
     'JsonTransformersPlugin',
+    'CryptoPlugin',
+    'LlmPlugin',
+    'ConversionPlugin',
+    'FileOpsPlugin',
+    'ShellPlugin',
+    'HttpPlugin',
+    'WebPlugin',
     'BUILTIN_PLUGINS',
 ]

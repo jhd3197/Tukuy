@@ -1,0 +1,92 @@
+"""Shell execution plugin.
+
+Skills-only plugin providing shell command execution and which lookup.
+
+Pure stdlib — no external dependencies.
+Both skills declare ``requires_filesystem=True`` and ``requires_network=True``
+for SafetyPolicy enforcement.
+"""
+
+import shutil
+import subprocess
+from typing import Any, Dict, Optional
+
+from ...plugins.base import TransformerPlugin
+from ...skill import skill
+
+
+@skill(
+    name="shell_execute",
+    description="Execute a shell command with timeout, capturing stdout and stderr.",
+    category="shell",
+    tags=["shell", "exec"],
+    side_effects=True,
+    requires_filesystem=True,
+    requires_network=True,
+)
+def shell_execute(
+    command: str,
+    timeout: int = 30,
+    cwd: str = "",
+    shell: bool = True,
+) -> dict:
+    """Execute a shell command and return its output."""
+    kwargs: Dict[str, Any] = {
+        "capture_output": True,
+        "text": True,
+        "timeout": timeout,
+        "shell": shell,
+    }
+    if cwd:
+        kwargs["cwd"] = cwd
+
+    try:
+        result = subprocess.run(command, **kwargs)
+        return {
+            "command": command,
+            "returncode": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "success": result.returncode == 0,
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "command": command,
+            "returncode": -1,
+            "stdout": "",
+            "stderr": f"Command timed out after {timeout}s",
+            "success": False,
+        }
+
+
+@skill(
+    name="shell_which",
+    description="Find the full path of an executable (like Unix 'which').",
+    category="shell",
+    tags=["shell", "which"],
+    idempotent=True,
+    requires_filesystem=True,
+    requires_network=False,
+)
+def shell_which(name: str) -> dict:
+    """Locate an executable on PATH."""
+    path = shutil.which(name)
+    return {"name": name, "path": path, "found": path is not None}
+
+
+class ShellPlugin(TransformerPlugin):
+    """Plugin providing shell execution skills (no transformers)."""
+
+    def __init__(self):
+        super().__init__("shell")
+
+    @property
+    def transformers(self) -> Dict[str, callable]:
+        return {}
+
+    @property
+    def skills(self) -> Dict[str, Any]:
+        return {
+            "shell_execute": shell_execute.__skill__,
+            "shell_which": shell_which.__skill__,
+        }

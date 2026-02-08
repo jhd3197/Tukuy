@@ -4,6 +4,13 @@ from .transformers import TukuyTransformer, AsyncTukuyTransformer
 from .base import BaseTransformer, ChainableTransformer
 from .async_base import AsyncBaseTransformer, AsyncChainableTransformer, AsyncCompositeTransformer
 from .plugins.base import TransformerPlugin, PluginRegistry
+from .plugins.crypto import CryptoPlugin
+from .plugins.llm import LlmPlugin
+from .plugins.conversion import ConversionPlugin
+from .plugins.file_ops import FileOpsPlugin
+from .plugins.shell import ShellPlugin
+from .plugins.http import HttpPlugin
+from .plugins.web import WebPlugin
 from .exceptions import ValidationError, TransformationError
 from .types import TransformContext, TransformResult
 from .skill import SkillDescriptor, SkillExample, SkillResult, Skill, skill
@@ -87,4 +94,12 @@ __all__ = [
     'hot_reload',
     'get_plugin_info',
     'extract_metadata',
+    # New plugins
+    'CryptoPlugin',
+    'LlmPlugin',
+    'ConversionPlugin',
+    'FileOpsPlugin',
+    'ShellPlugin',
+    'HttpPlugin',
+    'WebPlugin',
 ]

@@ -31,14 +31,28 @@ html = [
     "beautifulsoup4>=4.9.0",
     "html5lib>=1.1",
 ]
+web = [
+    "httpx>=0.24.0",
+]
+http = [
+    "httpx>=0.24.0",
+]
+conversion = [
+    "pyyaml>=6.0",
+]
 all = [
     "beautifulsoup4>=4.9.0",
     "html5lib>=1.1",
+    "httpx>=0.24.0",
+    "pyyaml>=6.0",
 ]
 dev = [
     "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
     "beautifulsoup4>=4.9.0",
     "html5lib>=1.1",
+    "httpx>=0.24.0",
+    "pyyaml>=6.0",
 ]
 
 [project.urls]
