@@ -14,6 +14,11 @@ from .file_ops import FileOpsPlugin
 from .shell import ShellPlugin
 from .http import HttpPlugin
 from .web import WebPlugin
+from .code_extract import CodeExtractPlugin
+from .html_validate import HtmlValidatePlugin
+from .color import ColorPlugin
+from .minify import MinifyPlugin
+from .env import EnvPlugin
 
 # Built-in plugins
 BUILTIN_PLUGINS = {
@@ -30,6 +35,11 @@ BUILTIN_PLUGINS = {
     'shell': ShellPlugin,
     'http': HttpPlugin,
     'web': WebPlugin,
+    'code_extract': CodeExtractPlugin,
+    'html_validate': HtmlValidatePlugin,
+    'color': ColorPlugin,
+    'minify': MinifyPlugin,
+    'env': EnvPlugin,
 }
 
 __all__ = [
@@ -48,5 +58,10 @@ __all__ = [
     'ShellPlugin',
     'HttpPlugin',
     'WebPlugin',
+    'CodeExtractPlugin',
+    'HtmlValidatePlugin',
+    'ColorPlugin',
+    'MinifyPlugin',
+    'EnvPlugin',
     'BUILTIN_PLUGINS',
 ]

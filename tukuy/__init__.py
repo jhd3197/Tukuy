@@ -11,6 +11,11 @@ from .plugins.file_ops import FileOpsPlugin
 from .plugins.shell import ShellPlugin
 from .plugins.http import HttpPlugin
 from .plugins.web import WebPlugin
+from .plugins.code_extract import CodeExtractPlugin
+from .plugins.html_validate import HtmlValidatePlugin
+from .plugins.color import ColorPlugin
+from .plugins.minify import MinifyPlugin
+from .plugins.env import EnvPlugin
 from .exceptions import ValidationError, TransformationError
 from .types import TransformContext, TransformResult
 from .skill import SkillDescriptor, SkillExample, SkillResult, Skill, skill
@@ -102,4 +107,9 @@ __all__ = [
     'ShellPlugin',
     'HttpPlugin',
     'WebPlugin',
+    'CodeExtractPlugin',
+    'HtmlValidatePlugin',
+    'ColorPlugin',
+    'MinifyPlugin',
+    'EnvPlugin',
 ]
