@@ -43,6 +43,10 @@ from .core.registration import (
     extract_metadata
 )
 
+# Two-phase discovery & usage tracking
+from .core.unified import browse_tools, get_tool_details, search_tools
+from .core.usage import UsageTracker, get_usage_tracker
+
 __version__ = '0.1.0'
 
 __all__ = [
@@ -112,4 +116,10 @@ __all__ = [
     'ColorPlugin',
     'MinifyPlugin',
     'EnvPlugin',
+    # Two-phase discovery & usage tracking
+    'browse_tools',
+    'get_tool_details',
+    'search_tools',
+    'UsageTracker',
+    'get_usage_tracker',
 ]
