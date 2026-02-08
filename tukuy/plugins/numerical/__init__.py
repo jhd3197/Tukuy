@@ -1580,3 +1580,14 @@ class NumericalTransformersPlugin(TransformerPlugin):
     @property
     def transformers(self):
         return self._auto_transformers()
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="numerical",
+            display_name="Numerical",
+            description="Math operations, number formatting, statistics, and unit conversions.",
+            icon="calculator",
+            group="Data",
+        )

@@ -451,3 +451,14 @@ class JsonTransformersPlugin(TransformerPlugin):
         """Get the JSON transformers."""
         return self._auto_transformers()
 
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="json",
+            display_name="JSON",
+            description="Parse, extract, and validate JSON data.",
+            icon="braces",
+            group="Core",
+        )
+

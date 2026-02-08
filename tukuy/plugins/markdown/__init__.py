@@ -275,3 +275,14 @@ class MarkdownPlugin(TransformerPlugin):
                 max_line_length=params.get("max_line_length", 120),
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="markdown",
+            display_name="Markdown",
+            description="Extract frontmatter, headings, links, tables, and lint Markdown.",
+            icon="file-text",
+            group="Web",
+        )

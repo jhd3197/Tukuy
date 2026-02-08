@@ -13,7 +13,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -186,6 +186,10 @@ class DocxExtractMetadataTransformer(ChainableTransformer[str, dict]):
     idempotent=True,
     requires_filesystem=True,
     required_imports=["docx"],
+    display_name="Read Document",
+    icon="file-text",
+    risk_level=RiskLevel.SAFE,
+    group="Word",
 )
 def docx_read(path: str) -> dict:
     """Read a Word document."""
@@ -246,6 +250,10 @@ def docx_read(path: str) -> dict:
     side_effects=True,
     requires_filesystem=True,
     required_imports=["docx"],
+    display_name="Create Document",
+    icon="file-plus",
+    risk_level=RiskLevel.MODERATE,
+    group="Word",
 )
 def docx_write(
     path: str,
@@ -333,3 +341,15 @@ class DocxPlugin(TransformerPlugin):
             "docx_read": docx_read.__skill__,
             "docx_write": docx_write.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="docx",
+            display_name="Word",
+            description="Read and create Word documents with text, tables, and lists.",
+            icon="file-text",
+            group="Documents",
+            requires=PluginRequirements(filesystem=True, imports=["docx"]),
+        )

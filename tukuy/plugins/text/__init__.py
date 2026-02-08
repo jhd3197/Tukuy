@@ -765,3 +765,14 @@ class TextTransformersPlugin(TransformerPlugin):
             mapping=params.get('values', {}),
             default=params.get('default'))
         return result
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="text",
+            display_name="Text",
+            description="Strip, case-convert, slugify, truncate, regex, and other text transformations.",
+            icon="type",
+            group="Core",
+        )

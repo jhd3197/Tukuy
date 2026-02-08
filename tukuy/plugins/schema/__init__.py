@@ -323,3 +323,14 @@ class SchemaPlugin(TransformerPlugin):
             "infer_schema": lambda _: InferSchemaTransformer("infer_schema"),
             "schema_diff": lambda _: SchemaDiffTransformer("schema_diff"),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="schema",
+            display_name="Schema",
+            description="JSON Schema validation, inference, and comparison.",
+            icon="list-tree",
+            group="Core",
+        )

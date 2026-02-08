@@ -218,3 +218,14 @@ class DiffPlugin(TransformerPlugin):
             "apply_patch": lambda _: ApplyPatchTransformer("apply_patch"),
             "char_diff": lambda _: CharDiffTransformer("char_diff"),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="diff",
+            display_name="Diff",
+            description="Unified diffs, similarity scoring, fuzzy matching, and patch application.",
+            icon="git-compare",
+            group="Core",
+        )

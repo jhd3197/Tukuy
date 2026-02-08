@@ -15,7 +15,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -164,6 +164,10 @@ class XlsxToCsvTransformer(ChainableTransformer[str, str]):
     idempotent=True,
     requires_filesystem=True,
     required_imports=["openpyxl"],
+    display_name="Read Excel",
+    icon="table",
+    risk_level=RiskLevel.SAFE,
+    group="Excel",
 )
 def xlsx_read(
     path: str,
@@ -227,6 +231,10 @@ def xlsx_read(
     side_effects=True,
     requires_filesystem=True,
     required_imports=["openpyxl"],
+    display_name="Write Excel",
+    icon="table",
+    risk_level=RiskLevel.MODERATE,
+    group="Excel",
 )
 def xlsx_write(
     path: str,
@@ -283,6 +291,10 @@ def xlsx_write(
     idempotent=True,
     requires_filesystem=True,
     required_imports=["openpyxl"],
+    display_name="List Sheets",
+    icon="list",
+    risk_level=RiskLevel.SAFE,
+    group="Excel",
 )
 def xlsx_sheets(path: str) -> dict:
     """List sheets in an Excel file."""
@@ -342,3 +354,15 @@ class XlsxPlugin(TransformerPlugin):
             "xlsx_write": xlsx_write.__skill__,
             "xlsx_sheets": xlsx_sheets.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="xlsx",
+            display_name="Excel",
+            description="Read, write, and inspect Excel spreadsheet files.",
+            icon="table",
+            group="Documents",
+            requires=PluginRequirements(filesystem=True, imports=["openpyxl"]),
+        )

@@ -227,3 +227,14 @@ class PromptPlugin(TransformerPlugin):
                 delimiter=params.get("delimiter", "---"),
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="prompt",
+            display_name="Prompt Engineering",
+            description="Prompt templates, variable extraction, chaining, and token truncation.",
+            icon="message-square",
+            group="Code",
+        )

@@ -65,10 +65,12 @@ class SkillContext:
         *,
         parent: Optional["SkillContext"] = None,
         namespace: str = "",
+        config: Optional[Dict[str, Any]] = None,
     ) -> None:
         self._data: Dict[str, Any] = data if data is not None else {}
         self._parent = parent
         self._namespace = namespace
+        self._config: Dict[str, Any] = config if config is not None else {}
 
     # ------------------------------------------------------------------
     # Core get / set
@@ -145,7 +147,7 @@ class SkillContext:
         # Resolve nested namespaces: if this context already has a
         # namespace, concatenate them.
         full_ns = f"{self._namespace}.{namespace}" if self._namespace else namespace
-        return SkillContext(data=self._data, parent=self, namespace=full_ns)
+        return SkillContext(data=self._data, parent=self, namespace=full_ns, config=self._config)
 
     # ------------------------------------------------------------------
     # Snapshot / merge
@@ -187,6 +189,18 @@ class SkillContext:
     @property
     def parent(self) -> Optional["SkillContext"]:
         return self._parent
+
+    @property
+    def config(self) -> Dict[str, Any]:
+        """Skill configuration values.
+
+        Consumers populate this dict with per-skill config (timeouts, limits,
+        etc.) keyed by :class:`~tukuy.skill.ConfigParam` names.  Skills read
+        their config via ``context.config.get("timeout_seconds", 30)``.
+
+        Child scopes inherit the parent's config dict by reference.
+        """
+        return self._config
 
     def keys(self) -> Iterator[str]:
         """Iterate over all keys in the raw data store."""

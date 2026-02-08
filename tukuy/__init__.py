@@ -6,8 +6,16 @@ from .async_base import AsyncBaseTransformer, AsyncChainableTransformer
 from .plugins.base import TransformerPlugin, PluginRegistry, PluginSource
 from .exceptions import ValidationError, TransformationError
 from .types import TransformContext, TransformResult
-from .skill import SkillDescriptor, SkillExample, SkillResult, Skill, skill
+from .skill import (
+    RiskLevel, ConfigScope, ConfigParam,
+    SkillDescriptor, SkillExample, SkillResult, Skill, skill,
+)
 from .context import SkillContext
+from .manifest import PluginManifest, PluginRequirements
+from .availability import (
+    AvailabilityReason, SkillAvailability, PluginDiscoveryResult,
+    get_available_skills, discover_plugins,
+)
 from .bridges import (
     to_openai_tool, to_anthropic_tool,
     to_openai_tools, to_anthropic_tools,
@@ -46,12 +54,24 @@ __all__ = [
     'TransformContext',
     'TransformResult',
     # Skill system
+    'RiskLevel',
+    'ConfigScope',
+    'ConfigParam',
     'SkillDescriptor',
     'SkillExample',
     'SkillResult',
     'Skill',
     'skill',
     'SkillContext',
+    # Plugin manifest
+    'PluginManifest',
+    'PluginRequirements',
+    # Availability engine
+    'AvailabilityReason',
+    'SkillAvailability',
+    'PluginDiscoveryResult',
+    'get_available_skills',
+    'discover_plugins',
     # Agent bridges
     'to_openai_tool',
     'to_anthropic_tool',

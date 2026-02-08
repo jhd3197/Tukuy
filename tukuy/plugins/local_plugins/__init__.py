@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin, PluginRegistry, PluginSource
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -243,6 +243,10 @@ def _render_scaffold(name: str, plugin_type: str, description: str) -> str:
     category="local_plugins",
     tags=["local", "plugins", "spec", "creator"],
     idempotent=True,
+    display_name="Plugin Spec",
+    icon="file-code",
+    risk_level=RiskLevel.SAFE,
+    group="Local Plugins",
 )
 def local_spec() -> dict:
     """Return the complete plugin-creation specification."""
@@ -427,6 +431,10 @@ def local_spec() -> dict:
     tags=["local", "plugins", "scaffold", "creator"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Scaffold Plugin",
+    icon="plus-circle",
+    risk_level=RiskLevel.MODERATE,
+    group="Local Plugins",
 )
 def local_scaffold(
     name: str,
@@ -468,6 +476,10 @@ def local_scaffold(
     tags=["local", "plugins", "validate"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Validate Plugin",
+    icon="check-circle",
+    risk_level=RiskLevel.SAFE,
+    group="Local Plugins",
 )
 def local_validate(name: str) -> dict:
     """Validate the plugin at ``~/.tukuy/plugins/<name>/``."""
@@ -565,6 +577,10 @@ def local_validate(name: str) -> dict:
     tags=["local", "plugins", "discover"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Discover Plugins",
+    icon="search",
+    risk_level=RiskLevel.SAFE,
+    group="Local Plugins",
 )
 def local_discover() -> dict:
     """Discover local plugins without importing them."""
@@ -599,6 +615,10 @@ def local_discover() -> dict:
     tags=["local", "plugins", "load"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Load Plugin",
+    icon="upload",
+    risk_level=RiskLevel.DANGEROUS,
+    group="Local Plugins",
 )
 def local_load(name: str) -> dict:
     """Load the plugin at ``~/.tukuy/plugins/<name>/`` into the registry."""
@@ -668,6 +688,10 @@ def local_load(name: str) -> dict:
     category="local_plugins",
     tags=["local", "plugins", "unload"],
     side_effects=True,
+    display_name="Unload Plugin",
+    icon="x-circle",
+    risk_level=RiskLevel.MODERATE,
+    group="Local Plugins",
 )
 def local_unload(name: str) -> dict:
     """Unload the local plugin *name* from the registry."""
@@ -693,6 +717,10 @@ def local_unload(name: str) -> dict:
     category="local_plugins",
     tags=["local", "plugins", "list"],
     idempotent=True,
+    display_name="List Plugins",
+    icon="list",
+    risk_level=RiskLevel.SAFE,
+    group="Local Plugins",
 )
 def local_list() -> dict:
     """Return all loaded local plugins with transformer/skill counts."""
@@ -760,3 +788,14 @@ class LocalPluginsPlugin(TransformerPlugin):
             "local_unload": local_unload.__skill__,
             "local_list": local_list.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="local_plugins",
+            display_name="Local Plugins",
+            description="Create, discover, load, and manage custom local Tukuy plugins.",
+            icon="puzzle",
+            group="Extensibility",
+        )

@@ -16,7 +16,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -134,6 +134,10 @@ class QueryBuilderTransformer(ChainableTransformer[dict, str]):
     tags=["sql", "sqlite", "database"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="SQL Query",
+    icon="database",
+    risk_level=RiskLevel.SAFE,
+    group="SQL",
 )
 def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dict:
     """Execute a read-only query on a SQLite database."""
@@ -168,6 +172,10 @@ def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dic
     tags=["sql", "sqlite", "database"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="SQL Execute",
+    icon="database",
+    risk_level=RiskLevel.DANGEROUS,
+    group="SQL",
 )
 def sqlite_execute(db_path: str, sql: str, params: Optional[list] = None) -> dict:
     """Execute a write SQL statement on a SQLite database."""
@@ -195,6 +203,10 @@ def sqlite_execute(db_path: str, sql: str, params: Optional[list] = None) -> dic
     tags=["sql", "sqlite", "database"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="List Tables",
+    icon="list",
+    risk_level=RiskLevel.SAFE,
+    group="SQL",
 )
 def sqlite_tables(db_path: str) -> dict:
     """List tables in a SQLite database."""
@@ -239,3 +251,15 @@ class SqlPlugin(TransformerPlugin):
             "sqlite_execute": sqlite_execute.__skill__,
             "sqlite_tables": sqlite_tables.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="sql",
+            display_name="SQL",
+            description="SQLite queries, write operations, schema inspection, and query building.",
+            icon="database",
+            group="Data",
+            requires=PluginRequirements(filesystem=True),
+        )

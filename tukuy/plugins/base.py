@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 from logging import getLogger
 
 if TYPE_CHECKING:
+    from ..manifest import PluginManifest
     from ..skill import Skill
 
 logger = getLogger(__name__)
@@ -108,6 +109,18 @@ class TransformerPlugin(ABC):
             Defaults to an empty dict for backward compatibility.
         """
         return {}
+
+    @property
+    def manifest(self) -> "PluginManifest":
+        """Declarative metadata about this plugin for discovery and UI.
+
+        The default implementation auto-generates a minimal manifest from the
+        plugin ``name``.  Subclasses can override to provide richer metadata
+        (icons, colors, groups, requirements).
+        """
+        from ..manifest import PluginManifest
+
+        return PluginManifest(name=self.name)
 
     def _auto_transformers(self) -> Dict[str, callable]:
         """Build a ``{name: factory}`` dict from ``@register_transformer``-decorated classes.

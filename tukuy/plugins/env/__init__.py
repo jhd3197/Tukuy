@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 def _parse_env_content(content: str) -> Dict[str, str]:
@@ -54,6 +54,10 @@ def _mask_value(value: str, value_type: str = "api_key") -> str:
     tags=["env", "config"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Read Env",
+    icon="file-search",
+    risk_level=RiskLevel.SAFE,
+    group="Environment",
 )
 def env_read(path: str = ".env", mask: bool = False) -> dict:
     """Read a .env file and return its contents."""
@@ -81,6 +85,10 @@ def env_read(path: str = ".env", mask: bool = False) -> dict:
     tags=["env", "config"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Write Env",
+    icon="file-pen",
+    risk_level=RiskLevel.MODERATE,
+    group="Environment",
 )
 def env_write(key: str, value: str, path: str = ".env") -> dict:
     """Set a key=value pair in a .env file."""
@@ -111,6 +119,10 @@ def env_write(key: str, value: str, path: str = ".env") -> dict:
     tags=["env", "config"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Remove Env Key",
+    icon="file-x",
+    risk_level=RiskLevel.MODERATE,
+    group="Environment",
 )
 def env_remove(key: str, path: str = ".env") -> dict:
     """Comment out a key in a .env file and remove from environment."""
@@ -135,6 +147,10 @@ def env_remove(key: str, path: str = ".env") -> dict:
     tags=["env", "config"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="List Env Keys",
+    icon="list",
+    risk_level=RiskLevel.SAFE,
+    group="Environment",
 )
 def env_list(path: str = ".env") -> dict:
     """List all keys defined in a .env file with masked values."""
@@ -176,3 +192,15 @@ class EnvPlugin(TransformerPlugin):
             "env_remove": env_remove.__skill__,
             "env_list": env_list.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="env",
+            display_name="Environment",
+            description="Read, write, and manage .env configuration files.",
+            icon="settings",
+            group="Core",
+            requires=PluginRequirements(filesystem=True),
+        )

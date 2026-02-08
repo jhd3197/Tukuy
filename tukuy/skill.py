@@ -14,9 +14,86 @@ from typing import (
     TypeVar,
 )
 
+from enum import Enum
+
 from .types import TransformResult
 
 R = TypeVar("R")
+
+
+# ---------------------------------------------------------------------------
+# Enums for UI metadata and config
+# ---------------------------------------------------------------------------
+
+class RiskLevel(str, Enum):
+    """Risk level for a skill, used by frontends to display risk badges.
+
+    ``AUTO`` (the default) derives the level from safety flags:
+    - ``idempotent=True`` and ``side_effects=False`` → ``SAFE``
+    - ``side_effects=True`` → ``MODERATE``
+    - ``side_effects=True`` and ``(requires_filesystem or requires_network)`` → ``DANGEROUS``
+    """
+
+    AUTO = "auto"
+    SAFE = "safe"
+    MODERATE = "moderate"
+    DANGEROUS = "dangerous"
+    CRITICAL = "critical"
+
+
+class ConfigScope(str, Enum):
+    """When a config parameter can be changed."""
+
+    GLOBAL = "global"
+    PER_BOT = "per_bot"
+    PER_INVOCATION = "per_call"
+
+
+# ---------------------------------------------------------------------------
+# ConfigParam
+# ---------------------------------------------------------------------------
+
+@dataclass
+class ConfigParam:
+    """A configurable parameter for a skill.
+
+    Frontends can use this metadata to auto-generate settings UIs
+    (sliders, inputs, toggles) without hardcoding per-tool config dialogs.
+    """
+
+    name: str
+    display_name: Optional[str] = None
+    description: Optional[str] = None
+    type: str = "string"  # "number", "string", "boolean", "select"
+    default: Any = None
+    min: Optional[float] = None
+    max: Optional[float] = None
+    step: Optional[float] = None
+    options: Optional[List[str]] = None  # For type="select"
+    unit: Optional[str] = None  # "seconds", "bytes", "KB"
+    scope: ConfigScope = ConfigScope.PER_BOT
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize to a plain dict, omitting None values."""
+        d: Dict[str, Any] = {"name": self.name, "type": self.type}
+        if self.display_name is not None:
+            d["displayName"] = self.display_name
+        if self.description is not None:
+            d["description"] = self.description
+        if self.default is not None:
+            d["default"] = self.default
+        if self.min is not None:
+            d["min"] = self.min
+        if self.max is not None:
+            d["max"] = self.max
+        if self.step is not None:
+            d["step"] = self.step
+        if self.options is not None:
+            d["options"] = self.options
+        if self.unit is not None:
+            d["unit"] = self.unit
+        d["scope"] = self.scope.value
+        return d
 
 
 # ---------------------------------------------------------------------------
@@ -195,6 +272,17 @@ class SkillDescriptor:
     requires_network: bool = False
     requires_filesystem: bool = False
 
+    # UI metadata
+    display_name: Optional[str] = None
+    icon: Optional[str] = None
+    risk_level: RiskLevel = RiskLevel.AUTO
+    group: Optional[str] = None
+    hidden: bool = False
+    deprecated: Optional[str] = None
+
+    # Configurable parameters
+    config_params: List[ConfigParam] = field(default_factory=list)
+
     def __post_init__(self) -> None:
         # Resolve schemas to JSON Schema dicts
         self.input_schema = _resolve_schema(self.input_schema)
@@ -203,9 +291,27 @@ class SkillDescriptor:
         # Normalize tags to lowercase
         self.tags = [t.lower() for t in self.tags]
 
+    @property
+    def resolved_display_name(self) -> str:
+        """Return ``display_name`` if set, otherwise humanize ``name``."""
+        if self.display_name:
+            return self.display_name
+        return self.name.replace("_", " ").title()
+
+    @property
+    def resolved_risk_level(self) -> RiskLevel:
+        """Return the risk level, auto-deriving from safety flags if ``AUTO``."""
+        if self.risk_level != RiskLevel.AUTO:
+            return self.risk_level
+        if self.side_effects and (self.requires_filesystem or self.requires_network):
+            return RiskLevel.DANGEROUS
+        if self.side_effects:
+            return RiskLevel.MODERATE
+        return RiskLevel.SAFE
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize the descriptor to a plain dict."""
-        return {
+        d: Dict[str, Any] = {
             "name": self.name,
             "description": self.description,
             "version": self.version,
@@ -221,7 +327,21 @@ class SkillDescriptor:
             "required_imports": self.required_imports,
             "requires_network": self.requires_network,
             "requires_filesystem": self.requires_filesystem,
+            # UI metadata
+            "display_name": self.resolved_display_name,
+            "risk_level": self.resolved_risk_level.value,
         }
+        if self.icon is not None:
+            d["icon"] = self.icon
+        if self.group is not None:
+            d["group"] = self.group
+        if self.hidden:
+            d["hidden"] = True
+        if self.deprecated is not None:
+            d["deprecated"] = self.deprecated
+        if self.config_params:
+            d["config_params"] = [cp.to_dict() for cp in self.config_params]
+        return d
 
     @classmethod
     def from_metadata(cls, metadata: Any) -> "SkillDescriptor":
@@ -460,6 +580,15 @@ def skill(
     required_imports=None,
     requires_network=False,
     requires_filesystem=False,
+    # UI metadata
+    display_name=None,
+    icon=None,
+    risk_level=RiskLevel.AUTO,
+    group=None,
+    hidden=False,
+    deprecated=None,
+    # Configurable parameters
+    config_params=None,
 ):
     """Decorator that turns a function into a skill.
 
@@ -503,6 +632,15 @@ def skill(
             required_imports=required_imports if required_imports is not None else [],
             requires_network=requires_network,
             requires_filesystem=requires_filesystem,
+            # UI metadata
+            display_name=display_name,
+            icon=icon,
+            risk_level=risk_level,
+            group=group,
+            hidden=hidden,
+            deprecated=deprecated,
+            # Config
+            config_params=config_params if config_params is not None else [],
         )
 
         func.__skill__ = Skill(descriptor=descriptor, fn=func)
@@ -517,6 +655,9 @@ def skill(
 
 
 __all__ = [
+    "RiskLevel",
+    "ConfigScope",
+    "ConfigParam",
     "SkillExample",
     "SkillDescriptor",
     "SkillResult",

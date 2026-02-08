@@ -11,7 +11,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_host
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 class ParseResponseTransformer(ChainableTransformer[dict, dict]):
@@ -31,9 +31,13 @@ class ParseResponseTransformer(ChainableTransformer[dict, dict]):
 
 @skill(
     name="http_request",
+    display_name="HTTP Request",
     description="Make an async HTTP request (GET/POST/PUT/DELETE) with headers, body, and auth.",
     category="http",
     tags=["http", "request", "api"],
+    icon="send",
+    risk_level=RiskLevel.MODERATE,
+    group="HTTP",
     side_effects=True,
     requires_network=True,
     required_imports=["httpx"],
@@ -106,3 +110,15 @@ class HttpPlugin(TransformerPlugin):
         return {
             "http_request": http_request.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="http",
+            display_name="HTTP",
+            description="Make HTTP requests with headers, body, and authentication.",
+            icon="send",
+            group="Integrations",
+            requires=PluginRequirements(network=True, imports=["httpx"]),
+        )

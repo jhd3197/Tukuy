@@ -269,3 +269,14 @@ class ColorPlugin(TransformerPlugin):
                 "darken", amount=params.get("amount", 0.2),
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="color",
+            display_name="Color",
+            description="Color conversion, WCAG contrast checking, and palette generation.",
+            icon="palette",
+            group="Web",
+        )

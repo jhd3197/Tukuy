@@ -633,3 +633,14 @@ class HtmlTransformersPlugin(TransformerPlugin):
     def transformers(self):
         """Get the HTML transformers."""
         return self._auto_transformers()
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="html",
+            display_name="HTML",
+            description="HTML parsing, sanitization, link extraction, and content extraction.",
+            icon="code",
+            group="Web",
+        )

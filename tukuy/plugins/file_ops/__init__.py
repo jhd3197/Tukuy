@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 @skill(
@@ -25,6 +25,10 @@ from ...skill import skill
     tags=["file", "read"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Read File",
+    icon="file-text",
+    risk_level=RiskLevel.SAFE,
+    group="File Operations",
 )
 def file_read(path: str) -> dict:
     """Read a file and return its contents."""
@@ -41,6 +45,10 @@ def file_read(path: str) -> dict:
     tags=["file", "write"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Write File",
+    icon="file-pen",
+    risk_level=RiskLevel.MODERATE,
+    group="File Operations",
 )
 def file_write(path: str, content: str = "", append: bool = False) -> dict:
     """Write content to a file."""
@@ -59,6 +67,10 @@ def file_write(path: str, content: str = "", append: bool = False) -> dict:
     tags=["file", "edit"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Edit File",
+    icon="file-pen",
+    risk_level=RiskLevel.MODERATE,
+    group="File Operations",
 )
 def file_edit(path: str, search: str = "", replace: str = "", count: int = -1) -> dict:
     """Replace occurrences of *search* with *replace* in a file.
@@ -89,6 +101,10 @@ def file_edit(path: str, search: str = "", replace: str = "", count: int = -1) -
     tags=["file", "list", "glob"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="List Files",
+    icon="folder-open",
+    risk_level=RiskLevel.SAFE,
+    group="File Operations",
 )
 def file_list(pattern: str) -> dict:
     """List files matching a glob pattern."""
@@ -104,6 +120,10 @@ def file_list(pattern: str) -> dict:
     tags=["file", "info", "metadata"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="File Info",
+    icon="file-info",
+    risk_level=RiskLevel.SAFE,
+    group="File Operations",
 )
 def file_info(path: str) -> dict:
     """Return metadata about a file."""
@@ -139,3 +159,16 @@ class FileOpsPlugin(TransformerPlugin):
             "file_list": file_list.__skill__,
             "file_info": file_info.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="file_ops",
+            display_name="File Operations",
+            description="Read, write, edit, and list files in the workspace.",
+            icon="folder",
+            color="#3b82f6",
+            group="Core",
+            requires=PluginRequirements(filesystem=True),
+        )

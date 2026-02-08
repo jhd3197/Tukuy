@@ -15,7 +15,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -147,6 +147,10 @@ class PdfExtractTablesTransformer(ChainableTransformer[str, list]):
     idempotent=True,
     requires_filesystem=True,
     required_imports=["pypdf"],
+    display_name="Read PDF",
+    icon="file-text",
+    risk_level=RiskLevel.SAFE,
+    group="PDF",
 )
 def pdf_read(path: str, pages: Optional[list] = None) -> dict:
     """Read a PDF file and return its content."""
@@ -201,6 +205,10 @@ def pdf_read(path: str, pages: Optional[list] = None) -> dict:
     side_effects=True,
     requires_filesystem=True,
     required_imports=["pypdf"],
+    display_name="Merge PDFs",
+    icon="files",
+    risk_level=RiskLevel.MODERATE,
+    group="PDF",
 )
 def pdf_merge(paths: list, output: str = "merged.pdf") -> dict:
     """Merge multiple PDF files into a single PDF."""
@@ -248,6 +256,10 @@ def pdf_merge(paths: list, output: str = "merged.pdf") -> dict:
     side_effects=True,
     requires_filesystem=True,
     required_imports=["pypdf"],
+    display_name="Split PDF",
+    icon="scissors",
+    risk_level=RiskLevel.MODERATE,
+    group="PDF",
 )
 def pdf_split(
     path: str,
@@ -302,6 +314,10 @@ def pdf_split(
     idempotent=True,
     requires_filesystem=True,
     required_imports=["pypdf"],
+    display_name="PDF Page Count",
+    icon="hash",
+    risk_level=RiskLevel.SAFE,
+    group="PDF",
 )
 def pdf_page_count(path: str) -> dict:
     """Get page count of a PDF file."""
@@ -354,3 +370,15 @@ class PdfPlugin(TransformerPlugin):
             "pdf_split": pdf_split.__skill__,
             "pdf_page_count": pdf_page_count.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="pdf",
+            display_name="PDF",
+            description="Read, merge, split PDF files and extract text, metadata, and tables.",
+            icon="file-type",
+            group="Documents",
+            requires=PluginRequirements(filesystem=True, imports=["pypdf"]),
+        )

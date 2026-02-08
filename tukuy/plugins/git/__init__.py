@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 def _run_git(args: List[str], cwd: str = ".") -> Dict[str, Any]:
@@ -58,6 +58,10 @@ def _run_git(args: List[str], cwd: str = ".") -> Dict[str, Any]:
     tags=["git", "vcs"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Git Status",
+    icon="git-branch",
+    risk_level=RiskLevel.SAFE,
+    group="Git",
 )
 def git_status(cwd: str = ".") -> dict:
     """Get git repository status."""
@@ -105,6 +109,10 @@ def git_status(cwd: str = ".") -> dict:
     tags=["git", "vcs", "diff"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Git Diff",
+    icon="git-compare",
+    risk_level=RiskLevel.SAFE,
+    group="Git",
 )
 def git_diff(
     staged: bool = False,
@@ -142,6 +150,10 @@ def git_diff(
     tags=["git", "vcs", "log"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Git Log",
+    icon="history",
+    risk_level=RiskLevel.SAFE,
+    group="Git",
 )
 def git_log(
     n: int = 10,
@@ -184,6 +196,10 @@ def git_log(
     tags=["git", "vcs", "commit"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Git Commit",
+    icon="git-commit",
+    risk_level=RiskLevel.MODERATE,
+    group="Git",
 )
 def git_commit(
     message: str,
@@ -220,6 +236,10 @@ def git_commit(
     tags=["git", "vcs", "branch"],
     idempotent=False,
     requires_filesystem=True,
+    display_name="Git Branch",
+    icon="git-branch",
+    risk_level=RiskLevel.MODERATE,
+    group="Git",
 )
 def git_branch(
     name: str = "",
@@ -285,3 +305,16 @@ class GitPlugin(TransformerPlugin):
             "git_commit": git_commit.__skill__,
             "git_branch": git_branch.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="git",
+            display_name="Git",
+            description="Git repository operations: status, diff, log, commit, and branch.",
+            icon="git-branch",
+            color="#f97316",
+            group="Core",
+            requires=PluginRequirements(filesystem=True),
+        )

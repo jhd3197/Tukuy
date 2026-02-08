@@ -317,3 +317,14 @@ class HtmlValidatePlugin(TransformerPlugin):
                 "validate_accessibility",
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="html_validate",
+            display_name="HTML Validation",
+            description="HTML structure validation and accessibility checking.",
+            icon="shield-check",
+            group="Web",
+        )

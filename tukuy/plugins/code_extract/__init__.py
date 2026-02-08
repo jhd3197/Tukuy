@@ -192,3 +192,14 @@ class CodeExtractPlugin(TransformerPlugin):
                 "strip_reasoning_preamble",
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="code_extract",
+            display_name="Code Extract",
+            description="Extract fenced code blocks, HTML documents, and strip reasoning preambles.",
+            icon="file-code",
+            group="Code",
+        )

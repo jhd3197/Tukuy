@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_command, get_security_context
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 @skill(
@@ -24,6 +24,10 @@ from ...skill import skill
     side_effects=True,
     requires_filesystem=True,
     requires_network=True,
+    display_name="Execute Command",
+    icon="terminal",
+    risk_level=RiskLevel.DANGEROUS,
+    group="Shell",
 )
 def shell_execute(
     command: str,
@@ -72,6 +76,10 @@ def shell_execute(
     idempotent=True,
     requires_filesystem=True,
     requires_network=False,
+    display_name="Which",
+    icon="search",
+    risk_level=RiskLevel.SAFE,
+    group="Shell",
 )
 def shell_which(name: str) -> dict:
     """Locate an executable on PATH."""
@@ -95,3 +103,16 @@ class ShellPlugin(TransformerPlugin):
             "shell_execute": shell_execute.__skill__,
             "shell_which": shell_which.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="shell",
+            display_name="Shell",
+            description="Execute shell commands and find executables.",
+            icon="terminal",
+            color="#ef4444",
+            group="Core",
+            requires=PluginRequirements(filesystem=True, network=True),
+        )

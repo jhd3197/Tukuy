@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 class CleanJsonOutputTransformer(ChainableTransformer[str, str]):
@@ -101,6 +101,10 @@ class ExtractCodeBlocksTransformer(ChainableTransformer[str, str]):
     category="llm",
     tags=["llm", "tokens"],
     idempotent=True,
+    display_name="Estimate Tokens",
+    icon="hash",
+    risk_level=RiskLevel.SAFE,
+    group="LLM",
 )
 def token_estimate(text: str) -> dict:
     """Estimate token count for a string."""
@@ -137,3 +141,14 @@ class LlmPlugin(TransformerPlugin):
         return {
             "token_estimate": token_estimate.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="llm",
+            display_name="LLM Utilities",
+            description="Clean messy LLM outputs and estimate token counts.",
+            icon="brain",
+            group="Code",
+        )

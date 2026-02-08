@@ -277,3 +277,14 @@ class ConversionPlugin(TransformerPlugin):
             "html_to_markdown": lambda _: HtmlToMarkdownTransformer("html_to_markdown"),
             "toml_to_json": lambda _: TomlToJsonTransformer("toml_to_json"),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="conversion",
+            display_name="Data Conversion",
+            description="Convert between CSV, JSON, YAML, TOML, Markdown, and HTML formats.",
+            icon="arrow-right-left",
+            group="Core",
+        )

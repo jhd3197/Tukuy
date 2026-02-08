@@ -477,3 +477,14 @@ class ValidationTransformersPlugin(TransformerPlugin):
         result['type_enforcer'] = lambda params: TypeEnforcer('type_enforcer',
             target_type=params.get('type'))
         return result
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="validation",
+            display_name="Validation",
+            description="Email, phone, credit card validation and type enforcement.",
+            icon="check-circle",
+            group="Data",
+        )

@@ -15,7 +15,7 @@ from typing import Any, Dict, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 # ── Format signatures ─────────────────────────────────────────────────────
@@ -123,6 +123,10 @@ class ImageToBase64Transformer(ChainableTransformer[str, str]):
     tags=["image", "metadata"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="Image Info",
+    icon="image",
+    risk_level=RiskLevel.SAFE,
+    group="Image",
 )
 def image_info(path: str) -> dict:
     """Get detailed image information."""
@@ -187,6 +191,10 @@ def image_info(path: str) -> dict:
     side_effects=True,
     requires_filesystem=True,
     required_imports=["PIL"],
+    display_name="Resize Image",
+    icon="maximize",
+    risk_level=RiskLevel.MODERATE,
+    group="Image",
 )
 def image_resize(
     path: str,
@@ -237,6 +245,10 @@ def image_resize(
     side_effects=True,
     requires_filesystem=True,
     required_imports=["PIL"],
+    display_name="Create Thumbnail",
+    icon="minimize",
+    risk_level=RiskLevel.MODERATE,
+    group="Image",
 )
 def image_thumbnail(
     path: str,
@@ -295,3 +307,15 @@ class ImagePlugin(TransformerPlugin):
             "image_resize": image_resize.__skill__,
             "image_thumbnail": image_thumbnail.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="image",
+            display_name="Image",
+            description="Image metadata, format detection, resizing, and thumbnails.",
+            icon="image",
+            group="Media",
+            requires=PluginRequirements(filesystem=True),
+        )

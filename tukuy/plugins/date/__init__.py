@@ -254,3 +254,14 @@ class DateTransformersPlugin(TransformerPlugin):
         """Get the date transformers."""
         return self._auto_transformers()
 
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="date",
+            display_name="Date & Time",
+            description="Date formatting, duration calculation, and age computation.",
+            icon="calendar",
+            group="Data",
+        )
+

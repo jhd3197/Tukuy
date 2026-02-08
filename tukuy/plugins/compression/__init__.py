@@ -19,7 +19,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -59,6 +59,10 @@ class GzipDecompressTransformer(ChainableTransformer[bytes, str]):
     tags=["zip", "archive", "compress"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Create Zip",
+    icon="archive",
+    risk_level=RiskLevel.MODERATE,
+    group="Compression",
 )
 def zip_create(
     paths: list,
@@ -101,6 +105,10 @@ def zip_create(
     tags=["zip", "archive", "extract"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Extract Zip",
+    icon="archive",
+    risk_level=RiskLevel.MODERATE,
+    group="Compression",
 )
 def zip_extract(path: str, output_dir: str = ".") -> dict:
     """Extract a zip archive."""
@@ -137,6 +145,10 @@ def zip_extract(path: str, output_dir: str = ".") -> dict:
     tags=["zip", "archive", "list"],
     idempotent=True,
     requires_filesystem=True,
+    display_name="List Zip",
+    icon="list",
+    risk_level=RiskLevel.SAFE,
+    group="Compression",
 )
 def zip_list(path: str) -> dict:
     """List zip archive contents."""
@@ -170,6 +182,10 @@ def zip_list(path: str) -> dict:
     tags=["tar", "archive", "compress"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Create Tar",
+    icon="archive",
+    risk_level=RiskLevel.MODERATE,
+    group="Compression",
 )
 def tar_create(
     paths: list,
@@ -209,6 +225,10 @@ def tar_create(
     tags=["tar", "archive", "extract"],
     side_effects=True,
     requires_filesystem=True,
+    display_name="Extract Tar",
+    icon="archive",
+    risk_level=RiskLevel.MODERATE,
+    group="Compression",
 )
 def tar_extract(path: str, output_dir: str = ".") -> dict:
     """Extract a tar archive."""
@@ -263,3 +283,15 @@ class CompressionPlugin(TransformerPlugin):
             "tar_create": tar_create.__skill__,
             "tar_extract": tar_extract.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="compression",
+            display_name="Compression",
+            description="Create and extract zip/tar archives, gzip compress and decompress.",
+            icon="archive",
+            group="Core",
+            requires=PluginRequirements(filesystem=True),
+        )

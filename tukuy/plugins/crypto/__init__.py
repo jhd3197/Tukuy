@@ -111,3 +111,14 @@ class CryptoPlugin(TransformerPlugin):
                 algorithm=params.get("algorithm", "sha256"),
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="crypto",
+            display_name="Crypto",
+            description="Hashing, Base64 encoding, UUID generation, and HMAC signing.",
+            icon="lock",
+            group="Core",
+        )

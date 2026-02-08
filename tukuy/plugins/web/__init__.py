@@ -13,7 +13,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_host
-from ...skill import skill
+from ...skill import skill, RiskLevel
 
 
 class ExtractMetadataTransformer(ChainableTransformer[str, dict]):
@@ -79,9 +79,13 @@ class ExtractMetadataTransformer(ChainableTransformer[str, dict]):
 
 @skill(
     name="web_fetch",
+    display_name="Fetch URL",
     description="Fetch the content of a URL (async).",
     category="web",
     tags=["web", "fetch", "http"],
+    icon="globe",
+    risk_level=RiskLevel.SAFE,
+    group="Web",
     idempotent=True,
     requires_network=True,
     required_imports=["httpx"],
@@ -115,9 +119,13 @@ async def web_fetch(url: str, headers: dict = None, timeout: int = 30) -> dict:
 
 @skill(
     name="web_search",
+    display_name="Web Search",
     description="Search DuckDuckGo HTML (no API key required) and return results (async).",
     category="web",
     tags=["web", "search"],
+    icon="search",
+    risk_level=RiskLevel.SAFE,
+    group="Web",
     idempotent=True,
     requires_network=True,
     required_imports=["httpx"],
@@ -196,3 +204,15 @@ class WebPlugin(TransformerPlugin):
             "web_fetch": web_fetch.__skill__,
             "web_search": web_search.__skill__,
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest, PluginRequirements
+        return PluginManifest(
+            name="web",
+            display_name="Web",
+            description="Fetch web pages, search the internet, and extract metadata.",
+            icon="globe",
+            group="Integrations",
+            requires=PluginRequirements(network=True, imports=["httpx"]),
+        )

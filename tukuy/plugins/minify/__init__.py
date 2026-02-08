@@ -257,3 +257,14 @@ class MinifyPlugin(TransformerPlugin):
                 indent=params.get("indent", "  "),
             ),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="minify",
+            display_name="Minify",
+            description="Minify and prettify HTML, CSS, and JavaScript.",
+            icon="minimize",
+            group="Web",
+        )

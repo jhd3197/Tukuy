@@ -470,3 +470,14 @@ class MermaidPlugin(TransformerPlugin):
             "mermaid_pie": lambda _: MermaidPieTransformer("mermaid_pie"),
             "mermaid_state_diagram": lambda _: MermaidStateDiagramTransformer("mermaid_state_diagram"),
         }
+
+    @property
+    def manifest(self):
+        from ...manifest import PluginManifest
+        return PluginManifest(
+            name="mermaid",
+            display_name="Mermaid Diagrams",
+            description="Generate Mermaid flowcharts, sequence diagrams, ERDs, and more.",
+            icon="workflow",
+            group="Web",
+        )
