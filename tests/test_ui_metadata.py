@@ -260,6 +260,54 @@ class TestConfigParam:
         assert d["valuePlaceholder"] == "value"
         assert d["maxItems"] == 20
 
+    def test_multiselect_type(self):
+        cp = ConfigParam(
+            name="methods",
+            type="multiselect",
+            options=["GET", "POST", "PUT", "DELETE"],
+            default=["GET", "POST"],
+        )
+        d = cp.to_dict()
+        assert d["type"] == "multiselect"
+        assert d["options"] == ["GET", "POST", "PUT", "DELETE"]
+        assert d["default"] == ["GET", "POST"]
+
+    def test_url_type(self):
+        cp = ConfigParam(
+            name="base_url",
+            type="url",
+            placeholder="https://api.example.com",
+        )
+        d = cp.to_dict()
+        assert d["type"] == "url"
+        assert d["placeholder"] == "https://api.example.com"
+
+    def test_code_type(self):
+        cp = ConfigParam(
+            name="template",
+            type="code",
+            language="json",
+            placeholder='{"key": "value"}',
+            rows=8,
+        )
+        d = cp.to_dict()
+        assert d["type"] == "code"
+        assert d["language"] == "json"
+        assert d["placeholder"] == '{"key": "value"}'
+        assert d["rows"] == 8
+
+    def test_code_type_sql(self):
+        cp = ConfigParam(
+            name="query",
+            type="code",
+            language="sql",
+            rows=4,
+        )
+        d = cp.to_dict()
+        assert d["type"] == "code"
+        assert d["language"] == "sql"
+        assert d["rows"] == 4
+
     def test_to_dict_omits_none_new_fields(self):
         cp = ConfigParam(name="simple", type="string")
         d = cp.to_dict()
@@ -271,6 +319,7 @@ class TestConfigParam:
         assert "keyPlaceholder" not in d
         assert "valuePlaceholder" not in d
         assert "itemPlaceholder" not in d
+        assert "language" not in d
 
     def test_all_new_types_roundtrip(self):
         """Serialize all new types together and verify round-trip."""
@@ -281,11 +330,17 @@ class TestConfigParam:
             ConfigParam(name="prompt", type="text", rows=10, placeholder="..."),
             ConfigParam(name="dir", type="path", path_type="directory"),
             ConfigParam(name="hdrs", type="map", key_placeholder="k", value_placeholder="v"),
+            ConfigParam(name="methods", type="multiselect", options=["A", "B"], default=["A"]),
+            ConfigParam(name="endpoint", type="url", placeholder="https://..."),
+            ConfigParam(name="tpl", type="code", language="json", rows=5),
         ]
         dicts = [p.to_dict() for p in params]
-        assert len(dicts) == 6
+        assert len(dicts) == 9
         types = [d["type"] for d in dicts]
-        assert types == ["string[]", "number[]", "secret", "text", "path", "map"]
+        assert types == [
+            "string[]", "number[]", "secret", "text", "path", "map",
+            "multiselect", "url", "code",
+        ]
         # Verify no None values leaked
         for d in dicts:
             assert None not in d.values()
@@ -708,6 +763,7 @@ class TestPluginConfigParams:
         names = self._param_names(web_fetch)
         assert "timeout" in names
         assert "user_agent" in names
+        assert "proxy_url" in names
 
     def test_web_search(self):
         from tukuy.plugins.web import web_search
@@ -719,9 +775,12 @@ class TestPluginConfigParams:
     def test_http_request(self):
         from tukuy.plugins.http import http_request
         names = self._param_names(http_request)
+        assert "base_url" in names
         assert "timeout" in names
+        assert "allowed_methods" in names
         assert "default_headers" in names
         assert "auth_token" in names
+        assert "request_body_template" in names
         assert "blocked_hosts" in names
 
     def test_token_estimate(self):
@@ -735,12 +794,14 @@ class TestPluginConfigParams:
         assert "max_rows" in names
         assert "timeout" in names
         assert "db_path" in names
+        assert "query_template" in names
 
     def test_sqlite_execute(self):
         from tukuy.plugins.sql import sqlite_execute
         names = self._param_names(sqlite_execute)
         assert "timeout" in names
         assert "db_path" in names
+        assert "allowed_operations" in names
 
     def test_pdf_read(self):
         from tukuy.plugins.pdf import pdf_read
@@ -769,9 +830,11 @@ class TestPluginConfigParams:
         assert "compression_level" in names
 
     def test_new_types_in_plugins(self):
-        """Spot-check that new types (path, string[], map, secret) are used in real plugins."""
+        """Spot-check that new types (path, string[], map, secret, url, multiselect, code) are used in real plugins."""
         from tukuy.plugins.shell import shell_execute
         from tukuy.plugins.http import http_request
+        from tukuy.plugins.sql import sqlite_query, sqlite_execute
+        from tukuy.plugins.web import web_fetch
 
         shell_types = {p.type for p in shell_execute.__skill__.descriptor.config_params}
         assert "path" in shell_types
@@ -781,6 +844,18 @@ class TestPluginConfigParams:
         assert "map" in http_types
         assert "secret" in http_types
         assert "string[]" in http_types
+        assert "url" in http_types
+        assert "multiselect" in http_types
+        assert "code" in http_types
+
+        sql_query_types = {p.type for p in sqlite_query.__skill__.descriptor.config_params}
+        assert "code" in sql_query_types
+
+        sql_exec_types = {p.type for p in sqlite_execute.__skill__.descriptor.config_params}
+        assert "multiselect" in sql_exec_types
+
+        web_types = {p.type for p in web_fetch.__skill__.descriptor.config_params}
+        assert "url" in web_types
 
     def test_config_params_serialize_in_descriptor(self):
         """Verify config_params serialize correctly through SkillDescriptor.to_dict()."""
@@ -789,7 +864,7 @@ class TestPluginConfigParams:
         d = http_request.__skill__.descriptor.to_dict()
         assert "config_params" in d
         param_dicts = d["config_params"]
-        assert len(param_dicts) == 4
+        assert len(param_dicts) == 7
 
         # Find the map-type param
         headers_param = next(p for p in param_dicts if p["name"] == "default_headers")
@@ -801,3 +876,19 @@ class TestPluginConfigParams:
         auth_param = next(p for p in param_dicts if p["name"] == "auth_token")
         assert auth_param["type"] == "secret"
         assert auth_param["placeholder"] == "sk-..."
+
+        # Find the url-type param
+        url_param = next(p for p in param_dicts if p["name"] == "base_url")
+        assert url_param["type"] == "url"
+        assert "placeholder" in url_param
+
+        # Find the multiselect-type param
+        methods_param = next(p for p in param_dicts if p["name"] == "allowed_methods")
+        assert methods_param["type"] == "multiselect"
+        assert "GET" in methods_param["options"]
+        assert "POST" in methods_param["options"]
+
+        # Find the code-type param
+        body_param = next(p for p in param_dicts if p["name"] == "request_body_template")
+        assert body_param["type"] == "code"
+        assert body_param["language"] == "json"

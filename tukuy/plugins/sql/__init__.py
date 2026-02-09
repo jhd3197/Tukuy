@@ -166,6 +166,15 @@ class QueryBuilderTransformer(ChainableTransformer[dict, str]):
             path_type="file",
             placeholder="/path/to/database.db",
         ),
+        ConfigParam(
+            name="query_template",
+            display_name="Query Template",
+            description="Reusable SQL query template.",
+            type="code",
+            language="sql",
+            placeholder="SELECT * FROM table WHERE condition",
+            rows=4,
+        ),
     ],
 )
 def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dict:
@@ -223,6 +232,14 @@ def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dic
             type="path",
             path_type="file",
             placeholder="/path/to/database.db",
+        ),
+        ConfigParam(
+            name="allowed_operations",
+            display_name="Allowed Operations",
+            description="SQL statement types permitted. Empty allows all.",
+            type="multiselect",
+            default=[],
+            options=["INSERT", "UPDATE", "DELETE", "CREATE", "ALTER", "DROP"],
         ),
     ],
 )

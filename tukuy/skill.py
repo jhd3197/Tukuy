@@ -64,13 +64,14 @@ class ConfigParam:
     name: str
     display_name: Optional[str] = None
     description: Optional[str] = None
-    type: str = "string"  # "number", "string", "boolean", "select",
-    #                       "string[]", "number[]", "secret", "text", "path", "map"
+    type: str = "string"  # "number", "string", "boolean", "select", "multiselect",
+    #                       "string[]", "number[]", "secret", "text", "path", "map",
+    #                       "url", "code"
     default: Any = None
     min: Optional[float] = None
     max: Optional[float] = None
     step: Optional[float] = None
-    options: Optional[List[str]] = None  # For type="select"
+    options: Optional[List[str]] = None  # For type="select" / "multiselect"
     unit: Optional[str] = None  # "seconds", "bytes", "KB"
     scope: ConfigScope = ConfigScope.PER_BOT
 
@@ -79,8 +80,8 @@ class ConfigParam:
     max_items: Optional[int] = None
 
     # Input hints
-    placeholder: Optional[str] = None  # For secret, text, string, path
-    rows: Optional[int] = None  # For text (textarea height hint)
+    placeholder: Optional[str] = None  # For secret, text, string, path, url, code
+    rows: Optional[int] = None  # For text / code (textarea height hint)
     path_type: Optional[str] = None  # For path: "file" | "directory" | "any"
 
     # Map-specific placeholders (for map)
@@ -89,6 +90,9 @@ class ConfigParam:
 
     # Array item placeholder (for string[], number[])
     item_placeholder: Optional[str] = None
+
+    # Code editor hint (for code)
+    language: Optional[str] = None  # "json", "sql", "regex", "xml", "yaml", etc.
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a plain dict, omitting None values."""
@@ -125,6 +129,8 @@ class ConfigParam:
             d["valuePlaceholder"] = self.value_placeholder
         if self.item_placeholder is not None:
             d["itemPlaceholder"] = self.item_placeholder
+        if self.language is not None:
+            d["language"] = self.language
         d["scope"] = self.scope.value
         return d
 

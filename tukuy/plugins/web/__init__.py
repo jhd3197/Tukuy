@@ -108,6 +108,13 @@ class ExtractMetadataTransformer(ChainableTransformer[str, dict]):
             default="Tukuy/0.1",
             placeholder="Tukuy/0.1",
         ),
+        ConfigParam(
+            name="proxy_url",
+            display_name="Proxy URL",
+            description="HTTP proxy for outgoing requests.",
+            type="url",
+            placeholder="https://proxy.example.com:8080",
+        ),
     ],
 )
 async def web_fetch(url: str, headers: dict = None, timeout: int = 30) -> dict:

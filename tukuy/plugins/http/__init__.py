@@ -43,6 +43,13 @@ class ParseResponseTransformer(ChainableTransformer[dict, dict]):
     required_imports=["httpx"],
     config_params=[
         ConfigParam(
+            name="base_url",
+            display_name="Base URL",
+            description="Base URL prepended to relative request paths.",
+            type="url",
+            placeholder="https://api.example.com/v1",
+        ),
+        ConfigParam(
             name="timeout",
             display_name="Timeout",
             description="Request timeout.",
@@ -51,6 +58,14 @@ class ParseResponseTransformer(ChainableTransformer[dict, dict]):
             min=1,
             max=300,
             unit="seconds",
+        ),
+        ConfigParam(
+            name="allowed_methods",
+            display_name="Allowed Methods",
+            description="HTTP methods permitted for requests. Empty allows all.",
+            type="multiselect",
+            default=[],
+            options=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
         ),
         ConfigParam(
             name="default_headers",
@@ -67,6 +82,15 @@ class ParseResponseTransformer(ChainableTransformer[dict, dict]):
             description="Bearer token for authenticated requests.",
             type="secret",
             placeholder="sk-...",
+        ),
+        ConfigParam(
+            name="request_body_template",
+            display_name="Body Template",
+            description="Default JSON body template for requests.",
+            type="code",
+            language="json",
+            placeholder='{"key": "value"}',
+            rows=6,
         ),
         ConfigParam(
             name="blocked_hosts",
