@@ -13,7 +13,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -254,6 +254,15 @@ def docx_read(path: str) -> dict:
     icon="file-plus",
     risk_level=RiskLevel.MODERATE,
     group="Word",
+    config_params=[
+        ConfigParam(
+            name="default_author",
+            display_name="Default Author",
+            description="Author name set in document metadata when not specified.",
+            type="string",
+            placeholder="Author Name",
+        ),
+    ],
 )
 def docx_write(
     path: str,

@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 def _parse_env_content(content: str) -> Dict[str, str]:
@@ -58,6 +58,25 @@ def _mask_value(value: str, value_type: str = "api_key") -> str:
     icon="file-search",
     risk_level=RiskLevel.SAFE,
     group="Environment",
+    config_params=[
+        ConfigParam(
+            name="env_file_path",
+            display_name="Env File Path",
+            description="Default path to the .env file.",
+            type="path",
+            default=".env",
+            path_type="file",
+            placeholder=".env",
+        ),
+        ConfigParam(
+            name="auto_mask_patterns",
+            display_name="Auto-Mask Patterns",
+            description="Key patterns to automatically mask values for.",
+            type="string[]",
+            default=["*_KEY", "*_SECRET", "*_TOKEN"],
+            item_placeholder="e.g. *_KEY, *_SECRET",
+        ),
+    ],
 )
 def env_read(path: str = ".env", mask: bool = False) -> dict:
     """Read a .env file and return its contents."""
@@ -89,6 +108,17 @@ def env_read(path: str = ".env", mask: bool = False) -> dict:
     icon="file-pen",
     risk_level=RiskLevel.MODERATE,
     group="Environment",
+    config_params=[
+        ConfigParam(
+            name="env_file_path",
+            display_name="Env File Path",
+            description="Default path to the .env file.",
+            type="path",
+            default=".env",
+            path_type="file",
+            placeholder=".env",
+        ),
+    ],
 )
 def env_write(key: str, value: str, path: str = ".env") -> dict:
     """Set a key=value pair in a .env file."""

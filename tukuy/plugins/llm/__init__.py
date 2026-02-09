@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 class CleanJsonOutputTransformer(ChainableTransformer[str, str]):
@@ -105,6 +105,18 @@ class ExtractCodeBlocksTransformer(ChainableTransformer[str, str]):
     icon="hash",
     risk_level=RiskLevel.SAFE,
     group="LLM",
+    config_params=[
+        ConfigParam(
+            name="chars_per_token",
+            display_name="Chars per Token",
+            description="Average characters per token for estimation.",
+            type="number",
+            default=4,
+            min=1,
+            max=10,
+            step=0.5,
+        ),
+    ],
 )
 def token_estimate(text: str) -> dict:
     """Estimate token count for a string."""

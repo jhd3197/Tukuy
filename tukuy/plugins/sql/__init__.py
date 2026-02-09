@@ -16,7 +16,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -138,6 +138,35 @@ class QueryBuilderTransformer(ChainableTransformer[dict, str]):
     icon="database",
     risk_level=RiskLevel.SAFE,
     group="SQL",
+    config_params=[
+        ConfigParam(
+            name="max_rows",
+            display_name="Max Rows",
+            description="Maximum number of rows to return.",
+            type="number",
+            default=1000,
+            min=1,
+            max=100000,
+        ),
+        ConfigParam(
+            name="timeout",
+            display_name="Timeout",
+            description="Query execution timeout.",
+            type="number",
+            default=30,
+            min=1,
+            max=300,
+            unit="seconds",
+        ),
+        ConfigParam(
+            name="db_path",
+            display_name="Database Path",
+            description="Default database file path.",
+            type="path",
+            path_type="file",
+            placeholder="/path/to/database.db",
+        ),
+    ],
 )
 def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dict:
     """Execute a read-only query on a SQLite database."""
@@ -176,6 +205,26 @@ def sqlite_query(db_path: str, query: str, params: Optional[list] = None) -> dic
     icon="database",
     risk_level=RiskLevel.DANGEROUS,
     group="SQL",
+    config_params=[
+        ConfigParam(
+            name="timeout",
+            display_name="Timeout",
+            description="Statement execution timeout.",
+            type="number",
+            default=30,
+            min=1,
+            max=300,
+            unit="seconds",
+        ),
+        ConfigParam(
+            name="db_path",
+            display_name="Database Path",
+            description="Default database file path.",
+            type="path",
+            path_type="file",
+            placeholder="/path/to/database.db",
+        ),
+    ],
 )
 def sqlite_execute(db_path: str, sql: str, params: Optional[list] = None) -> dict:
     """Execute a write SQL statement on a SQLite database."""

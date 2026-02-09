@@ -15,7 +15,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -151,6 +151,17 @@ class PdfExtractTablesTransformer(ChainableTransformer[str, list]):
     icon="file-text",
     risk_level=RiskLevel.SAFE,
     group="PDF",
+    config_params=[
+        ConfigParam(
+            name="max_file_size",
+            display_name="Max File Size",
+            description="Maximum PDF file size to process.",
+            type="number",
+            default=52428800,
+            min=1024,
+            unit="bytes",
+        ),
+    ],
 )
 def pdf_read(path: str, pages: Optional[list] = None) -> dict:
     """Read a PDF file and return its content."""

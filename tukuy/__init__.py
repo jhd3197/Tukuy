@@ -30,6 +30,17 @@ from .safety import (
     SecurityError, SecurityContext,
     set_security_context, get_security_context, reset_security_context,
 )
+from .analysis import (
+    CodeAnalysis, CodeFeatures, FeatureExtractor,
+    RiskAssessment, analyze_python, calculate_risk,
+)
+from .analysis import RiskLevel as AnalysisRiskLevel  # avoid collision with skill.RiskLevel
+from .sandbox import (
+    ALWAYS_BLOCKED_IMPORTS, ImportRestrictions, ImportViolationError,
+    PathRestrictions, PathViolationError, PythonSandbox,
+    ResourceContext, ResourceLimitError, ResourceLimits,
+    SandboxError, SandboxResult, SandboxTimeoutError,
+)
 
 # Two-phase discovery
 from .core.unified import browse_tools, get_tool_details, search_tools
@@ -107,4 +118,25 @@ __all__ = [
     'browse_tools',
     'get_tool_details',
     'search_tools',
+    # Analysis
+    'CodeAnalysis',
+    'CodeFeatures',
+    'FeatureExtractor',
+    'RiskAssessment',
+    'AnalysisRiskLevel',
+    'analyze_python',
+    'calculate_risk',
+    # Sandbox
+    'ALWAYS_BLOCKED_IMPORTS',
+    'ImportRestrictions',
+    'ImportViolationError',
+    'PathRestrictions',
+    'PathViolationError',
+    'PythonSandbox',
+    'ResourceContext',
+    'ResourceLimitError',
+    'ResourceLimits',
+    'SandboxError',
+    'SandboxResult',
+    'SandboxTimeoutError',
 ]

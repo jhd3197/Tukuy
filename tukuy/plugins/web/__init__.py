@@ -13,7 +13,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_host
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 class ExtractMetadataTransformer(ChainableTransformer[str, dict]):
@@ -89,6 +89,26 @@ class ExtractMetadataTransformer(ChainableTransformer[str, dict]):
     idempotent=True,
     requires_network=True,
     required_imports=["httpx"],
+    config_params=[
+        ConfigParam(
+            name="timeout",
+            display_name="Timeout",
+            description="Request timeout.",
+            type="number",
+            default=30,
+            min=1,
+            max=120,
+            unit="seconds",
+        ),
+        ConfigParam(
+            name="user_agent",
+            display_name="User Agent",
+            description="User-Agent header sent with requests.",
+            type="string",
+            default="Tukuy/0.1",
+            placeholder="Tukuy/0.1",
+        ),
+    ],
 )
 async def web_fetch(url: str, headers: dict = None, timeout: int = 30) -> dict:
     """Fetch a URL and return its text content."""
@@ -129,6 +149,35 @@ async def web_fetch(url: str, headers: dict = None, timeout: int = 30) -> dict:
     idempotent=True,
     requires_network=True,
     required_imports=["httpx"],
+    config_params=[
+        ConfigParam(
+            name="max_results",
+            display_name="Max Results",
+            description="Maximum number of search results to return.",
+            type="number",
+            default=5,
+            min=1,
+            max=50,
+        ),
+        ConfigParam(
+            name="timeout",
+            display_name="Timeout",
+            description="Search request timeout.",
+            type="number",
+            default=15,
+            min=1,
+            max=60,
+            unit="seconds",
+        ),
+        ConfigParam(
+            name="blocked_domains",
+            display_name="Blocked Domains",
+            description="Domains to exclude from search results.",
+            type="string[]",
+            default=[],
+            item_placeholder="e.g. example.com",
+        ),
+    ],
 )
 async def web_search(query: str, max_results: int = 5) -> dict:
     """Search DuckDuckGo HTML and parse results."""

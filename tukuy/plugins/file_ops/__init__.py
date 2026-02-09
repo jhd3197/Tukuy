@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 @skill(
@@ -29,6 +29,25 @@ from ...skill import skill, RiskLevel
     icon="file-text",
     risk_level=RiskLevel.SAFE,
     group="File Operations",
+    config_params=[
+        ConfigParam(
+            name="max_file_size",
+            display_name="Max File Size",
+            description="Maximum file size to read.",
+            type="number",
+            default=10485760,
+            min=1024,
+            unit="bytes",
+        ),
+        ConfigParam(
+            name="encoding",
+            display_name="Encoding",
+            description="File encoding to use.",
+            type="select",
+            default="utf-8",
+            options=["utf-8", "ascii", "latin-1", "utf-16"],
+        ),
+    ],
 )
 def file_read(path: str) -> dict:
     """Read a file and return its contents."""
@@ -49,6 +68,24 @@ def file_read(path: str) -> dict:
     icon="file-pen",
     risk_level=RiskLevel.MODERATE,
     group="File Operations",
+    config_params=[
+        ConfigParam(
+            name="encoding",
+            display_name="Encoding",
+            description="File encoding to use.",
+            type="select",
+            default="utf-8",
+            options=["utf-8", "ascii", "latin-1", "utf-16"],
+        ),
+        ConfigParam(
+            name="allowed_extensions",
+            display_name="Allowed Extensions",
+            description="File extensions permitted for writing. Empty allows all.",
+            type="string[]",
+            default=[],
+            item_placeholder="e.g. .txt, .json, .csv",
+        ),
+    ],
 )
 def file_write(path: str, content: str = "", append: bool = False) -> dict:
     """Write content to a file."""
@@ -71,6 +108,25 @@ def file_write(path: str, content: str = "", append: bool = False) -> dict:
     icon="file-pen",
     risk_level=RiskLevel.MODERATE,
     group="File Operations",
+    config_params=[
+        ConfigParam(
+            name="max_file_size",
+            display_name="Max File Size",
+            description="Maximum file size to edit.",
+            type="number",
+            default=10485760,
+            min=1024,
+            unit="bytes",
+        ),
+        ConfigParam(
+            name="allowed_extensions",
+            display_name="Allowed Extensions",
+            description="File extensions permitted for editing. Empty allows all.",
+            type="string[]",
+            default=[],
+            item_placeholder="e.g. .txt, .json, .py",
+        ),
+    ],
 )
 def file_edit(path: str, search: str = "", replace: str = "", count: int = -1) -> dict:
     """Replace occurrences of *search* with *replace* in a file.

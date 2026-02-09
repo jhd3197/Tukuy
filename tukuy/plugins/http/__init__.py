@@ -11,7 +11,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_host
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 class ParseResponseTransformer(ChainableTransformer[dict, dict]):
@@ -41,6 +41,42 @@ class ParseResponseTransformer(ChainableTransformer[dict, dict]):
     side_effects=True,
     requires_network=True,
     required_imports=["httpx"],
+    config_params=[
+        ConfigParam(
+            name="timeout",
+            display_name="Timeout",
+            description="Request timeout.",
+            type="number",
+            default=30,
+            min=1,
+            max=300,
+            unit="seconds",
+        ),
+        ConfigParam(
+            name="default_headers",
+            display_name="Default Headers",
+            description="Headers sent with every request.",
+            type="map",
+            default={},
+            key_placeholder="Header-Name",
+            value_placeholder="value",
+        ),
+        ConfigParam(
+            name="auth_token",
+            display_name="Auth Token",
+            description="Bearer token for authenticated requests.",
+            type="secret",
+            placeholder="sk-...",
+        ),
+        ConfigParam(
+            name="blocked_hosts",
+            display_name="Blocked Hosts",
+            description="Hosts that requests are not allowed to reach.",
+            type="string[]",
+            default=[],
+            item_placeholder="e.g. internal.corp",
+        ),
+    ],
 )
 async def http_request(
     url: str,

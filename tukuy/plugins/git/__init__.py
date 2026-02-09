@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 def _run_git(args: List[str], cwd: str = ".") -> Dict[str, Any]:
@@ -200,6 +200,16 @@ def git_log(
     icon="git-commit",
     risk_level=RiskLevel.MODERATE,
     group="Git",
+    config_params=[
+        ConfigParam(
+            name="protected_branches",
+            display_name="Protected Branches",
+            description="Branches where direct commits are blocked.",
+            type="string[]",
+            default=["main", "master"],
+            item_placeholder="e.g. main, production",
+        ),
+    ],
 )
 def git_commit(
     message: str,

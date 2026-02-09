@@ -15,7 +15,7 @@ from typing import Any, Dict, Optional
 from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 # ── Format signatures ─────────────────────────────────────────────────────
@@ -195,6 +195,27 @@ def image_info(path: str) -> dict:
     icon="maximize",
     risk_level=RiskLevel.MODERATE,
     group="Image",
+    config_params=[
+        ConfigParam(
+            name="max_file_size",
+            display_name="Max File Size",
+            description="Maximum image file size to process.",
+            type="number",
+            default=52428800,
+            min=1024,
+            unit="bytes",
+        ),
+        ConfigParam(
+            name="quality",
+            display_name="Output Quality",
+            description="JPEG/WebP output quality.",
+            type="number",
+            default=85,
+            min=1,
+            max=100,
+            step=1,
+        ),
+    ],
 )
 def image_resize(
     path: str,

@@ -64,7 +64,8 @@ class ConfigParam:
     name: str
     display_name: Optional[str] = None
     description: Optional[str] = None
-    type: str = "string"  # "number", "string", "boolean", "select"
+    type: str = "string"  # "number", "string", "boolean", "select",
+    #                       "string[]", "number[]", "secret", "text", "path", "map"
     default: Any = None
     min: Optional[float] = None
     max: Optional[float] = None
@@ -72,6 +73,22 @@ class ConfigParam:
     options: Optional[List[str]] = None  # For type="select"
     unit: Optional[str] = None  # "seconds", "bytes", "KB"
     scope: ConfigScope = ConfigScope.PER_BOT
+
+    # Array / map bounds (for string[], number[], map)
+    min_items: Optional[int] = None
+    max_items: Optional[int] = None
+
+    # Input hints
+    placeholder: Optional[str] = None  # For secret, text, string, path
+    rows: Optional[int] = None  # For text (textarea height hint)
+    path_type: Optional[str] = None  # For path: "file" | "directory" | "any"
+
+    # Map-specific placeholders (for map)
+    key_placeholder: Optional[str] = None
+    value_placeholder: Optional[str] = None
+
+    # Array item placeholder (for string[], number[])
+    item_placeholder: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a plain dict, omitting None values."""
@@ -92,6 +109,22 @@ class ConfigParam:
             d["options"] = self.options
         if self.unit is not None:
             d["unit"] = self.unit
+        if self.min_items is not None:
+            d["minItems"] = self.min_items
+        if self.max_items is not None:
+            d["maxItems"] = self.max_items
+        if self.placeholder is not None:
+            d["placeholder"] = self.placeholder
+        if self.rows is not None:
+            d["rows"] = self.rows
+        if self.path_type is not None:
+            d["pathType"] = self.path_type
+        if self.key_placeholder is not None:
+            d["keyPlaceholder"] = self.key_placeholder
+        if self.value_placeholder is not None:
+            d["valuePlaceholder"] = self.value_placeholder
+        if self.item_placeholder is not None:
+            d["itemPlaceholder"] = self.item_placeholder
         d["scope"] = self.scope.value
         return d
 

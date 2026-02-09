@@ -30,7 +30,7 @@ Usage::
     # web_scraper.invoke("https://example.com")
     # => SafetyError: requires network access but policy denies it
 
-Integration with Prompture::
+Integration with PythonSandbox::
 
     config = policy.to_sandbox_config()
     # => {"allowed_imports": ["json", "re"], "network": False, "filesystem": False}
@@ -373,7 +373,7 @@ class SafetyPolicy:
     # -- Sandbox integration ------------------------------------------------
 
     def to_sandbox_config(self) -> Dict[str, Any]:
-        """Export as a Prompture ``PythonSandbox``-compatible configuration.
+        """Export as a ``PythonSandbox``-compatible configuration.
 
         Returns a dict with keys that map to sandbox settings::
 
@@ -393,7 +393,7 @@ class SafetyPolicy:
 
     @classmethod
     def from_sandbox_config(cls, config: Dict[str, Any]) -> "SafetyPolicy":
-        """Create a SafetyPolicy from a Prompture sandbox configuration dict.
+        """Create a SafetyPolicy from a sandbox configuration dict.
 
         Accepts the format produced by :meth:`to_sandbox_config` as well as
         common sandbox config variations.

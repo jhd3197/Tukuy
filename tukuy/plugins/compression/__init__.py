@@ -19,7 +19,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -63,6 +63,18 @@ class GzipDecompressTransformer(ChainableTransformer[bytes, str]):
     icon="archive",
     risk_level=RiskLevel.MODERATE,
     group="Compression",
+    config_params=[
+        ConfigParam(
+            name="compression_level",
+            display_name="Compression Level",
+            description="ZIP compression level (0=store, 9=best compression).",
+            type="number",
+            default=6,
+            min=0,
+            max=9,
+            step=1,
+        ),
+    ],
 )
 def zip_create(
     paths: list,

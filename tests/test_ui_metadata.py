@@ -181,6 +181,115 @@ class TestConfigParam:
         d = cp.to_dict()
         assert d["options"] == ["fast", "slow"]
 
+    def test_string_array_type(self):
+        cp = ConfigParam(
+            name="allowed_commands",
+            type="string[]",
+            default=["ls", "git"],
+            min_items=0,
+            max_items=50,
+            item_placeholder="e.g. ls, git",
+        )
+        d = cp.to_dict()
+        assert d["type"] == "string[]"
+        assert d["default"] == ["ls", "git"]
+        assert d["minItems"] == 0
+        assert d["maxItems"] == 50
+        assert d["itemPlaceholder"] == "e.g. ls, git"
+
+    def test_number_array_type(self):
+        cp = ConfigParam(
+            name="thresholds",
+            type="number[]",
+            default=[0.5, 0.8],
+            min_items=1,
+            item_placeholder="0.0-1.0",
+        )
+        d = cp.to_dict()
+        assert d["type"] == "number[]"
+        assert d["default"] == [0.5, 0.8]
+        assert d["minItems"] == 1
+        assert d["itemPlaceholder"] == "0.0-1.0"
+
+    def test_secret_type(self):
+        cp = ConfigParam(
+            name="api_key",
+            type="secret",
+            placeholder="sk-...",
+        )
+        d = cp.to_dict()
+        assert d["type"] == "secret"
+        assert d["placeholder"] == "sk-..."
+
+    def test_text_type(self):
+        cp = ConfigParam(
+            name="system_prompt",
+            type="text",
+            placeholder="Enter prompt...",
+            rows=5,
+        )
+        d = cp.to_dict()
+        assert d["type"] == "text"
+        assert d["placeholder"] == "Enter prompt..."
+        assert d["rows"] == 5
+
+    def test_path_type(self):
+        cp = ConfigParam(
+            name="working_dir",
+            type="path",
+            path_type="directory",
+            placeholder="/path/to/project",
+        )
+        d = cp.to_dict()
+        assert d["type"] == "path"
+        assert d["pathType"] == "directory"
+        assert d["placeholder"] == "/path/to/project"
+
+    def test_map_type(self):
+        cp = ConfigParam(
+            name="headers",
+            type="map",
+            default={},
+            key_placeholder="Header-Name",
+            value_placeholder="value",
+            max_items=20,
+        )
+        d = cp.to_dict()
+        assert d["type"] == "map"
+        assert d["keyPlaceholder"] == "Header-Name"
+        assert d["valuePlaceholder"] == "value"
+        assert d["maxItems"] == 20
+
+    def test_to_dict_omits_none_new_fields(self):
+        cp = ConfigParam(name="simple", type="string")
+        d = cp.to_dict()
+        assert "minItems" not in d
+        assert "maxItems" not in d
+        assert "placeholder" not in d
+        assert "rows" not in d
+        assert "pathType" not in d
+        assert "keyPlaceholder" not in d
+        assert "valuePlaceholder" not in d
+        assert "itemPlaceholder" not in d
+
+    def test_all_new_types_roundtrip(self):
+        """Serialize all new types together and verify round-trip."""
+        params = [
+            ConfigParam(name="cmds", type="string[]", default=["a"], item_placeholder="cmd"),
+            ConfigParam(name="nums", type="number[]", default=[1, 2], min_items=1),
+            ConfigParam(name="key", type="secret", placeholder="sk-..."),
+            ConfigParam(name="prompt", type="text", rows=10, placeholder="..."),
+            ConfigParam(name="dir", type="path", path_type="directory"),
+            ConfigParam(name="hdrs", type="map", key_placeholder="k", value_placeholder="v"),
+        ]
+        dicts = [p.to_dict() for p in params]
+        assert len(dicts) == 6
+        types = [d["type"] for d in dicts]
+        assert types == ["string[]", "number[]", "secret", "text", "path", "map"]
+        # Verify no None values leaked
+        for d in dicts:
+            assert None not in d.values()
+
 
 # ── TestSkillDescriptorUIFields ──────────────────────────────────────────────
 
@@ -541,3 +650,154 @@ class TestDiscoverPlugins:
 
         results = discover_plugins([plugin], check_requirements=False)
         assert results[0].available is True
+
+
+# ── TestPluginConfigParams ───────────────────────────────────────────────────
+
+
+class TestPluginConfigParams:
+    """Verify that each modified plugin declares the expected config_params."""
+
+    @staticmethod
+    def _param_names(skill_fn):
+        return [p.name for p in skill_fn.__skill__.descriptor.config_params]
+
+    def test_shell_execute(self):
+        from tukuy.plugins.shell import shell_execute
+        names = self._param_names(shell_execute)
+        assert "timeout" in names
+        assert "default_cwd" in names
+        assert "allowed_commands" in names
+
+    def test_file_read(self):
+        from tukuy.plugins.file_ops import file_read
+        names = self._param_names(file_read)
+        assert "max_file_size" in names
+        assert "encoding" in names
+
+    def test_file_write(self):
+        from tukuy.plugins.file_ops import file_write
+        names = self._param_names(file_write)
+        assert "encoding" in names
+        assert "allowed_extensions" in names
+
+    def test_file_edit(self):
+        from tukuy.plugins.file_ops import file_edit
+        names = self._param_names(file_edit)
+        assert "max_file_size" in names
+        assert "allowed_extensions" in names
+
+    def test_git_commit(self):
+        from tukuy.plugins.git import git_commit
+        names = self._param_names(git_commit)
+        assert "protected_branches" in names
+
+    def test_env_read(self):
+        from tukuy.plugins.env import env_read
+        names = self._param_names(env_read)
+        assert "env_file_path" in names
+        assert "auto_mask_patterns" in names
+
+    def test_env_write(self):
+        from tukuy.plugins.env import env_write
+        names = self._param_names(env_write)
+        assert "env_file_path" in names
+
+    def test_web_fetch(self):
+        from tukuy.plugins.web import web_fetch
+        names = self._param_names(web_fetch)
+        assert "timeout" in names
+        assert "user_agent" in names
+
+    def test_web_search(self):
+        from tukuy.plugins.web import web_search
+        names = self._param_names(web_search)
+        assert "max_results" in names
+        assert "timeout" in names
+        assert "blocked_domains" in names
+
+    def test_http_request(self):
+        from tukuy.plugins.http import http_request
+        names = self._param_names(http_request)
+        assert "timeout" in names
+        assert "default_headers" in names
+        assert "auth_token" in names
+        assert "blocked_hosts" in names
+
+    def test_token_estimate(self):
+        from tukuy.plugins.llm import token_estimate
+        names = self._param_names(token_estimate)
+        assert "chars_per_token" in names
+
+    def test_sqlite_query(self):
+        from tukuy.plugins.sql import sqlite_query
+        names = self._param_names(sqlite_query)
+        assert "max_rows" in names
+        assert "timeout" in names
+        assert "db_path" in names
+
+    def test_sqlite_execute(self):
+        from tukuy.plugins.sql import sqlite_execute
+        names = self._param_names(sqlite_execute)
+        assert "timeout" in names
+        assert "db_path" in names
+
+    def test_pdf_read(self):
+        from tukuy.plugins.pdf import pdf_read
+        names = self._param_names(pdf_read)
+        assert "max_file_size" in names
+
+    def test_xlsx_read(self):
+        from tukuy.plugins.xlsx import xlsx_read
+        names = self._param_names(xlsx_read)
+        assert "max_rows_per_sheet" in names
+
+    def test_image_resize(self):
+        from tukuy.plugins.image import image_resize
+        names = self._param_names(image_resize)
+        assert "max_file_size" in names
+        assert "quality" in names
+
+    def test_docx_write(self):
+        from tukuy.plugins.docx import docx_write
+        names = self._param_names(docx_write)
+        assert "default_author" in names
+
+    def test_zip_create(self):
+        from tukuy.plugins.compression import zip_create
+        names = self._param_names(zip_create)
+        assert "compression_level" in names
+
+    def test_new_types_in_plugins(self):
+        """Spot-check that new types (path, string[], map, secret) are used in real plugins."""
+        from tukuy.plugins.shell import shell_execute
+        from tukuy.plugins.http import http_request
+
+        shell_types = {p.type for p in shell_execute.__skill__.descriptor.config_params}
+        assert "path" in shell_types
+        assert "string[]" in shell_types
+
+        http_types = {p.type for p in http_request.__skill__.descriptor.config_params}
+        assert "map" in http_types
+        assert "secret" in http_types
+        assert "string[]" in http_types
+
+    def test_config_params_serialize_in_descriptor(self):
+        """Verify config_params serialize correctly through SkillDescriptor.to_dict()."""
+        from tukuy.plugins.http import http_request
+
+        d = http_request.__skill__.descriptor.to_dict()
+        assert "config_params" in d
+        param_dicts = d["config_params"]
+        assert len(param_dicts) == 4
+
+        # Find the map-type param
+        headers_param = next(p for p in param_dicts if p["name"] == "default_headers")
+        assert headers_param["type"] == "map"
+        assert headers_param["keyPlaceholder"] == "Header-Name"
+        assert headers_param["valuePlaceholder"] == "value"
+
+        # Find the secret-type param
+        auth_param = next(p for p in param_dicts if p["name"] == "auth_token")
+        assert auth_param["type"] == "secret"
+        assert auth_param["placeholder"] == "sk-..."

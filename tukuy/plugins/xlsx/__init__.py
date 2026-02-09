@@ -15,7 +15,7 @@ from ...base import ChainableTransformer
 from ...types import TransformContext
 from ...plugins.base import TransformerPlugin
 from ...safety import check_read_path, check_write_path
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 # ── Transformers ──────────────────────────────────────────────────────────
@@ -168,6 +168,17 @@ class XlsxToCsvTransformer(ChainableTransformer[str, str]):
     icon="table",
     risk_level=RiskLevel.SAFE,
     group="Excel",
+    config_params=[
+        ConfigParam(
+            name="max_rows_per_sheet",
+            display_name="Max Rows per Sheet",
+            description="Maximum rows to read per sheet.",
+            type="number",
+            default=1000,
+            min=1,
+            max=1000000,
+        ),
+    ],
 )
 def xlsx_read(
     path: str,

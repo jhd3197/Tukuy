@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional
 
 from ...plugins.base import TransformerPlugin
 from ...safety import check_command, get_security_context
-from ...skill import skill, RiskLevel
+from ...skill import skill, ConfigParam, ConfigScope, RiskLevel
 
 
 @skill(
@@ -28,6 +28,34 @@ from ...skill import skill, RiskLevel
     icon="terminal",
     risk_level=RiskLevel.DANGEROUS,
     group="Shell",
+    config_params=[
+        ConfigParam(
+            name="timeout",
+            display_name="Timeout",
+            description="Default timeout for command execution.",
+            type="number",
+            default=30,
+            min=1,
+            max=600,
+            unit="seconds",
+        ),
+        ConfigParam(
+            name="default_cwd",
+            display_name="Working Directory",
+            description="Default working directory for commands.",
+            type="path",
+            path_type="directory",
+            placeholder="/path/to/project",
+        ),
+        ConfigParam(
+            name="allowed_commands",
+            display_name="Allowed Commands",
+            description="Whitelist of permitted commands. Empty allows all.",
+            type="string[]",
+            default=[],
+            item_placeholder="e.g. ls, git, npm",
+        ),
+    ],
 )
 def shell_execute(
     command: str,
