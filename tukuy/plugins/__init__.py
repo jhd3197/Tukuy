@@ -28,6 +28,7 @@ _BUILTIN_PLUGIN_PATHS = {
     'html_validate': ('tukuy.plugins.html_validate', 'HtmlValidatePlugin'),
     'color': ('tukuy.plugins.color', 'ColorPlugin'),
     'minify': ('tukuy.plugins.minify', 'MinifyPlugin'),
+    'encoding': ('tukuy.plugins.encoding', 'EncodingPlugin'),
     'env': ('tukuy.plugins.env', 'EnvPlugin'),
     'diff': ('tukuy.plugins.diff', 'DiffPlugin'),
     'schema': ('tukuy.plugins.schema', 'SchemaPlugin'),

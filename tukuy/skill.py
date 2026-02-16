@@ -216,32 +216,197 @@ def _resolve_schema(schema: Any) -> Optional[Dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 
+def _annotation_to_json_schema(annotation: Any) -> Dict[str, Any]:
+    """Convert a Python type annotation to a JSON Schema snippet.
+
+    Handles ``Optional[X]`` (``X | None``), ``list[X]``, ``dict[K, V]``,
+    and falls back to ``_resolve_schema`` for simple/Pydantic types.
+    Returns ``{"type": "string"}`` for unknown or missing annotations.
+    """
+    if annotation is inspect.Parameter.empty or annotation is None:
+        return {"type": "string"}
+
+    origin = getattr(annotation, "__origin__", None)
+    args = getattr(annotation, "__args__", ())
+
+    # Union types — handle Optional[X] (Union[X, None] or X | None)
+    import types as _types
+
+    if isinstance(annotation, _types.UnionType) or (
+        origin is not None
+        and getattr(origin, "__name__", None) == "Union"
+    ):
+        non_none = [a for a in args if a is not type(None)]
+        if len(non_none) == 1:
+            return _annotation_to_json_schema(non_none[0])
+        # Multi-type union — fall back to string
+        return {"type": "string"}
+
+    # list[X]
+    if origin is list and args:
+        return {"type": "array", "items": _annotation_to_json_schema(args[0])}
+
+    # dict[K, V]
+    if origin is dict:
+        return {"type": "object"}
+
+    # Simple / Pydantic types via _resolve_schema
+    try:
+        resolved = _resolve_schema(annotation)
+        if resolved is not None:
+            return resolved
+    except (TypeError, Exception):
+        pass
+
+    return {"type": "string"}
+
+
+def _parse_docstring_params(docstring: Optional[str]) -> Dict[str, str]:
+    """Extract parameter descriptions from a Google-style docstring ``Args:`` section.
+
+    Returns a mapping of ``{param_name: description}``.
+    """
+    if not docstring:
+        return {}
+    lines = docstring.split("\n")
+    params: Dict[str, str] = {}
+    in_args = False
+    current_param: Optional[str] = None
+    current_desc_parts: List[str] = []
+    args_indent: Optional[int] = None
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Detect start of Args section
+        if stripped in ("Args:", "Arguments:", "Parameters:"):
+            in_args = True
+            args_indent = None
+            continue
+
+        if not in_args:
+            continue
+
+        # Detect end of Args section (next section header)
+        if (
+            stripped
+            and not stripped.startswith("-")
+            and stripped.endswith(":")
+            and " " not in stripped
+        ):
+            if current_param is not None:
+                params[current_param] = " ".join(current_desc_parts).strip()
+            break
+
+        if not stripped:
+            continue
+
+        content_indent = len(line) - len(line.lstrip())
+        if args_indent is None and stripped:
+            args_indent = content_indent
+
+        # New parameter line: "param_name: description"
+        if content_indent == args_indent and ":" in stripped:
+            if current_param is not None:
+                params[current_param] = " ".join(current_desc_parts).strip()
+            colon_idx = stripped.index(":")
+            param_part = stripped[:colon_idx].strip()
+            if " (" in param_part:
+                param_part = param_part[: param_part.index(" (")]
+            current_param = param_part
+            current_desc_parts = [stripped[colon_idx + 1 :].strip()]
+        elif current_param is not None and content_indent > (args_indent or 0):
+            current_desc_parts.append(stripped)
+
+    if current_param is not None:
+        params[current_param] = " ".join(current_desc_parts).strip()
+
+    return params
+
+
 def _infer_schemas(fn: Callable) -> tuple:
     """Infer (input_schema, output_schema) from a function's type annotations.
 
+    For multi-parameter functions, builds a full JSON Schema ``object`` with
+    ``properties``, ``required``, and parameter descriptions extracted from
+    the docstring.  This ensures every parameter is visible to the LLM.
+
     Skips ``self``, ``cls``, and ``SkillContext`` parameters by name /
-    annotation.  Returns ``None`` for any annotation that
-    ``_resolve_schema`` cannot handle (complex generics, etc.).
+    annotation.
     """
     sig = inspect.signature(fn)
+    docstring = inspect.getdoc(fn) or ""
+    param_docs = _parse_docstring_params(docstring)
 
-    # --- input schema: first non-self/cls/context parameter's annotation ---
-    input_schema = None
+    # Collect all eligible parameters
+    eligible_params: List[tuple] = []  # (name, param)
     for param_name, param in sig.parameters.items():
         if param_name in ("self", "cls"):
             continue
-        # Skip SkillContext parameters
         ann = param.annotation
         if ann is not inspect.Parameter.empty:
-            ann_name = getattr(ann, "__name__", None) or getattr(ann, "__qualname__", str(ann))
+            ann_name = getattr(ann, "__name__", None) or getattr(
+                ann, "__qualname__", str(ann)
+            )
             if ann_name == "SkillContext":
                 continue
-        if ann is not inspect.Parameter.empty:
+        eligible_params.append((param_name, param))
+
+    # --- input schema ---
+    input_schema: Optional[Dict[str, Any]] = None
+
+    if len(eligible_params) == 0:
+        input_schema = None
+    elif len(eligible_params) == 1:
+        # Single parameter: check if it's a Pydantic model or complex type
+        # that should be used directly as the schema
+        pname, param = eligible_params[0]
+        ann = param.annotation
+        if ann is not inspect.Parameter.empty and isinstance(ann, type) and (
+            hasattr(ann, "model_json_schema") or hasattr(ann, "schema")
+        ):
+            # Pydantic model — use as-is (produces object with properties)
             try:
                 input_schema = _resolve_schema(ann)
             except (TypeError, Exception):
                 input_schema = None
-        break  # only consider the first eligible parameter
+        else:
+            # Even for a single param, build a proper object schema so the
+            # parameter name, description, and required status are visible.
+            prop = _annotation_to_json_schema(ann)
+            doc_desc = param_docs.get(pname)
+            if doc_desc:
+                prop["description"] = doc_desc
+            input_schema = {
+                "type": "object",
+                "properties": {pname: prop},
+            }
+            if param.default is inspect.Parameter.empty:
+                input_schema["required"] = [pname]
+    else:
+        # Multiple parameters: build a full object schema
+        properties: Dict[str, Any] = {}
+        required: List[str] = []
+
+        for pname, param in eligible_params:
+            ann = param.annotation
+            prop = _annotation_to_json_schema(ann)
+
+            doc_desc = param_docs.get(pname)
+            if doc_desc:
+                prop["description"] = doc_desc
+
+            properties[pname] = prop
+
+            if param.default is inspect.Parameter.empty:
+                required.append(pname)
+
+        input_schema = {
+            "type": "object",
+            "properties": properties,
+        }
+        if required:
+            input_schema["required"] = required
 
     # --- output schema: return annotation ----------------------------------
     output_schema = None
