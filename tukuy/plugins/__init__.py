@@ -46,6 +46,7 @@ _BUILTIN_PLUGIN_PATHS = {
     'yaml': ('tukuy.plugins.yaml_plugin', 'YamlPlugin'),
     'xml': ('tukuy.plugins.xml_plugin', 'XmlPlugin'),
     'local_plugins': ('tukuy.plugins.local_plugins', 'LocalPluginsPlugin'),
+    'feedback': ('tukuy.plugins.feedback', 'FeedbackPlugin'),
 }
 
 
