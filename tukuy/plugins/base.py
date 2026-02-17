@@ -239,6 +239,7 @@ class PluginRegistry:
         new_plugins: Dict[str, TransformerPlugin] = {}
         new_transformers: Dict[str, callable] = {}
         new_skills: Dict[str, "Skill"] = {}
+        new_instructions: Dict[str, "Instruction"] = {}
 
         for source in self._source_priority:
             # Plugins
@@ -271,8 +272,21 @@ class PluginRegistry:
                         name, source,
                     )
 
+            # Instructions
+            for name, instr_obj in self._instructions_by_source.get(source, {}).items():
+                if name not in new_instructions:
+                    new_instructions[name] = instr_obj
+                else:
+                    logger.debug(
+                        "Instruction '%s' from source '%s' shadowed by higher-priority source",
+                        name, source,
+                    )
+
         # Also pick up any sources not in priority list
-        all_sources = set(self._plugins_by_source) | set(self._transformers_by_source) | set(self._skills_by_source)
+        all_sources = (
+            set(self._plugins_by_source) | set(self._transformers_by_source)
+            | set(self._skills_by_source) | set(self._instructions_by_source)
+        )
         extra_sources = all_sources - set(self._source_priority)
         for source in sorted(extra_sources):
             for name, plugin in self._plugins_by_source.get(source, {}).items():
@@ -284,10 +298,14 @@ class PluginRegistry:
             for name, skill_obj in self._skills_by_source.get(source, {}).items():
                 if name not in new_skills:
                     new_skills[name] = skill_obj
+            for name, instr_obj in self._instructions_by_source.get(source, {}).items():
+                if name not in new_instructions:
+                    new_instructions[name] = instr_obj
 
         self._plugins = new_plugins
         self._transformers = new_transformers
         self._skills = new_skills
+        self._instructions = new_instructions
 
     @staticmethod
     def _resolve_source(source) -> str:
@@ -308,6 +326,16 @@ class PluginRegistry:
 
         try:
             self._skills_by_source.setdefault(source_str, {}).update(plugin.skills)
+        except Exception:
+            pass
+
+        # Collect instructions and add them to BOTH instructions and skills layers
+        try:
+            plugin_instructions = plugin.instructions
+            if plugin_instructions:
+                self._instructions_by_source.setdefault(source_str, {}).update(plugin_instructions)
+                # Instructions also appear in skills so bots see them as regular tools
+                self._skills_by_source.setdefault(source_str, {}).update(plugin_instructions)
         except Exception:
             pass
 
@@ -393,6 +421,14 @@ class PluginRegistry:
         except Exception:
             pass
 
+        try:
+            for key in plugin.instructions:
+                self._instructions_by_source.get(found_source, {}).pop(key, None)
+                # Also remove from skills layer
+                self._skills_by_source.get(found_source, {}).pop(key, None)
+        except Exception:
+            pass
+
         self._rebuild_resolved_views()
 
     async def async_unregister(self, name: str) -> None:
@@ -421,6 +457,13 @@ class PluginRegistry:
 
         try:
             for key in plugin.skills:
+                self._skills_by_source.get(found_source, {}).pop(key, None)
+        except Exception:
+            pass
+
+        try:
+            for key in plugin.instructions:
+                self._instructions_by_source.get(found_source, {}).pop(key, None)
                 self._skills_by_source.get(found_source, {}).pop(key, None)
         except Exception:
             pass
@@ -499,6 +542,27 @@ class PluginRegistry:
     def skills(self) -> Dict[str, "Skill"]:
         """Get all registered skills."""
         return self._skills.copy()
+
+    def get_instruction(self, name: str) -> Optional["Instruction"]:
+        """Get an instruction by name.
+
+        Supports qualified names like ``"tukuy:my_instruction"``.
+
+        Args:
+            name: Name of the instruction (optionally qualified as ``source:name``)
+
+        Returns:
+            The Instruction instance, or None if not found
+        """
+        source, bare = self._parse_qualified_name(name)
+        if source is not None:
+            return self._instructions_by_source.get(source, {}).get(bare)
+        return self._instructions.get(name)
+
+    @property
+    def instructions(self) -> Dict[str, "Instruction"]:
+        """Get all registered instructions."""
+        return self._instructions.copy()
 
     # ------------------------------------------------------------------
     # Introspection & priority management

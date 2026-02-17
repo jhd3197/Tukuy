@@ -81,6 +81,16 @@ _BUILTIN_PLUGIN_PATHS = {
     'wayback': ('tukuy.plugins.wayback', 'WaybackPlugin'),
     'open_meteo': ('tukuy.plugins.open_meteo', 'OpenMeteoPlugin'),
     'transcribe': ('tukuy.plugins.transcribe', 'TranscribePlugin'),
+    'instructions_analysis': ('tukuy.plugins.instructions.analysis', 'AnalysisInstructionPack'),
+    'instructions_business': ('tukuy.plugins.instructions.business', 'BusinessInstructionPack'),
+    'instructions_creative': ('tukuy.plugins.instructions.creative', 'CreativeInstructionPack'),
+    'instructions_developer': ('tukuy.plugins.instructions.developer', 'DeveloperInstructionPack'),
+    'instructions_education': ('tukuy.plugins.instructions.education', 'EducationInstructionPack'),
+    'instructions_hr': ('tukuy.plugins.instructions.hr', 'HRInstructionPack'),
+    'instructions_marketing': ('tukuy.plugins.instructions.marketing', 'MarketingInstructionPack'),
+    'instructions_sales': ('tukuy.plugins.instructions.sales', 'SalesInstructionPack'),
+    'instructions_social_media': ('tukuy.plugins.instructions.social_media', 'SocialMediaInstructionPack'),
+    'instructions_writing': ('tukuy.plugins.instructions.writing', 'WritingInstructionPack'),
 }
 
 
