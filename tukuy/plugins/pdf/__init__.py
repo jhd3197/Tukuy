@@ -353,6 +353,49 @@ def pdf_page_count(path: str) -> dict:
     }
 
 
+@skill(
+    name="pdf_to_text_file",
+    description="Convert a PDF file to a plain text file.",
+    category="conversion",
+    tags=["pdf", "text", "convert", "document"],
+    side_effects=True,
+    requires_filesystem=True,
+    required_imports=["pypdf"],
+    display_name="PDF to Text",
+    icon="file-arrow-right",
+    risk_level=RiskLevel.MODERATE,
+    group="PDF",
+)
+def pdf_to_text_file(input: str, output: str = "") -> dict:
+    """Convert a PDF file to a plain text file.
+
+    Args:
+        input: Path to the source PDF file.
+        output: Path for the output .txt file (defaults to same name with .txt extension).
+    """
+    input = check_read_path(input)
+    p = Path(input)
+    if not p.exists():
+        return {"error": f"File not found: {input}"}
+    if not output:
+        output = str(p.with_suffix(".txt"))
+    output = check_write_path(output)
+
+    transformer = PdfExtractTextTransformer("pdf_extract_text")
+    text = transformer._transform(input)
+    if text.startswith("[error]"):
+        return {"error": text}
+
+    Path(output).write_text(text, encoding="utf-8")
+    return {
+        "input": input,
+        "output": output,
+        "char_count": len(text),
+        "word_count": len(text.split()),
+        "success": True,
+    }
+
+
 class PdfPlugin(TransformerPlugin):
     """Plugin providing PDF processing transformers and skills."""
 
@@ -380,6 +423,7 @@ class PdfPlugin(TransformerPlugin):
             "pdf_merge": pdf_merge.__skill__,
             "pdf_split": pdf_split.__skill__,
             "pdf_page_count": pdf_page_count.__skill__,
+            "pdf_to_text_file": pdf_to_text_file.__skill__,
         }
 
     @property

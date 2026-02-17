@@ -330,6 +330,206 @@ def docx_write(
     }
 
 
+@skill(
+    name="pdf_to_docx",
+    description="Convert a PDF file to a Word document, preserving text and tables.",
+    category="conversion",
+    tags=["pdf", "docx", "word", "convert", "document"],
+    side_effects=True,
+    requires_filesystem=True,
+    required_imports=["pypdf", "docx"],
+    display_name="PDF to Word",
+    icon="file-arrow-right",
+    risk_level=RiskLevel.MODERATE,
+    group="Word",
+)
+def pdf_to_docx(
+    input: str,
+    output: str = "",
+    title: str = "",
+    author: str = "",
+) -> dict:
+    """Convert a PDF file to a Word (.docx) document.
+
+    Args:
+        input: Path to the source PDF file.
+        output: Path for the output .docx file (defaults to same name with .docx extension).
+        title: Optional document title for the Word file metadata.
+        author: Optional author for the Word file metadata.
+    """
+    input = check_read_path(input)
+    p = Path(input)
+    if not p.exists():
+        return {"error": f"File not found: {input}"}
+
+    if not output:
+        output = str(p.with_suffix(".docx"))
+    output = check_write_path(output)
+
+    # --- Read PDF ---
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        try:
+            from PyPDF2 import PdfReader  # type: ignore[no-redef]
+        except ImportError:
+            return {"error": "pypdf is required. Install with: pip install pypdf"}
+
+    try:
+        from docx import Document
+    except ImportError:
+        return {"error": "python-docx is required. Install with: pip install python-docx"}
+
+    reader = PdfReader(input)
+    doc = Document()
+
+    # Metadata
+    pdf_meta = reader.metadata
+    doc_title = title or (pdf_meta.get("/Title", "") if pdf_meta else "") or ""
+    doc_author = author or (pdf_meta.get("/Author", "") if pdf_meta else "") or ""
+    if doc_title:
+        doc.core_properties.title = doc_title
+    if doc_author:
+        doc.core_properties.author = doc_author
+
+    total_pages = len(reader.pages)
+
+    for i, page in enumerate(reader.pages):
+        text = page.extract_text() or ""
+        if not text.strip():
+            continue
+
+        # Split text into paragraphs and add to doc
+        paragraphs = [line.strip() for line in text.split("\n") if line.strip()]
+        for para_text in paragraphs:
+            doc.add_paragraph(para_text)
+
+        # Page separator (except last page)
+        if i < total_pages - 1:
+            doc.add_page_break()
+
+    # --- Extract tables via pdfplumber if available ---
+    tables_extracted = 0
+    try:
+        import pdfplumber
+
+        with pdfplumber.open(input) as pdf:
+            for page in pdf.pages:
+                page_tables = page.extract_tables() or []
+                for table_data in page_tables:
+                    if not table_data or len(table_data) < 2:
+                        continue
+                    headers = [str(h or "").strip() for h in table_data[0]]
+                    table = doc.add_table(rows=1, cols=len(headers))
+                    table.style = "Table Grid"
+                    for j, header in enumerate(headers):
+                        table.rows[0].cells[j].text = header
+                    for row_data in table_data[1:]:
+                        row = table.add_row()
+                        for j, cell_val in enumerate(row_data):
+                            if j < len(headers):
+                                row.cells[j].text = str(cell_val or "").strip()
+                    tables_extracted += 1
+    except ImportError:
+        pass  # pdfplumber not installed — skip table extraction
+
+    doc.save(output)
+
+    return {
+        "input": input,
+        "output": output,
+        "pages_converted": total_pages,
+        "tables_extracted": tables_extracted,
+        "title": doc_title,
+        "success": True,
+    }
+
+
+@skill(
+    name="docx_to_text_file",
+    description="Convert a Word document to a plain text file.",
+    category="conversion",
+    tags=["docx", "word", "text", "convert", "document"],
+    side_effects=True,
+    requires_filesystem=True,
+    required_imports=["docx"],
+    display_name="Word to Text",
+    icon="file-arrow-right",
+    risk_level=RiskLevel.MODERATE,
+    group="Word",
+)
+def docx_to_text_file(input: str, output: str = "") -> dict:
+    """Convert a Word document to a plain text file.
+
+    Args:
+        input: Path to the source .docx file.
+        output: Path for the output .txt file (defaults to same name with .txt extension).
+    """
+    input = check_read_path(input)
+    p = Path(input)
+    if not p.exists():
+        return {"error": f"File not found: {input}"}
+    if not output:
+        output = str(p.with_suffix(".txt"))
+    output = check_write_path(output)
+
+    transformer = DocxToTextTransformer("docx_to_text")
+    text = transformer._transform(input)
+    if text.startswith("[error]"):
+        return {"error": text}
+
+    Path(output).write_text(text, encoding="utf-8")
+    return {
+        "input": input,
+        "output": output,
+        "char_count": len(text),
+        "word_count": len(text.split()),
+        "success": True,
+    }
+
+
+@skill(
+    name="docx_to_markdown_file",
+    description="Convert a Word document to a Markdown file.",
+    category="conversion",
+    tags=["docx", "word", "markdown", "convert", "document"],
+    side_effects=True,
+    requires_filesystem=True,
+    required_imports=["docx"],
+    display_name="Word to Markdown",
+    icon="file-arrow-right",
+    risk_level=RiskLevel.MODERATE,
+    group="Word",
+)
+def docx_to_markdown_file(input: str, output: str = "") -> dict:
+    """Convert a Word document to a Markdown file.
+
+    Args:
+        input: Path to the source .docx file.
+        output: Path for the output .md file (defaults to same name with .md extension).
+    """
+    input = check_read_path(input)
+    p = Path(input)
+    if not p.exists():
+        return {"error": f"File not found: {input}"}
+    if not output:
+        output = str(p.with_suffix(".md"))
+    output = check_write_path(output)
+
+    transformer = DocxToMarkdownTransformer("docx_to_markdown")
+    md = transformer._transform(input)
+    if md.startswith("[error]"):
+        return {"error": md}
+
+    Path(output).write_text(md, encoding="utf-8")
+    return {
+        "input": input,
+        "output": output,
+        "char_count": len(md),
+        "success": True,
+    }
+
+
 class DocxPlugin(TransformerPlugin):
     """Plugin providing Word document processing."""
 
@@ -349,6 +549,9 @@ class DocxPlugin(TransformerPlugin):
         return {
             "docx_read": docx_read.__skill__,
             "docx_write": docx_write.__skill__,
+            "pdf_to_docx": pdf_to_docx.__skill__,
+            "docx_to_text_file": docx_to_text_file.__skill__,
+            "docx_to_markdown_file": docx_to_markdown_file.__skill__,
         }
 
     @property
@@ -357,7 +560,7 @@ class DocxPlugin(TransformerPlugin):
         return PluginManifest(
             name="docx",
             display_name="Word",
-            description="Read and create Word documents with text, tables, and lists.",
+            description="Read, create, and convert Word documents. Supports PDF to Word conversion.",
             icon="file-text",
             group="Documents",
             requires=PluginRequirements(filesystem=True, imports=["docx"]),

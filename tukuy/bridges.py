@@ -5,6 +5,7 @@ import json
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from .context import SkillContext
+from .instruction import Instruction
 from .skill import Skill, SkillDescriptor, SkillResult
 
 
@@ -26,20 +27,29 @@ def _get_first_param_name(fn: Callable) -> str:
     return "input"
 
 
-def _normalize(skill_or_fn: Any) -> Skill:
-    """Accept a ``Skill`` instance **or** a ``@skill``-decorated function and
-    return the underlying ``Skill``.  Raises ``TypeError`` otherwise.
+def _normalize(skill_or_fn: Any) -> Union[Skill, Instruction]:
+    """Accept a ``Skill``, ``Instruction``, or a decorated function and
+    return the underlying ``Skill`` or ``Instruction``.
+
+    Checks for ``__instruction__`` first so that instruction-decorated
+    functions are recognised even though they also carry ``__skill__``.
+    Raises ``TypeError`` otherwise.
     """
+    if isinstance(skill_or_fn, Instruction):
+        return skill_or_fn
     if isinstance(skill_or_fn, Skill):
         return skill_or_fn
-    if callable(skill_or_fn) and hasattr(skill_or_fn, "__skill__"):
-        return skill_or_fn.__skill__
+    if callable(skill_or_fn):
+        if hasattr(skill_or_fn, "__instruction__"):
+            return skill_or_fn.__instruction__
+        if hasattr(skill_or_fn, "__skill__"):
+            return skill_or_fn.__skill__
     raise TypeError(
-        f"Expected a Skill instance or @skill-decorated function, got {type(skill_or_fn).__name__}"
+        f"Expected a Skill/Instruction instance or decorated function, got {type(skill_or_fn).__name__}"
     )
 
 
-def _wrap_as_parameters(skill_obj: Skill) -> dict:
+def _wrap_as_parameters(skill_obj: Union[Skill, Instruction]) -> dict:
     """Ensure the skill's ``input_schema`` is a JSON Schema *object* suitable
     for the ``parameters`` / ``input_schema`` field of a tool definition.
 
@@ -57,7 +67,11 @@ def _wrap_as_parameters(skill_obj: Skill) -> dict:
         return schema
 
     # Simple type (e.g. {"type": "string"}) — wrap with param name.
-    param_name = _get_first_param_name(skill_obj.fn)
+    # Instructions may have fn=None so fall back to "input".
+    if skill_obj.fn is not None:
+        param_name = _get_first_param_name(skill_obj.fn)
+    else:
+        param_name = "input"
     return {
         "type": "object",
         "properties": {param_name: schema},
@@ -77,15 +91,21 @@ def _serialize_result_value(result: SkillResult) -> str:
         return str(result.value)
 
 
-def _unwrap_single_param(skill_obj: Skill, args: dict) -> Union[dict, Any]:
+def _unwrap_single_param(skill_obj: Union[Skill, Instruction], args: dict) -> Union[dict, Any]:
     """Handle parameter-name mismatch between a wrapped schema and the actual
     function signature.
 
     If *args* has exactly one key and the function has exactly one non-self/cls
     parameter whose name differs from that key, remap to the correct name.
     Otherwise return *args* unchanged.
+
+    For Instructions with ``fn=None``, returns *args* unchanged since there
+    is no function signature to compare against.
     """
     if not isinstance(args, dict) or len(args) != 1:
+        return args
+
+    if skill_obj.fn is None:
         return args
 
     sig = inspect.signature(skill_obj.fn)
@@ -206,6 +226,16 @@ def dispatch_openai(
         return format_result_openai(call_id, error_result)
 
     skill_obj = _normalize(skills[name])
+
+    # Instructions are async-only
+    if isinstance(skill_obj, Instruction):
+        error_result = SkillResult(
+            error=f"Instruction '{name}' requires async dispatch — "
+                  "use async_dispatch_openai or async_dispatch_anthropic.",
+            success=False,
+        )
+        return format_result_openai(call_id, error_result)
+
     args = _unwrap_single_param(skill_obj, args)
 
     ctx_kwargs: Dict[str, Any] = {}
@@ -245,6 +275,16 @@ def dispatch_anthropic(
         return format_result_anthropic(use_id, error_result)
 
     skill_obj = _normalize(skills[name])
+
+    # Instructions are async-only
+    if isinstance(skill_obj, Instruction):
+        error_result = SkillResult(
+            error=f"Instruction '{name}' requires async dispatch — "
+                  "use async_dispatch_openai or async_dispatch_anthropic.",
+            success=False,
+        )
+        return format_result_anthropic(use_id, error_result)
+
     args = _unwrap_single_param(skill_obj, args)
 
     ctx_kwargs: Dict[str, Any] = {}

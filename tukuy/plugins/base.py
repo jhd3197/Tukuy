@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 from logging import getLogger
 
 if TYPE_CHECKING:
+    from ..instruction import Instruction
     from ..manifest import PluginManifest
     from ..skill import Skill
 
@@ -106,6 +107,16 @@ class TransformerPlugin(ABC):
 
         Returns:
             A dictionary mapping skill names to Skill instances.
+            Defaults to an empty dict for backward compatibility.
+        """
+        return {}
+
+    @property
+    def instructions(self) -> Dict[str, "Instruction"]:
+        """Get the instructions provided by this plugin.
+
+        Returns:
+            A dictionary mapping instruction names to Instruction instances.
             Defaults to an empty dict for backward compatibility.
         """
         return {}
@@ -211,11 +222,13 @@ class PluginRegistry:
         self._plugins_by_source: Dict[str, Dict[str, TransformerPlugin]] = {}
         self._transformers_by_source: Dict[str, Dict[str, callable]] = {}
         self._skills_by_source: Dict[str, Dict[str, "Skill"]] = {}
+        self._instructions_by_source: Dict[str, Dict[str, "Instruction"]] = {}
 
         # Flat resolved views (rebuilt by _rebuild_resolved_views)
         self._plugins: Dict[str, TransformerPlugin] = {}
         self._transformers: Dict[str, callable] = {}
         self._skills: Dict[str, "Skill"] = {}
+        self._instructions: Dict[str, "Instruction"] = {}
 
     # ------------------------------------------------------------------
     # Internal helpers

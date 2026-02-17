@@ -10,6 +10,9 @@ from .skill import (
     RiskLevel, ConfigScope, ConfigParam,
     SkillDescriptor, SkillExample, SkillResult, Skill, skill,
 )
+from .instruction import (
+    LLMBackend, InstructionDescriptor, Instruction, instruction,
+)
 from .context import SkillContext
 from .manifest import PluginManifest, PluginRequirements
 from .availability import (
@@ -73,6 +76,11 @@ __all__ = [
     'SkillResult',
     'Skill',
     'skill',
+    # Instruction system
+    'LLMBackend',
+    'InstructionDescriptor',
+    'Instruction',
+    'instruction',
     'SkillContext',
     # Plugin manifest
     'PluginManifest',

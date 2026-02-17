@@ -40,10 +40,25 @@ http = [
 conversion = [
     "pyyaml>=6.0",
 ]
+documents = [
+    "pypdf>=4.0",
+    "python-docx>=1.0",
+    "openpyxl>=3.1",
+]
+transcribe = [
+    "openai-whisper>=20230314",
+]
+mcp = [
+    "mcp>=1.0",
+]
 all = [
     "beautifulsoup4>=4.9.0",
     "html5lib>=1.1",
     "httpx>=0.24.0",
+    "mcp>=1.0",
+    "openpyxl>=3.1",
+    "pypdf>=4.0",
+    "python-docx>=1.0",
     "pyyaml>=6.0",
 ]
 dev = [
@@ -52,8 +67,16 @@ dev = [
     "beautifulsoup4>=4.9.0",
     "html5lib>=1.1",
     "httpx>=0.24.0",
+    "mcp>=1.0",
+    "openpyxl>=3.1",
+    "pypdf>=4.0",
+    "python-docx>=1.0",
     "pyyaml>=6.0",
 ]
+
+[project.scripts]
+tukuy = "tukuy.cli:main"
+tukuy-mcp = "tukuy.mcp_server:main"
 
 [project.urls]
 Homepage = "https://github.com/jhd3197/tukuy"

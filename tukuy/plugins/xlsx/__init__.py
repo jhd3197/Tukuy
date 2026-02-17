@@ -337,6 +337,125 @@ def xlsx_sheets(path: str) -> dict:
     }
 
 
+@skill(
+    name="xlsx_to_csv",
+    description="Convert an Excel file to a CSV file.",
+    category="conversion",
+    tags=["xlsx", "csv", "excel", "convert"],
+    side_effects=True,
+    requires_filesystem=True,
+    required_imports=["openpyxl"],
+    display_name="Excel to CSV",
+    icon="file-arrow-right",
+    risk_level=RiskLevel.MODERATE,
+    group="Excel",
+)
+def xlsx_to_csv(
+    input: str,
+    output: str = "",
+    sheet: Optional[str] = None,
+) -> dict:
+    """Convert an Excel spreadsheet to a CSV file.
+
+    Args:
+        input: Path to the source .xlsx file.
+        output: Path for the output .csv file (defaults to same name with .csv extension).
+        sheet: Sheet name to convert (defaults to the active sheet).
+    """
+    input = check_read_path(input)
+    p = Path(input)
+    if not p.exists():
+        return {"error": f"File not found: {input}"}
+    if not output:
+        output = str(p.with_suffix(".csv"))
+    output = check_write_path(output)
+
+    try:
+        from openpyxl import load_workbook
+    except ImportError:
+        return {"error": "openpyxl is required. Install with: pip install openpyxl"}
+
+    wb = load_workbook(input, read_only=True, data_only=True)
+    ws = wb[sheet] if sheet and sheet in wb.sheetnames else wb.active
+
+    row_count = 0
+    with open(output, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        for row in ws.iter_rows(values_only=True):
+            writer.writerow([str(c) if c is not None else "" for c in row])
+            row_count += 1
+    wb.close()
+
+    return {
+        "input": input,
+        "output": output,
+        "sheet": ws.title,
+        "rows": row_count,
+        "success": True,
+    }
+
+
+@skill(
+    name="csv_to_xlsx",
+    description="Convert a CSV file to an Excel file.",
+    category="conversion",
+    tags=["csv", "xlsx", "excel", "convert"],
+    side_effects=True,
+    requires_filesystem=True,
+    required_imports=["openpyxl"],
+    display_name="CSV to Excel",
+    icon="file-arrow-right",
+    risk_level=RiskLevel.MODERATE,
+    group="Excel",
+)
+def csv_to_xlsx(
+    input: str,
+    output: str = "",
+    sheet: str = "Sheet1",
+    delimiter: str = ",",
+) -> dict:
+    """Convert a CSV file to an Excel spreadsheet.
+
+    Args:
+        input: Path to the source .csv file.
+        output: Path for the output .xlsx file (defaults to same name with .xlsx extension).
+        sheet: Name for the worksheet (default "Sheet1").
+        delimiter: CSV delimiter character (default ",").
+    """
+    input = check_read_path(input)
+    p = Path(input)
+    if not p.exists():
+        return {"error": f"File not found: {input}"}
+    if not output:
+        output = str(p.with_suffix(".xlsx"))
+    output = check_write_path(output)
+
+    try:
+        from openpyxl import Workbook
+    except ImportError:
+        return {"error": "openpyxl is required. Install with: pip install openpyxl"}
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = sheet
+
+    row_count = 0
+    with open(input, "r", encoding="utf-8") as f:
+        reader = csv.reader(f, delimiter=delimiter)
+        for row in reader:
+            ws.append(row)
+            row_count += 1
+
+    wb.save(output)
+    return {
+        "input": input,
+        "output": output,
+        "sheet": sheet,
+        "rows": row_count,
+        "success": True,
+    }
+
+
 class XlsxPlugin(TransformerPlugin):
     """Plugin providing Excel spreadsheet processing."""
 
@@ -364,6 +483,8 @@ class XlsxPlugin(TransformerPlugin):
             "xlsx_read": xlsx_read.__skill__,
             "xlsx_write": xlsx_write.__skill__,
             "xlsx_sheets": xlsx_sheets.__skill__,
+            "xlsx_to_csv": xlsx_to_csv.__skill__,
+            "csv_to_xlsx": csv_to_xlsx.__skill__,
         }
 
     @property

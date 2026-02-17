@@ -427,6 +427,161 @@ except TransformationError as e:
 
 ---
 
+## CLI
+
+Tukuy ships with a command-line interface for inspecting plugins, running skills, and applying transformers directly from the terminal.
+
+```bash
+pip install tukuy
+```
+
+### Discovery
+
+```bash
+# High-level summary (plugin/skill/transformer/group counts)
+tukuy info
+
+# List everything
+tukuy list plugins
+tukuy list skills
+tukuy list transformers
+tukuy list groups
+
+# Filter lists
+tukuy list skills --plugin country
+tukuy list skills --group Integrations
+tukuy list skills --tag crypto
+tukuy list plugins --group Data
+
+# JSON output for scripting
+tukuy list skills --json
+tukuy list plugins --json
+```
+
+### Inspect
+
+```bash
+# Detailed plugin info (transformers, skills, requirements)
+tukuy show plugin country
+
+# Detailed skill info (parameters, risk level, tags, config)
+tukuy show skill crypto_price
+```
+
+### Run Skills
+
+```bash
+# Run a skill with keyword arguments
+tukuy run word_define --word hello
+tukuy run crypto_price --coins bitcoin
+tukuy run public_holidays --country_code US
+
+# Raw JSON output
+tukuy run crypto_price --coins bitcoin --raw
+```
+
+### Apply Transformers
+
+```bash
+# Transform inline text
+tukuy transform lowercase "HELLO WORLD"
+tukuy transform hash_text "secret" --algorithm md5
+
+# Pipe input from stdin
+echo "HELLO" | tukuy transform lowercase
+cat data.json | tukuy transform parse_json
+```
+
+---
+
+## MCP Server
+
+Tukuy includes an [MCP](https://modelcontextprotocol.io/) server that exposes all plugins, skills, and transformers as tools for Claude Desktop, Claude Code, and other MCP clients.
+
+```bash
+pip install 'tukuy[mcp]'
+```
+
+### Configuration
+
+**Claude Desktop** (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "tukuy": {
+      "command": "python",
+      "args": ["-m", "tukuy.mcp_server"]
+    }
+  }
+}
+```
+
+**Claude Code** (`.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "tukuy": {
+      "command": "python",
+      "args": ["-m", "tukuy.mcp_server"]
+    }
+  }
+}
+```
+
+The server provides 6 meta-tools rather than registering hundreds of individual tools:
+
+| Tool | Purpose |
+|------|---------|
+| `tukuy_info` | Summary of all capabilities (counts, groups) |
+| `tukuy_browse` | Browse plugins with their skills and transformers |
+| `tukuy_search` | Keyword search across skills and transformers |
+| `tukuy_show` | Detailed info for a specific skill or transformer |
+| `tukuy_run` | Execute a skill with parameters |
+| `tukuy_transform` | Apply a transformer to input |
+
+### Filtering Plugins
+
+Control which plugins are exposed with `--only` / `--exclude` flags or environment variables. Values can be plugin names or group names.
+
+```bash
+# Only expose math-related plugins
+tukuy-mcp --only numerical
+
+# Only expose an entire group
+tukuy-mcp --only Data
+
+# Exclude dangerous plugins
+tukuy-mcp --exclude shell,file_ops
+
+# Combine: start from a group, then remove some
+tukuy-mcp --only Data --exclude sql
+```
+
+Environment variables work the same way, useful for JSON-based MCP config:
+
+```json
+{
+  "mcpServers": {
+    "tukuy-math": {
+      "command": "python",
+      "args": ["-m", "tukuy.mcp_server"],
+      "env": { "TUKUY_MCP_ONLY": "numerical,date" }
+    },
+    "tukuy-safe": {
+      "command": "python",
+      "args": ["-m", "tukuy.mcp_server"],
+      "env": { "TUKUY_MCP_EXCLUDE": "shell,file_ops,git" }
+    }
+  }
+}
+```
+
+Available groups: `Code`, `Core`, `Data`, `Documents`, `Extensibility`, `Integrations`, `Interaction`, `Media`, `Web`.
+
+---
+
 ## Architecture
 
 ```
@@ -436,9 +591,11 @@ tukuy/
     safety.py         SafetyPolicy, manifest validation, sandbox integration
     bridges.py        OpenAI and Anthropic tool format bridges
     chain.py          Chain, Branch, Parallel composition
+    cli.py            Command-line interface (tukuy info/list/show/run/transform)
+    mcp_server.py     MCP server for Claude Desktop / Claude Code
     async_base.py     Async transformer base classes
     base.py           Sync transformer base classes
-    plugins/          Built-in plugins (text, html, json, date, numerical, validation)
+    plugins/          Built-in plugins (text, html, json, date, numerical, validation, ...)
     core/             Registration, introspection, unified registry
     transformers/     Transformer implementations
 ```
