@@ -53,6 +53,16 @@ _BUILTIN_PLUGIN_PATHS = {
     'qrcode': ('tukuy.plugins.qrcode', 'QrCodePlugin'),
     'translate': ('tukuy.plugins.translate', 'TranslatePlugin'),
     'geocoding': ('tukuy.plugins.geocoding', 'GeocodingPlugin'),
+    'coingecko': ('tukuy.plugins.coingecko', 'CoinGeckoPlugin'),
+    'google_maps': ('tukuy.plugins.google_maps', 'GoogleMapsPlugin'),
+    'yelp': ('tukuy.plugins.yelp', 'YelpPlugin'),
+    'newsapi': ('tukuy.plugins.newsapi', 'NewsApiPlugin'),
+    'finnhub': ('tukuy.plugins.finnhub', 'FinnhubPlugin'),
+    'ticketmaster': ('tukuy.plugins.ticketmaster', 'TicketmasterPlugin'),
+    'spotify': ('tukuy.plugins.spotify', 'SpotifyPlugin'),
+    'amadeus': ('tukuy.plugins.amadeus', 'AmadeusPlugin'),
+    'google_calendar': ('tukuy.plugins.google_calendar', 'GoogleCalendarPlugin'),
+    'twilio': ('tukuy.plugins.twilio', 'TwilioPlugin'),
 }
 
 
