@@ -47,6 +47,12 @@ _BUILTIN_PLUGIN_PATHS = {
     'xml': ('tukuy.plugins.xml_plugin', 'XmlPlugin'),
     'local_plugins': ('tukuy.plugins.local_plugins', 'LocalPluginsPlugin'),
     'feedback': ('tukuy.plugins.feedback', 'FeedbackPlugin'),
+    'currency': ('tukuy.plugins.currency', 'CurrencyPlugin'),
+    'weather': ('tukuy.plugins.weather', 'WeatherPlugin'),
+    'country': ('tukuy.plugins.country', 'CountryPlugin'),
+    'qrcode': ('tukuy.plugins.qrcode', 'QrCodePlugin'),
+    'translate': ('tukuy.plugins.translate', 'TranslatePlugin'),
+    'geocoding': ('tukuy.plugins.geocoding', 'GeocodingPlugin'),
 }
 
 
