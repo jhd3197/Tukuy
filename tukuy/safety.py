@@ -119,6 +119,8 @@ class SecurityContext:
         Hostnames that are always denied.
     allowed_commands : list of str, optional
         Shell command prefixes allowed. ``None`` = unrestricted.
+    blocked_commands : list of str
+        Command prefixes that are always denied (takes precedence over allow-list).
     working_directory : str, optional
         Base directory for resolving relative paths.
     """
@@ -130,6 +132,7 @@ class SecurityContext:
     allowed_hosts: Optional[List[str]] = None
     blocked_hosts: List[str] = field(default_factory=list)
     allowed_commands: Optional[List[str]] = None
+    blocked_commands: List[str] = field(default_factory=list)
     working_directory: Optional[str] = None
 
     def resolve_path(self, path: str) -> Path:
@@ -188,9 +191,13 @@ class SecurityContext:
 
     def is_command_allowed(self, cmd: str) -> bool:
         """Return ``True`` if shell command *cmd* is permitted."""
+        cmd_stripped = cmd.strip()
+        # Blocked commands take precedence
+        for bc in self.blocked_commands:
+            if cmd_stripped == bc or cmd_stripped.startswith(bc + " "):
+                return False
         if self.allowed_commands is None:
             return True
-        cmd_stripped = cmd.strip()
         return any(cmd_stripped == ac or cmd_stripped.startswith(ac + " ") for ac in self.allowed_commands)
 
 

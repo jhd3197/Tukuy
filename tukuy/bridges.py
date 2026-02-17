@@ -2,8 +2,9 @@
 
 import inspect
 import json
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
+from .context import SkillContext
 from .skill import Skill, SkillDescriptor, SkillResult
 
 
@@ -172,12 +173,20 @@ def format_result_anthropic(tool_use_id: str, result: SkillResult) -> dict:
 # ---------------------------------------------------------------------------
 
 
-def dispatch_openai(tool_call: dict, skills: Dict[str, Any]) -> dict:
+def dispatch_openai(
+    tool_call: dict,
+    skills: Dict[str, Any],
+    *,
+    context: Optional[SkillContext] = None,
+) -> dict:
     """Look up a skill by name, invoke it, and return a formatted OpenAI
     tool-result message.
 
     *skills* maps tool names to ``Skill`` instances or ``@skill``-decorated
     functions.
+
+    *context*, if provided, is forwarded to :meth:`Skill.invoke` so that
+    skills can read per-bot configuration via ``ctx.config``.
     """
     call_id = tool_call.get("id", "")
     func = tool_call.get("function", {})
@@ -199,20 +208,32 @@ def dispatch_openai(tool_call: dict, skills: Dict[str, Any]) -> dict:
     skill_obj = _normalize(skills[name])
     args = _unwrap_single_param(skill_obj, args)
 
+    ctx_kwargs: Dict[str, Any] = {}
+    if context is not None:
+        ctx_kwargs["context"] = context
+
     if isinstance(args, dict):
-        result = skill_obj.invoke(**args)
+        result = skill_obj.invoke(**args, **ctx_kwargs)
     else:
-        result = skill_obj.invoke(args)
+        result = skill_obj.invoke(args, **ctx_kwargs)
 
     return format_result_openai(call_id, result)
 
 
-def dispatch_anthropic(tool_use: dict, skills: Dict[str, Any]) -> dict:
+def dispatch_anthropic(
+    tool_use: dict,
+    skills: Dict[str, Any],
+    *,
+    context: Optional[SkillContext] = None,
+) -> dict:
     """Look up a skill by name, invoke it, and return a formatted Anthropic
     tool-result content block.
 
     *skills* maps tool names to ``Skill`` instances or ``@skill``-decorated
     functions.
+
+    *context*, if provided, is forwarded to :meth:`Skill.invoke` so that
+    skills can read per-bot configuration via ``ctx.config``.
     """
     use_id = tool_use.get("id", "")
     name = tool_use.get("name", "")
@@ -226,19 +247,31 @@ def dispatch_anthropic(tool_use: dict, skills: Dict[str, Any]) -> dict:
     skill_obj = _normalize(skills[name])
     args = _unwrap_single_param(skill_obj, args)
 
+    ctx_kwargs: Dict[str, Any] = {}
+    if context is not None:
+        ctx_kwargs["context"] = context
+
     if isinstance(args, dict):
-        result = skill_obj.invoke(**args)
+        result = skill_obj.invoke(**args, **ctx_kwargs)
     else:
-        result = skill_obj.invoke(args)
+        result = skill_obj.invoke(args, **ctx_kwargs)
 
     return format_result_anthropic(use_id, result)
 
 
-async def async_dispatch_openai(tool_call: dict, skills: Dict[str, Any]) -> dict:
+async def async_dispatch_openai(
+    tool_call: dict,
+    skills: Dict[str, Any],
+    *,
+    context: Optional[SkillContext] = None,
+) -> dict:
     """Async variant of :func:`dispatch_openai`.
 
     Uses :meth:`Skill.ainvoke` so async skills are properly awaited while
     sync skills still work transparently.
+
+    *context*, if provided, is forwarded to :meth:`Skill.ainvoke` so that
+    skills can read per-bot configuration via ``ctx.config``.
     """
     call_id = tool_call.get("id", "")
     func = tool_call.get("function", {})
@@ -258,19 +291,31 @@ async def async_dispatch_openai(tool_call: dict, skills: Dict[str, Any]) -> dict
     skill_obj = _normalize(skills[name])
     args = _unwrap_single_param(skill_obj, args)
 
+    ctx_kwargs: Dict[str, Any] = {}
+    if context is not None:
+        ctx_kwargs["context"] = context
+
     if isinstance(args, dict):
-        result = await skill_obj.ainvoke(**args)
+        result = await skill_obj.ainvoke(**args, **ctx_kwargs)
     else:
-        result = await skill_obj.ainvoke(args)
+        result = await skill_obj.ainvoke(args, **ctx_kwargs)
 
     return format_result_openai(call_id, result)
 
 
-async def async_dispatch_anthropic(tool_use: dict, skills: Dict[str, Any]) -> dict:
+async def async_dispatch_anthropic(
+    tool_use: dict,
+    skills: Dict[str, Any],
+    *,
+    context: Optional[SkillContext] = None,
+) -> dict:
     """Async variant of :func:`dispatch_anthropic`.
 
     Uses :meth:`Skill.ainvoke` so async skills are properly awaited while
     sync skills still work transparently.
+
+    *context*, if provided, is forwarded to :meth:`Skill.ainvoke` so that
+    skills can read per-bot configuration via ``ctx.config``.
     """
     use_id = tool_use.get("id", "")
     name = tool_use.get("name", "")
@@ -283,10 +328,14 @@ async def async_dispatch_anthropic(tool_use: dict, skills: Dict[str, Any]) -> di
     skill_obj = _normalize(skills[name])
     args = _unwrap_single_param(skill_obj, args)
 
+    ctx_kwargs: Dict[str, Any] = {}
+    if context is not None:
+        ctx_kwargs["context"] = context
+
     if isinstance(args, dict):
-        result = await skill_obj.ainvoke(**args)
+        result = await skill_obj.ainvoke(**args, **ctx_kwargs)
     else:
-        result = await skill_obj.ainvoke(args)
+        result = await skill_obj.ainvoke(args, **ctx_kwargs)
 
     return format_result_anthropic(use_id, result)
 
