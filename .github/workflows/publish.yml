@@ -28,7 +28,19 @@ jobs:
           echo "Commit made by GitHub Actions. Exiting workflow."
           exit 0
 
-      ### Step 2: Bump Version and Push Tag ###
+      ### Step 2: Set Up Node.js and Build JS ###
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JS dependencies
+        run: cd js && npm ci
+
+      - name: Build tukuy.js
+        run: cd js && npm run build
+
+      ### Step 3: Bump Version and Push Tag ###
       - name: Bump Version and Push Tag
         id: bump_version
         uses: mathieudutour/github-tag-action@v6.0
@@ -47,7 +59,7 @@ jobs:
           sed -i "s/^version = \".*\"/version = \"${NEW_VERSION}\"/" pyproject.toml
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add VERSION pyproject.toml
+          git add VERSION pyproject.toml js/dist/
           git commit -m "🔄 Version to v${NEW_VERSION} [skip ci]"
           git push origin main
 

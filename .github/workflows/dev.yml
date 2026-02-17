@@ -1,0 +1,54 @@
+# .github/workflows/dev.yml
+
+name: Dev Build
+
+on:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: write
+
+jobs:
+  build-js:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check Committer
+        if: github.actor == 'github-actions[bot]'
+        run: |
+          echo "Commit made by GitHub Actions. Exiting workflow."
+          exit 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JS dependencies
+        run: cd js && npm ci
+
+      - name: Build tukuy.js
+        run: cd js && npm run build
+
+      - name: Check for JS dist changes
+        id: check_changes
+        run: |
+          if git diff --quiet js/dist/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit JS build
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add js/dist/
+          git commit -m "🔨 Build tukuy.js [skip ci]"
+          git push origin dev

@@ -130,18 +130,48 @@ class UnifiedRegistry:
         return text[: max_len - 3] + "..."
 
     def browse(self) -> Dict[str, Any]:
-        """Phase 1: compact index grouped by plugin, with popular tools."""
+        """Phase 1: compact index grouped by plugin, with popular tools.
+
+        Includes transformers, skills, and instructions from all plugins.
+        """
         tracker = get_usage_tracker()
         plugins_index: Dict[str, Any] = {}
         total = 0
 
         for plugin_name, plugin in self.discovered_plugins.items():
             tools_map: Dict[str, str] = {}
+
+            # Transformers
             for t_name in plugin.transformers:
                 metadata = self.get_transformer_metadata(t_name)
                 desc = metadata.description if metadata else "No description available"
                 tools_map[t_name] = self._truncate_description(desc)
-                total += 1
+
+            # Skills (excluding instructions which are added below)
+            instruction_names = set()
+            try:
+                instruction_names = set(plugin.instructions.keys())
+            except Exception:
+                pass
+            try:
+                for s_name, skill_obj in plugin.skills.items():
+                    if s_name not in tools_map and s_name not in instruction_names:
+                        desc = skill_obj.descriptor.description if skill_obj.descriptor else ""
+                        tools_map[s_name] = self._truncate_description(desc)
+            except Exception:
+                pass
+
+            # Instructions
+            try:
+                for i_name, instr_obj in plugin.instructions.items():
+                    if i_name not in tools_map:
+                        desc = instr_obj.descriptor.description if instr_obj.descriptor else ""
+                        tools_map[i_name] = self._truncate_description(desc)
+            except Exception:
+                pass
+
+            total += len(tools_map)
+
             # Determine plugin source
             plugin_obj = self.registry.get_plugin(plugin_name)
             source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
@@ -157,59 +187,131 @@ class UnifiedRegistry:
             "plugins": plugins_index,
         }
 
+    def _find_skill_or_instruction(self, name: str):
+        """Find a skill or instruction by name and return (descriptor, plugin_name, kind)."""
+        # Check skills first (instructions are dual-registered here too)
+        skill_obj = self.registry.skills.get(name)
+        if skill_obj and hasattr(skill_obj, "descriptor"):
+            # Determine plugin name
+            for pname, plugin in self.discovered_plugins.items():
+                try:
+                    if name in plugin.instructions:
+                        return skill_obj.descriptor, pname, "instruction"
+                except Exception:
+                    pass
+                try:
+                    if name in plugin.skills:
+                        return skill_obj.descriptor, pname, "skill"
+                except Exception:
+                    pass
+            return skill_obj.descriptor, "unknown", "skill"
+        return None, None, None
+
     def get_details(self, *names: str) -> List[Dict[str, Any]]:
         """Phase 2: full metadata for specific tools by name.
 
-        Also records a usage tick for each requested tool.
+        Searches transformers, skills, and instructions. Also records a
+        usage tick for each requested tool.
         """
         tracker = get_usage_tracker()
         results: List[Dict[str, Any]] = []
 
         for name in names:
+            # Try transformer first
             plugin_name = self.get_transformer_plugin(name)
             metadata = self.get_transformer_metadata(name)
-            if metadata is None:
+            if metadata is not None:
+                tracker.record(name)
+                plugin_obj = self.registry.get_plugin(plugin_name) if plugin_name else None
+                source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
+                tool_info: Dict[str, Any] = {
+                    "name": name,
+                    "kind": "transformer",
+                    "plugin": plugin_name or "unknown",
+                    "source": source,
+                    "description": metadata.description,
+                    "category": (
+                        metadata.category.value
+                        if hasattr(metadata.category, "value")
+                        else str(metadata.category)
+                    ),
+                    "version": metadata.version,
+                    "status": metadata.status,
+                    "input_type": metadata.input_type,
+                    "output_type": metadata.output_type,
+                    "examples": metadata.examples,
+                    "tags": sorted(metadata.tags) if metadata.tags else [],
+                    "parameters": [
+                        {
+                            "name": p.name,
+                            "type": p.param_type,
+                            "required": p.required,
+                            "description": p.description,
+                            "default": p.default_value,
+                        }
+                        for p in metadata.parameters
+                    ],
+                }
+                results.append(tool_info)
                 continue
 
-            tracker.record(name)
-
-            # Determine source
-            plugin_obj = self.registry.get_plugin(plugin_name) if plugin_name else None
-            source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
-
-            tool_info: Dict[str, Any] = {
-                "name": name,
-                "plugin": plugin_name or "unknown",
-                "source": source,
-                "description": metadata.description,
-                "category": (
-                    metadata.category.value
-                    if hasattr(metadata.category, "value")
-                    else str(metadata.category)
-                ),
-                "version": metadata.version,
-                "status": metadata.status,
-                "input_type": metadata.input_type,
-                "output_type": metadata.output_type,
-                "examples": metadata.examples,
-                "tags": sorted(metadata.tags) if metadata.tags else [],
-                "parameters": [
-                    {
-                        "name": p.name,
-                        "type": p.param_type,
-                        "required": p.required,
-                        "description": p.description,
-                        "default": p.default_value,
-                    }
-                    for p in metadata.parameters
-                ],
-            }
-            results.append(tool_info)
+            # Try skill / instruction
+            descriptor, pname, kind = self._find_skill_or_instruction(name)
+            if descriptor is not None:
+                tracker.record(name)
+                plugin_obj = self.registry.get_plugin(pname) if pname else None
+                source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
+                tool_info = {
+                    "name": name,
+                    "kind": kind,
+                    "plugin": pname or "unknown",
+                    "source": source,
+                    "description": descriptor.description,
+                    "category": descriptor.category,
+                    "version": descriptor.version,
+                    "tags": sorted(descriptor.tags) if descriptor.tags else [],
+                    "group": descriptor.group,
+                    "icon": descriptor.icon,
+                }
+                results.append(tool_info)
 
         return results
 
+    @staticmethod
+    def _score_against_query(
+        query_words: List[str],
+        name: str,
+        tags: set,
+        category: str,
+        plugin: str,
+        description: str,
+    ) -> int:
+        """Compute relevance score for a single item against query words."""
+        score = 0
+        name_lower = name.lower()
+        tags_lower = {t.lower() for t in tags}
+        category_lower = category.lower()
+        plugin_lower = plugin.lower()
+        desc_lower = description.lower()
+
+        for word in query_words:
+            if word == name_lower:
+                score += 10
+            elif word in name_lower:
+                score += 5
+            if word in tags_lower:
+                score += 3
+            if word in category_lower:
+                score += 3
+            if word in plugin_lower:
+                score += 2
+            if word in desc_lower:
+                score += 1
+
+        return score
+
     def search(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Keyword search across names, tags, descriptions, categories.
+        """Keyword search across transformers, skills, and instructions.
 
         Scoring:
             - Exact name match: 10
@@ -226,51 +328,93 @@ class UnifiedRegistry:
         if not query_words:
             return []
 
-        scored: List[tuple] = []  # (score, usage, name, plugin, description)
+        # (score, usage, kind, name, plugin, description)
+        scored: List[tuple] = []
+        seen_names: Set[str] = set()
 
+        # --- Transformers ---
         for t_name in self.get_all_transformers():
             metadata = self.get_transformer_metadata(t_name)
             if metadata is None:
                 continue
 
-            score = 0
-            name_lower = t_name.lower()
-            tags_lower = {t.lower() for t in (metadata.tags or set())}
-            category_lower = (
-                metadata.category.value.lower()
-                if hasattr(metadata.category, "value")
-                else str(metadata.category).lower()
+            score = self._score_against_query(
+                query_words,
+                t_name,
+                metadata.tags or set(),
+                (
+                    metadata.category.value
+                    if hasattr(metadata.category, "value")
+                    else str(metadata.category)
+                ),
+                metadata.plugin or "",
+                metadata.description or "",
             )
-            plugin_lower = (metadata.plugin or "").lower()
-            desc_lower = (metadata.description or "").lower()
-
-            for word in query_words:
-                if word == name_lower:
-                    score += 10
-                elif word in name_lower:
-                    score += 5
-                if word in tags_lower:
-                    score += 3
-                if word in category_lower:
-                    score += 3
-                if word in plugin_lower:
-                    score += 2
-                if word in desc_lower:
-                    score += 1
-
             if score > 0:
                 usage = tracker.get_count(t_name)
-                scored.append((score, usage, t_name, metadata.plugin, metadata.description))
+                scored.append((score, usage, "transformer", t_name, metadata.plugin, metadata.description))
+                seen_names.add(t_name)
+
+        # --- Skills and Instructions ---
+        # Walk plugins to get proper plugin names and distinguish
+        # instructions from regular skills.
+        for plugin_name, plugin in self.discovered_plugins.items():
+            # Collect instruction names for this plugin so we can label them
+            instruction_names: Set[str] = set()
+            try:
+                for i_name, instr_obj in plugin.instructions.items():
+                    instruction_names.add(i_name)
+                    if i_name in seen_names:
+                        continue
+                    desc = instr_obj.descriptor
+                    score = self._score_against_query(
+                        query_words,
+                        i_name,
+                        set(desc.tags) if desc.tags else set(),
+                        desc.category or "",
+                        plugin_name,
+                        desc.description or "",
+                    )
+                    if score > 0:
+                        usage = tracker.get_count(i_name)
+                        scored.append((score, usage, "instruction", i_name, plugin_name, desc.description))
+                        seen_names.add(i_name)
+            except Exception:
+                pass
+
+            try:
+                for s_name, skill_obj in plugin.skills.items():
+                    if s_name in seen_names:
+                        continue
+                    # Skip instructions already collected above
+                    if s_name in instruction_names:
+                        continue
+                    desc = skill_obj.descriptor
+                    score = self._score_against_query(
+                        query_words,
+                        s_name,
+                        set(desc.tags) if desc.tags else set(),
+                        desc.category or "",
+                        plugin_name,
+                        desc.description or "",
+                    )
+                    if score > 0:
+                        usage = tracker.get_count(s_name)
+                        scored.append((score, usage, "skill", s_name, plugin_name, desc.description))
+                        seen_names.add(s_name)
+            except Exception:
+                pass
 
         # Sort by score desc, then usage desc
         scored.sort(key=lambda x: (-x[0], -x[1]))
 
         results: List[Dict[str, Any]] = []
-        for score, _usage, name, plugin, desc in scored[:limit]:
+        for score, _usage, kind, name, plugin, desc in scored[:limit]:
             plugin_obj = self.registry.get_plugin(plugin) if plugin else None
             source = plugin_obj.source.value if plugin_obj and hasattr(plugin_obj, "source") else "unknown"
             results.append({
                 "name": name,
+                "kind": kind,
                 "plugin": plugin,
                 "source": source,
                 "description": self._truncate_description(desc),
@@ -299,39 +443,32 @@ def reset_unified_registry() -> None:
 
 
 def list_all_tools() -> List[Dict[str, Any]]:
-    """Get a complete list of all available transformers with their metadata.
+    """Get a complete list of all available tools (transformers, skills, instructions).
 
-    This function provides a unified view of all transformers available in the system,
-    including which plugin provides each transformer and usage examples.
+    This function provides a unified view of every capability in the system,
+    including which plugin provides each tool and its metadata.
 
     Returns:
-        List of dictionaries with transformer information:
-        [
-            {
-                "name": "transformer_name",
-                "plugin": "plugin_name",
-                "description": "description text",
-                "category": "category_enum_value",
-                "examples": ["example1", "example2"],
-                ...
-            },
-            ...
-        ]
+        List of dictionaries with tool information including a ``kind`` field
+        (``"transformer"``, ``"skill"``, or ``"instruction"``).
     """
     registry = get_unified_registry()
     all_tools = []
+    seen_names: set = set()
 
+    # Transformers
     for transformer_name in registry.get_all_transformers():
         plugin_name = registry.get_transformer_plugin(transformer_name)
         metadata = registry.get_transformer_metadata(transformer_name)
 
         tool_info = {
             "name": transformer_name,
+            "kind": "transformer",
             "plugin": plugin_name or "unknown",
             "description": "No description available",
             "category": "unknown",
             "examples": [],
-            "parameters": []
+            "parameters": [],
         }
 
         if metadata:
@@ -350,14 +487,55 @@ def list_all_tools() -> List[Dict[str, Any]]:
                         "type": param.param_type,
                         "required": param.required,
                         "description": param.description,
-                        "default": param.default_value
+                        "default": param.default_value,
                     } for param in metadata.parameters
-                ]
+                ],
             })
 
         all_tools.append(tool_info)
+        seen_names.add(transformer_name)
 
-    # Sort by plugin name, then transformer name
+    # Skills and Instructions (from discovered plugins)
+    for plugin_name, plugin in registry.discovered_plugins.items():
+        instruction_names: set = set()
+        try:
+            for i_name, instr_obj in plugin.instructions.items():
+                instruction_names.add(i_name)
+                if i_name in seen_names:
+                    continue
+                desc = instr_obj.descriptor
+                all_tools.append({
+                    "name": i_name,
+                    "kind": "instruction",
+                    "plugin": plugin_name,
+                    "description": desc.description or "",
+                    "category": desc.category or "general",
+                    "version": desc.version,
+                    "tags": list(desc.tags) if desc.tags else [],
+                })
+                seen_names.add(i_name)
+        except Exception:
+            pass
+
+        try:
+            for s_name, skill_obj in plugin.skills.items():
+                if s_name in seen_names or s_name in instruction_names:
+                    continue
+                desc = skill_obj.descriptor
+                all_tools.append({
+                    "name": s_name,
+                    "kind": "skill",
+                    "plugin": plugin_name,
+                    "description": desc.description or "",
+                    "category": desc.category or "general",
+                    "version": desc.version,
+                    "tags": list(desc.tags) if desc.tags else [],
+                })
+                seen_names.add(s_name)
+        except Exception:
+            pass
+
+    # Sort by plugin name, then tool name
     all_tools.sort(key=lambda x: (x["plugin"], x["name"]))
 
     return all_tools

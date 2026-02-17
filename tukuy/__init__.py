@@ -11,7 +11,7 @@ from .skill import (
     SkillDescriptor, SkillExample, SkillResult, Skill, skill,
 )
 from .instruction import (
-    LLMBackend, InstructionDescriptor, Instruction, instruction,
+    LLMBackend, InstructionChunk, InstructionDescriptor, Instruction, instruction,
 )
 from .context import SkillContext
 from .manifest import PluginManifest, PluginRequirements
@@ -78,6 +78,7 @@ __all__ = [
     'skill',
     # Instruction system
     'LLMBackend',
+    'InstructionChunk',
     'InstructionDescriptor',
     'Instruction',
     'instruction',

@@ -33,6 +33,7 @@ import time
 from dataclasses import dataclass, field
 from typing import (
     Any,
+    AsyncIterator,
     Callable,
     Dict,
     List,
@@ -92,6 +93,25 @@ class LLMBackend(Protocol):
 
 
 # ---------------------------------------------------------------------------
+# Streaming chunk type
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class InstructionChunk:
+    """A streaming chunk from an instruction execution.
+
+    Yielded by :meth:`Instruction.astream`.  The ``type`` field is either
+    ``"delta"`` (incremental text) or ``"done"`` (final result with the
+    full :class:`SkillResult`).
+    """
+
+    type: str  # "delta" or "done"
+    text: str = ""  # Incremental text for delta, full text for done
+    result: Optional["SkillResult"] = None  # Only set on "done"
+
+
+# ---------------------------------------------------------------------------
 # Prompt template helpers
 # ---------------------------------------------------------------------------
 
@@ -136,6 +156,20 @@ class InstructionDescriptor(SkillDescriptor):
 
 
 # ---------------------------------------------------------------------------
+# Internal helper for deferred post-processing
+# ---------------------------------------------------------------------------
+
+@dataclass
+class _PostProcessPending:
+    """Intermediate value used between ``_build_skill_result`` and ``_finalize_result``."""
+
+    parsed: Any
+    meta: dict
+    ctx: Any
+    start: float
+
+
+# ---------------------------------------------------------------------------
 # Instruction
 # ---------------------------------------------------------------------------
 
@@ -175,20 +209,12 @@ class Instruction:
             "In sync dispatch, use async_dispatch_openai or async_dispatch_anthropic."
         )
 
-    async def ainvoke(self, *args: Any, **kwargs: Any) -> SkillResult:
-        """Invoke the instruction asynchronously.
+    # ------------------------------------------------------------------
+    # Shared setup
+    # ------------------------------------------------------------------
 
-        1. Retrieves the LLM backend from context.
-        2. Renders the prompt template with the provided arguments.
-        3. Calls the LLM backend.
-        4. Parses the response per ``output_format``.
-        5. Optionally runs the post-processor function.
-        6. Returns a :class:`SkillResult`.
-
-        Pass ``context=<SkillContext>`` to provide the LLM backend and
-        other configuration.
-        """
-        # Safety enforcement
+    def _setup(self, kwargs: Dict[str, Any]):
+        """Extract context, validate safety, and return (ctx, llm_backend) or a SkillResult error."""
         policy = kwargs.pop("policy", None)
         if policy is None:
             from .safety import get_policy
@@ -204,10 +230,7 @@ class Instruction:
                     metadata={"safety_violations": [str(v) for v in violations]},
                 )
 
-        # Extract context
         ctx = kwargs.pop("context", None)
-
-        # Get LLM backend from context
         if ctx is None:
             return SkillResult(
                 error="Instruction requires a SkillContext with 'llm_backend' in config. "
@@ -223,81 +246,160 @@ class Instruction:
                 success=False,
             )
 
+        return ctx, llm_backend
+
+    def _render_prompt(self, kwargs: Dict[str, Any], start: float):
+        """Render the prompt template from *kwargs*.
+
+        Returns the rendered prompt string, or a ``SkillResult`` on error.
+        """
+        template_vars = dict(kwargs)
+        try:
+            rendered_prompt = self.descriptor.prompt.format_map(template_vars)
+        except KeyError as exc:
+            return SkillResult(
+                error=f"Missing prompt variable: {exc}",
+                success=False,
+                duration_ms=(time.perf_counter() - start) * 1000,
+            )
+
+        if self.descriptor.few_shot_examples:
+            examples_text = ""
+            for ex in self.descriptor.few_shot_examples:
+                examples_text += f"Input: {ex['input']}\nOutput: {ex['output']}\n\n"
+            rendered_prompt = examples_text + rendered_prompt
+
+        if self.descriptor.output_format == "json":
+            rendered_prompt += "\nRespond with valid JSON only."
+        elif self.descriptor.output_format == "list":
+            rendered_prompt += "\nRespond with a bulleted list, one item per line starting with '- '."
+
+        return rendered_prompt
+
+    def _build_llm_kwargs(self) -> Dict[str, Any]:
+        """Build the keyword arguments dict for the LLM call."""
+        llm_kwargs: Dict[str, Any] = {}
+        if self.descriptor.system_prompt is not None:
+            llm_kwargs["system"] = self.descriptor.system_prompt
+        if self.descriptor.temperature is not None:
+            llm_kwargs["temperature"] = self.descriptor.temperature
+        if self.descriptor.max_tokens is not None:
+            llm_kwargs["max_tokens"] = self.descriptor.max_tokens
+        if self.descriptor.output_format == "json" and self.descriptor.output_schema:
+            llm_kwargs["json_schema"] = self.descriptor.output_schema
+        return llm_kwargs
+
+    def _build_skill_result(
+        self, response_text: str, meta: dict, ctx: Any, start: float,
+    ) -> SkillResult:
+        """Parse *response_text*, run the post-processor, and return a SkillResult.
+
+        This is the shared tail logic for both ``ainvoke`` (non-streaming)
+        and the ``astream`` done-chunk path.  Because the post-processor
+        may be a coroutine, callers must ``await`` when the return value
+        is a coroutine — see ``_build_skill_result_async``.
+        """
+        parsed = self._parse_response(response_text)
+        if isinstance(parsed, SkillResult):
+            parsed.duration_ms = (time.perf_counter() - start) * 1000
+            return parsed
+
+        # Post-processor will be handled by the async wrapper
+        return _PostProcessPending(parsed=parsed, meta=meta, ctx=ctx, start=start)
+
+    async def _finalize_result(
+        self, pending: Any, meta: dict, ctx: Any, start: float,
+    ) -> SkillResult:
+        """Run the post-processor (if any) and return the final SkillResult.
+
+        Accepts either a ``SkillResult`` (already done) or a
+        ``_PostProcessPending`` from ``_build_skill_result``.
+        """
+        if isinstance(pending, SkillResult):
+            return pending
+
+        parsed = pending.parsed
+
+        if self.fn is not None:
+            post_kwargs: Dict[str, Any] = {}
+            if self._context_param_name is not None and ctx is not None:
+                post_kwargs[self._context_param_name] = ctx
+
+            raw = self.fn(parsed, **post_kwargs)
+            if inspect.isawaitable(raw):
+                raw = await raw
+            if isinstance(raw, TransformResult):
+                result = SkillResult.from_transform_result(raw)
+                result.duration_ms = (time.perf_counter() - start) * 1000
+                result.metadata.update(meta)
+                return result
+            parsed = raw
+
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        return SkillResult(
+            value=parsed,
+            success=True,
+            duration_ms=elapsed_ms,
+            metadata=meta,
+        )
+
+    # ------------------------------------------------------------------
+    # ainvoke
+    # ------------------------------------------------------------------
+
+    async def ainvoke(self, *args: Any, **kwargs: Any) -> SkillResult:
+        """Invoke the instruction asynchronously.
+
+        1. Retrieves the LLM backend from context.
+        2. Renders the prompt template with the provided arguments.
+        3. Calls the LLM backend.
+        4. Parses the response per ``output_format``.
+        5. Optionally runs the post-processor function.
+        6. Returns a :class:`SkillResult`.
+
+        Pass ``context=<SkillContext>`` to provide the LLM backend and
+        other configuration.
+
+        Optional keyword arguments:
+
+        * ``on_delta`` — a callback ``(str) -> None`` (sync or async)
+          invoked for each streaming text chunk when the backend supports
+          streaming.  The return value is still a single ``SkillResult``.
+        """
+        on_delta = kwargs.pop("on_delta", None)
+
+        setup = self._setup(kwargs)
+        if isinstance(setup, SkillResult):
+            return setup
+        ctx, llm_backend = setup
+
+        # If we have on_delta and the backend supports streaming, delegate
+        if on_delta is not None and hasattr(llm_backend, "stream"):
+            async for chunk in self.astream(context=ctx, **kwargs):
+                if chunk.type == "delta" and on_delta is not None:
+                    cb_result = on_delta(chunk.text)
+                    if inspect.isawaitable(cb_result):
+                        await cb_result
+                elif chunk.type == "done":
+                    return chunk.result
+            # Should not reach here, but safety fallback
+            return SkillResult(error="Stream ended without done chunk", success=False)
+
+        # Non-streaming path (original behaviour)
         start = time.perf_counter()
         try:
-            # Build template variables from kwargs
-            template_vars = dict(kwargs)
+            rendered_prompt = self._render_prompt(kwargs, start)
+            if isinstance(rendered_prompt, SkillResult):
+                return rendered_prompt
 
-            # Render prompt
-            try:
-                rendered_prompt = self.descriptor.prompt.format_map(template_vars)
-            except KeyError as exc:
-                return SkillResult(
-                    error=f"Missing prompt variable: {exc}",
-                    success=False,
-                    duration_ms=(time.perf_counter() - start) * 1000,
-                )
+            llm_kwargs = self._build_llm_kwargs()
 
-            # Prepend few-shot examples if present
-            if self.descriptor.few_shot_examples:
-                examples_text = ""
-                for ex in self.descriptor.few_shot_examples:
-                    examples_text += f"Input: {ex['input']}\nOutput: {ex['output']}\n\n"
-                rendered_prompt = examples_text + rendered_prompt
-
-            # Append output format instructions
-            if self.descriptor.output_format == "json":
-                rendered_prompt += "\nRespond with valid JSON only."
-            elif self.descriptor.output_format == "list":
-                rendered_prompt += "\nRespond with a bulleted list, one item per line starting with '- '."
-
-            # Build LLM call kwargs
-            llm_kwargs: Dict[str, Any] = {}
-            if self.descriptor.system_prompt is not None:
-                llm_kwargs["system"] = self.descriptor.system_prompt
-            if self.descriptor.temperature is not None:
-                llm_kwargs["temperature"] = self.descriptor.temperature
-            if self.descriptor.max_tokens is not None:
-                llm_kwargs["max_tokens"] = self.descriptor.max_tokens
-            if self.descriptor.output_format == "json" and self.descriptor.output_schema:
-                llm_kwargs["json_schema"] = self.descriptor.output_schema
-
-            # Call LLM
             response = await llm_backend.complete(rendered_prompt, **llm_kwargs)
             response_text = response.get("text", "")
             meta = response.get("meta", {})
 
-            # Parse response per output_format
-            parsed = self._parse_response(response_text)
-            if isinstance(parsed, SkillResult):
-                # Parsing failed — return error result
-                parsed.duration_ms = (time.perf_counter() - start) * 1000
-                return parsed
-
-            # Run post-processor if present
-            if self.fn is not None:
-                post_kwargs: Dict[str, Any] = {}
-                # Inject context into post-processor if it accepts one
-                if self._context_param_name is not None and ctx is not None:
-                    post_kwargs[self._context_param_name] = ctx
-
-                raw = self.fn(parsed, **post_kwargs)
-                if inspect.isawaitable(raw):
-                    raw = await raw
-                if isinstance(raw, TransformResult):
-                    result = SkillResult.from_transform_result(raw)
-                    result.duration_ms = (time.perf_counter() - start) * 1000
-                    result.metadata.update(meta)
-                    return result
-                parsed = raw
-
-            elapsed_ms = (time.perf_counter() - start) * 1000
-            return SkillResult(
-                value=parsed,
-                success=True,
-                duration_ms=elapsed_ms,
-                metadata=meta,
-            )
+            pending = self._build_skill_result(response_text, meta, ctx, start)
+            return await self._finalize_result(pending, meta, ctx, start)
 
         except Exception as exc:
             elapsed_ms = (time.perf_counter() - start) * 1000
@@ -306,6 +408,76 @@ class Instruction:
                 success=False,
                 duration_ms=elapsed_ms,
                 retryable=False,
+            )
+
+    # ------------------------------------------------------------------
+    # astream
+    # ------------------------------------------------------------------
+
+    async def astream(self, *args: Any, **kwargs: Any) -> AsyncIterator[InstructionChunk]:
+        """Stream the instruction execution, yielding chunks as the LLM generates.
+
+        Yields :class:`InstructionChunk` objects:
+
+        * ``type="delta"`` for each incremental text chunk.
+        * ``type="done"`` as the **last** item, containing the full
+          :class:`SkillResult` (with parsed output, post-processor
+          applied, and metadata).
+
+        Falls back to a single ``"done"`` chunk if the backend does not
+        support streaming (i.e. has no ``stream`` method).
+        """
+        setup = self._setup(kwargs)
+        if isinstance(setup, SkillResult):
+            yield InstructionChunk(type="done", text="", result=setup)
+            return
+        ctx, llm_backend = setup
+
+        start = time.perf_counter()
+        try:
+            rendered_prompt = self._render_prompt(kwargs, start)
+            if isinstance(rendered_prompt, SkillResult):
+                yield InstructionChunk(type="done", text="", result=rendered_prompt)
+                return
+
+            llm_kwargs = self._build_llm_kwargs()
+
+            if hasattr(llm_backend, "stream"):
+                # Streaming path
+                full_text = ""
+                meta: Dict[str, Any] = {}
+                async for chunk in llm_backend.stream(rendered_prompt, **llm_kwargs):
+                    if chunk.get("type") == "delta":
+                        full_text += chunk.get("text", "")
+                        yield InstructionChunk(type="delta", text=chunk.get("text", ""))
+                    elif chunk.get("type") == "done":
+                        full_text = chunk.get("text", full_text)
+                        meta = chunk.get("meta", {})
+
+                pending = self._build_skill_result(full_text, meta, ctx, start)
+                result = await self._finalize_result(pending, meta, ctx, start)
+                yield InstructionChunk(type="done", text=full_text, result=result)
+            else:
+                # Non-streaming fallback
+                response = await llm_backend.complete(rendered_prompt, **llm_kwargs)
+                response_text = response.get("text", "")
+                meta = response.get("meta", {})
+
+                pending = self._build_skill_result(response_text, meta, ctx, start)
+                result = await self._finalize_result(pending, meta, ctx, start)
+                yield InstructionChunk(type="done", text=response_text, result=result)
+
+        except Exception as exc:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            yield InstructionChunk(
+                type="done",
+                text="",
+                result=SkillResult(
+                    error=str(exc),
+                    success=False,
+                    duration_ms=elapsed_ms,
+                    retryable=False,
+                ),
             )
 
     def _parse_response(self, text: str) -> Any:
@@ -535,6 +707,7 @@ def instruction(
 
 __all__ = [
     "LLMBackend",
+    "InstructionChunk",
     "InstructionDescriptor",
     "Instruction",
     "instruction",

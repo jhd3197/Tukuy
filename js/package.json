@@ -1,0 +1,28 @@
+{
+  "name": "tukuy",
+  "version": "0.1.0",
+  "description": "Tukuy transformers for the browser — zero-dependency JS ports",
+  "main": "dist/tukuy.js",
+  "module": "dist/tukuy.mjs",
+  "types": "dist/tukuy.d.ts",
+  "exports": {
+    ".": {
+      "browser": "./dist/tukuy.iife.js",
+      "import": "./dist/tukuy.mjs",
+      "require": "./dist/tukuy.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "keywords": ["tukuy", "transformers", "text", "encoding", "crypto"],
+  "license": "MIT"
+}
