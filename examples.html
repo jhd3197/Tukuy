@@ -1,0 +1,1273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; Tukuy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="modules.html" />
+    <link rel="prev" title="User Guide" href="user_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tukuy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#text-transformations">Text Transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-text-processing">Basic Text Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-search-and-replace">Text Search and Replace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-splitting-and-joining">Text Splitting and Joining</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#html-transformations">HTML Transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-text-from-html">Extracting Text from HTML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scraping-product-information">Scraping Product Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-tables-from-html">Extracting Tables from HTML</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#json-transformations">JSON Transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-data-from-json">Extracting Data from JSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#processing-api-responses">Processing API Responses</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#date-transformations">Date Transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#working-with-dates">Working with Dates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#handling-date-ranges">Handling Date Ranges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#numerical-transformations">Numerical Transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-numerical-operations">Basic Numerical Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistical-calculations">Statistical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#financial-calculations">Financial Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#validation-transformations">Validation Transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#input-validation">Input Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#range-and-length-validation">Range and Length Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-pattern-validation">Custom Pattern Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-custom-transformers">Creating Custom Transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#custom-text-transformer">Custom Text Transformer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-data-processor">Custom Data Processor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-plugins">Using Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#registering-custom-plugins">Registering Custom Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-plugin-collections">Creating Plugin Collections</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#real-world-use-cases">Real-world Use Cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#web-scraping-and-data-extraction">Web Scraping and Data Extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-cleaning-and-normalization">Data Cleaning and Normalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-data-processing">API Data Processing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tukuy.html">tukuy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tukuy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>This section provides practical examples showcasing how to use Tukuy for various common tasks and scenarios. These examples demonstrate the power and flexibility of Tukuy’s transformer system.</p>
+<section id="text-transformations">
+<h2>Text Transformations<a class="headerlink" href="#text-transformations" title="Link to this heading"></a></h2>
+<section id="basic-text-processing">
+<h3>Basic Text Processing<a class="headerlink" href="#basic-text-processing" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Clean and normalize user input</span>
+<span class="n">user_input</span> <span class="o">=</span> <span class="s2">&quot;  Héllò   Wórld!  &quot;</span>
+<span class="n">clean_text</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">user_input</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s2">&quot;strip&quot;</span><span class="p">,</span>          <span class="c1"># Remove leading/trailing whitespace</span>
+    <span class="s2">&quot;normalize&quot;</span><span class="p">,</span>      <span class="c1"># Remove diacritics</span>
+    <span class="s2">&quot;lowercase&quot;</span>       <span class="c1"># Convert to lowercase</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">clean_text</span><span class="p">)</span>  <span class="c1"># &quot;hello world!&quot;</span>
+
+<span class="c1"># Truncate long text for display</span>
+<span class="n">long_text</span> <span class="o">=</span> <span class="s2">&quot;This is a very long text that needs to be truncated for display purposes.&quot;</span>
+<span class="n">truncated</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">long_text</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;truncate&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;suffix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>  <span class="c1"># &quot;This is a very long...&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="text-search-and-replace">
+<h3>Text Search and Replace<a class="headerlink" href="#text-search-and-replace" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Replace specific words</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The quick brown fox jumps over the lazy dog.&quot;</span>
+<span class="n">replaced</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;replace&quot;</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;fox&quot;</span><span class="p">,</span> <span class="s2">&quot;replacement&quot;</span><span class="p">:</span> <span class="s2">&quot;cat&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">replaced</span><span class="p">)</span>  <span class="c1"># &quot;The quick brown cat jumps over the lazy dog.&quot;</span>
+
+<span class="c1"># Replace using regex for more complex patterns</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Contact us at info@example.com or support@example.com&quot;</span>
+<span class="n">anonymized</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_replace&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;replacement&quot;</span><span class="p">:</span> <span class="s2">&quot;[EMAIL REDACTED]&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">anonymized</span><span class="p">)</span>  <span class="c1"># &quot;Contact us at [EMAIL REDACTED] or [EMAIL REDACTED]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="text-splitting-and-joining">
+<h3>Text Splitting and Joining<a class="headerlink" href="#text-splitting-and-joining" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Split a comma-separated list</span>
+<span class="n">tags</span> <span class="o">=</span> <span class="s2">&quot;python,data,transformation,library&quot;</span>
+<span class="n">tag_list</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;split&quot;</span><span class="p">,</span> <span class="s2">&quot;separator&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tag_list</span><span class="p">)</span>  <span class="c1"># [&quot;python&quot;, &quot;data&quot;, &quot;transformation&quot;, &quot;library&quot;]</span>
+
+<span class="c1"># Join array into string</span>
+<span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tukuy&quot;</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;awesome&quot;</span><span class="p">]</span>
+<span class="n">sentence</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;join&quot;</span><span class="p">,</span> <span class="s2">&quot;separator&quot;</span><span class="p">:</span> <span class="s2">&quot; &quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>  <span class="c1"># &quot;Tukuy is awesome&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="html-transformations">
+<h2>HTML Transformations<a class="headerlink" href="#html-transformations" title="Link to this heading"></a></h2>
+<section id="extracting-text-from-html">
+<h3>Extracting Text from HTML<a class="headerlink" href="#extracting-text-from-html" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;article&gt;</span>
+<span class="s2">    &lt;h1&gt;Understanding Tukuy&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class=&quot;content&quot;&gt;</span>
+<span class="s2">        &lt;p&gt;Tukuy is a &lt;strong&gt;powerful&lt;/strong&gt; transformation library.&lt;/p&gt;</span>
+<span class="s2">        &lt;p&gt;It makes data processing &lt;em&gt;easy&lt;/em&gt; and intuitive.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class=&quot;author&quot;&gt;</span>
+<span class="s2">        &lt;span&gt;Written by: John Doe&lt;/span&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">&lt;/article&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract plain text from HTML</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;strip_html_tags&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># &quot;Understanding Tukuy Tukuy is a powerful transformation library. It makes data processing easy and intuitive. Written by: John Doe&quot;</span>
+
+<span class="c1"># Extract specific elements</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;h1&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>  <span class="c1"># &quot;Understanding Tukuy&quot;</span>
+
+<span class="n">paragraphs</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;extract&quot;</span><span class="p">:</span> <span class="s2">&quot;text_array&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">paragraphs</span><span class="p">)</span>  <span class="c1"># [&quot;Tukuy is a powerful transformation library.&quot;, &quot;It makes data processing easy and intuitive.&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="scraping-product-information">
+<h3>Scraping Product Information<a class="headerlink" href="#scraping-product-information" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">product_html</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;div class=&quot;product&quot;&gt;</span>
+<span class="s2">    &lt;h2 class=&quot;title&quot;&gt;Wireless Headphones&lt;/h2&gt;</span>
+<span class="s2">    &lt;div class=&quot;price&quot;&gt;$99.99&lt;/div&gt;</span>
+<span class="s2">    &lt;div class=&quot;description&quot;&gt;High-quality wireless headphones with noise cancellation.&lt;/div&gt;</span>
+<span class="s2">    &lt;ul class=&quot;features&quot;&gt;</span>
+<span class="s2">        &lt;li&gt;Bluetooth 5.0&lt;/li&gt;</span>
+<span class="s2">        &lt;li&gt;40h Battery Life&lt;/li&gt;</span>
+<span class="s2">        &lt;li&gt;Active Noise Cancellation&lt;/li&gt;</span>
+<span class="s2">    &lt;/ul&gt;</span>
+<span class="s2">    &lt;div class=&quot;rating&quot;&gt;4.5/5 (230 reviews)&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract structured product data</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.title&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;price&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.price&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;strip&quot;</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_replace&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^\$&quot;</span><span class="p">,</span> <span class="s2">&quot;replacement&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.description&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;features&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.features li&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rating&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.rating&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_extract&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(\d+\.\d+)\/5&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">product</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">extract_html_with_pattern</span><span class="p">(</span><span class="n">product_html</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;title&quot;: &quot;Wireless Headphones&quot;,</span>
+<span class="c1">#     &quot;price&quot;: &quot;99.99&quot;,</span>
+<span class="c1">#     &quot;description&quot;: &quot;High-quality wireless headphones with noise cancellation.&quot;,</span>
+<span class="c1">#     &quot;features&quot;: [&quot;Bluetooth 5.0&quot;, &quot;40h Battery Life&quot;, &quot;Active Noise Cancellation&quot;],</span>
+<span class="c1">#     &quot;rating&quot;: &quot;4.5&quot;</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+<section id="extracting-tables-from-html">
+<h3>Extracting Tables from HTML<a class="headerlink" href="#extracting-tables-from-html" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">table_html</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;table&gt;</span>
+<span class="s2">    &lt;thead&gt;</span>
+<span class="s2">        &lt;tr&gt;</span>
+<span class="s2">            &lt;th&gt;Product&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;Price&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;Stock&lt;/th&gt;</span>
+<span class="s2">        &lt;/tr&gt;</span>
+<span class="s2">    &lt;/thead&gt;</span>
+<span class="s2">    &lt;tbody&gt;</span>
+<span class="s2">        &lt;tr&gt;</span>
+<span class="s2">            &lt;td&gt;Laptop&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$1,299.99&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;10&lt;/td&gt;</span>
+<span class="s2">        &lt;/tr&gt;</span>
+<span class="s2">        &lt;tr&gt;</span>
+<span class="s2">            &lt;td&gt;Smartphone&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$799.99&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;25&lt;/td&gt;</span>
+<span class="s2">        &lt;/tr&gt;</span>
+<span class="s2">        &lt;tr&gt;</span>
+<span class="s2">            &lt;td&gt;Headphones&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$99.99&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;50&lt;/td&gt;</span>
+<span class="s2">        &lt;/tr&gt;</span>
+<span class="s2">    &lt;/tbody&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract table as structured data</span>
+<span class="n">table_data</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">table_html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract_tables&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">table_data</span><span class="p">)</span>
+<span class="c1"># [</span>
+<span class="c1">#     {</span>
+<span class="c1">#         &quot;headers&quot;: [&quot;Product&quot;, &quot;Price&quot;, &quot;Stock&quot;],</span>
+<span class="c1">#         &quot;rows&quot;: [</span>
+<span class="c1">#             [&quot;Laptop&quot;, &quot;$1,299.99&quot;, &quot;10&quot;],</span>
+<span class="c1">#             [&quot;Smartphone&quot;, &quot;$799.99&quot;, &quot;25&quot;],</span>
+<span class="c1">#             [&quot;Headphones&quot;, &quot;$99.99&quot;, &quot;50&quot;]</span>
+<span class="c1">#         ]</span>
+<span class="c1">#     }</span>
+<span class="c1"># ]</span>
+
+<span class="c1"># Process table data</span>
+<span class="n">total_stock</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;rows&quot;</span><span class="p">]:</span>
+    <span class="n">total_stock</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total stock: </span><span class="si">{</span><span class="n">total_stock</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># &quot;Total stock: 85&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="json-transformations">
+<h2>JSON Transformations<a class="headerlink" href="#json-transformations" title="Link to this heading"></a></h2>
+<section id="extracting-data-from-json">
+<h3>Extracting Data from JSON<a class="headerlink" href="#extracting-data-from-json" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">json_data</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    &quot;user&quot;: {</span>
+<span class="s2">        &quot;profile&quot;: {</span>
+<span class="s2">            &quot;name&quot;: &quot;John Doe&quot;,</span>
+<span class="s2">            &quot;email&quot;: &quot;john@example.com&quot;,</span>
+<span class="s2">            &quot;age&quot;: 30</span>
+<span class="s2">        },</span>
+<span class="s2">        &quot;preferences&quot;: {</span>
+<span class="s2">            &quot;theme&quot;: &quot;dark&quot;,</span>
+<span class="s2">            &quot;notifications&quot;: true</span>
+<span class="s2">        },</span>
+<span class="s2">        &quot;stats&quot;: {</span>
+<span class="s2">            &quot;posts&quot;: 45,</span>
+<span class="s2">            &quot;followers&quot;: 1024,</span>
+<span class="s2">            &quot;following&quot;: 256</span>
+<span class="s2">        }</span>
+<span class="s2">    }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract specific values</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;user.profile.name&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># &quot;John Doe&quot;</span>
+
+<span class="c1"># Extract and validate</span>
+<span class="n">email</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;user.profile.email&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;email_validator&quot;</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>  <span class="c1"># &quot;john@example.com&quot; (or None if invalid)</span>
+
+<span class="c1"># Extract multiple values</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;user.stats&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>  <span class="c1"># {&quot;posts&quot;: 45, &quot;followers&quot;: 1024, &quot;following&quot;: 256}</span>
+</pre></div>
+</div>
+</section>
+<section id="processing-api-responses">
+<h3>Processing API Responses<a class="headerlink" href="#processing-api-responses" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">api_response</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    &quot;data&quot;: {</span>
+<span class="s2">        &quot;results&quot;: [</span>
+<span class="s2">            {&quot;id&quot;: 1, &quot;name&quot;: &quot;Product A&quot;, &quot;price&quot;: 19.99, &quot;inStock&quot;: true},</span>
+<span class="s2">            {&quot;id&quot;: 2, &quot;name&quot;: &quot;Product B&quot;, &quot;price&quot;: 29.99, &quot;inStock&quot;: false},</span>
+<span class="s2">            {&quot;id&quot;: 3, &quot;name&quot;: &quot;Product C&quot;, &quot;price&quot;: 39.99, &quot;inStock&quot;: true},</span>
+<span class="s2">            {&quot;id&quot;: 4, &quot;name&quot;: &quot;Product D&quot;, &quot;price&quot;: 49.99, &quot;inStock&quot;: true}</span>
+<span class="s2">        ],</span>
+<span class="s2">        &quot;pagination&quot;: {</span>
+<span class="s2">            &quot;total&quot;: 15,</span>
+<span class="s2">            &quot;page&quot;: 1,</span>
+<span class="s2">            &quot;perPage&quot;: 4</span>
+<span class="s2">        }</span>
+<span class="s2">    },</span>
+<span class="s2">    &quot;meta&quot;: {</span>
+<span class="s2">        &quot;requestId&quot;: &quot;abc-123&quot;,</span>
+<span class="s2">        &quot;timestamp&quot;: &quot;2024-01-15T14:30:00Z&quot;</span>
+<span class="s2">    }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract all in-stock products</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;inStockProducts&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.results[*]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;inStock&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">},</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;price&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;totalProducts&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.pagination.total&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;requestInfo&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;meta.requestId&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;meta.timestamp&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">extract_json_with_pattern</span><span class="p">(</span><span class="n">api_response</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;inStockProducts&quot;: [</span>
+<span class="c1">#         {&quot;id&quot;: 1, &quot;name&quot;: &quot;Product A&quot;, &quot;price&quot;: 19.99},</span>
+<span class="c1">#         {&quot;id&quot;: 3, &quot;name&quot;: &quot;Product C&quot;, &quot;price&quot;: 39.99},</span>
+<span class="c1">#         {&quot;id&quot;: 4, &quot;name&quot;: &quot;Product D&quot;, &quot;price&quot;: 49.99}</span>
+<span class="c1">#     ],</span>
+<span class="c1">#     &quot;totalProducts&quot;: 15,</span>
+<span class="c1">#     &quot;requestInfo&quot;: {</span>
+<span class="c1">#         &quot;id&quot;: &quot;abc-123&quot;,</span>
+<span class="c1">#         &quot;time&quot;: &quot;2024-01-15T14:30:00Z&quot;</span>
+<span class="c1">#     }</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="date-transformations">
+<h2>Date Transformations<a class="headerlink" href="#date-transformations" title="Link to this heading"></a></h2>
+<section id="working-with-dates">
+<h3>Working with Dates<a class="headerlink" href="#working-with-dates" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Parse date string</span>
+<span class="n">date_str</span> <span class="o">=</span> <span class="s2">&quot;2023-05-15&quot;</span>
+<span class="n">date_obj</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">date_str</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;parse_date&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+
+<span class="c1"># Calculate age from birthdate</span>
+<span class="n">birthdate</span> <span class="o">=</span> <span class="s2">&quot;1990-08-25&quot;</span>
+<span class="n">age</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">birthdate</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;age_calc&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age: </span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s2"> years&quot;</span><span class="p">)</span>
+
+<span class="c1"># Calculate days between dates</span>
+<span class="n">start_date</span> <span class="o">=</span> <span class="s2">&quot;2023-01-01&quot;</span>
+<span class="n">end_date</span> <span class="o">=</span> <span class="s2">&quot;2023-12-31&quot;</span>
+<span class="n">days</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;duration_calc&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;days&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">end_date</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Days between: </span><span class="si">{</span><span class="n">days</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Format date</span>
+<span class="n">date_obj</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;2023-05-15&quot;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;parse_date&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;format_date&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">date_obj</span><span class="p">)</span>  <span class="c1"># &quot;May 15, 2023&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="handling-date-ranges">
+<h3>Handling Date Ranges<a class="headerlink" href="#handling-date-ranges" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if date falls within a range</span>
+<span class="n">target_date</span> <span class="o">=</span> <span class="s2">&quot;2023-07-15&quot;</span>
+<span class="n">start_range</span> <span class="o">=</span> <span class="s2">&quot;2023-06-01&quot;</span>
+<span class="n">end_range</span> <span class="o">=</span> <span class="s2">&quot;2023-08-31&quot;</span>
+
+<span class="n">is_in_range</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">target_date</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;parse_date&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;in_date_range&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">start_range</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">end_range</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Date is in range: </span><span class="si">{</span><span class="n">is_in_range</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># Calculate business days in a period</span>
+<span class="n">business_days</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;business_days&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;2023-01-31&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Business days: </span><span class="si">{</span><span class="n">business_days</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># ~22 (depending on holidays)</span>
+
+<span class="c1"># Check if date is a weekend</span>
+<span class="n">is_weekend</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;2023-07-15&quot;</span><span class="p">,</span> <span class="p">[</span>  <span class="c1"># July 15, 2023 is a Saturday</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;is_weekend&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is weekend: </span><span class="si">{</span><span class="n">is_weekend</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="numerical-transformations">
+<h2>Numerical Transformations<a class="headerlink" href="#numerical-transformations" title="Link to this heading"></a></h2>
+<section id="basic-numerical-operations">
+<h3>Basic Numerical Operations<a class="headerlink" href="#basic-numerical-operations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Round numbers</span>
+<span class="n">value</span> <span class="o">=</span> <span class="mf">123.456789</span>
+<span class="n">rounded</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;round&quot;</span><span class="p">,</span> <span class="s2">&quot;decimals&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rounded</span><span class="p">)</span>  <span class="c1"># 123.46</span>
+
+<span class="c1"># Format with thousand separators</span>
+<span class="n">large_number</span> <span class="o">=</span> <span class="mf">1234567.89</span>
+<span class="n">formatted</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">large_number</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;format_number&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>  <span class="c1"># &quot;1,234,567.89&quot;</span>
+
+<span class="c1"># Format as currency</span>
+<span class="n">price</span> <span class="o">=</span> <span class="mf">49.99</span>
+<span class="n">currency</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;to_currency&quot;</span><span class="p">,</span> <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;USD&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">currency</span><span class="p">)</span>  <span class="c1"># &quot;$49.99&quot;</span>
+
+<span class="c1"># Calculate percentage</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="mf">0.7523</span>
+<span class="n">percentage</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;percentage&quot;</span><span class="p">,</span> <span class="s2">&quot;decimals&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">percentage</span><span class="p">)</span>  <span class="c1"># &quot;75.2%&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="statistical-calculations">
+<h3>Statistical Calculations<a class="headerlink" href="#statistical-calculations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate statistics from a list of numbers</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+
+<span class="c1"># Mean</span>
+<span class="n">mean</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean: </span><span class="si">{</span><span class="n">mean</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Mean: 29.5</span>
+
+<span class="c1"># Median</span>
+<span class="n">median</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;median&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Median: </span><span class="si">{</span><span class="n">median</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Median: 23.5</span>
+
+<span class="c1"># Min and Max</span>
+<span class="n">min_max</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;range&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Range: </span><span class="si">{</span><span class="n">min_max</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Range: [12, 67]</span>
+
+<span class="c1"># Sum</span>
+<span class="n">total</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Total: 236</span>
+</pre></div>
+</div>
+</section>
+<section id="financial-calculations">
+<h3>Financial Calculations<a class="headerlink" href="#financial-calculations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate compound interest</span>
+<span class="n">principal</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">interest_rate</span> <span class="o">=</span> <span class="mf">0.05</span>  <span class="c1"># 5%</span>
+<span class="n">years</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">future_value</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">principal</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;compound_interest&quot;</span><span class="p">,</span> <span class="s2">&quot;rate&quot;</span><span class="p">:</span> <span class="n">interest_rate</span><span class="p">,</span> <span class="s2">&quot;years&quot;</span><span class="p">:</span> <span class="n">years</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Future value: </span><span class="si">{</span><span class="n">future_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># ~1276.28</span>
+
+<span class="c1"># Calculate mortgage payment</span>
+<span class="n">loan_amount</span> <span class="o">=</span> <span class="mi">300000</span>
+<span class="n">interest_rate</span> <span class="o">=</span> <span class="mf">0.04</span>  <span class="c1"># 4%</span>
+<span class="n">loan_term_years</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">monthly_payment</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">loan_amount</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;mortgage_payment&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;rate&quot;</span><span class="p">:</span> <span class="n">interest_rate</span><span class="p">,</span>
+     <span class="s2">&quot;term_years&quot;</span><span class="p">:</span> <span class="n">loan_term_years</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Monthly payment: </span><span class="si">{</span><span class="n">monthly_payment</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># ~$1,432.25</span>
+
+<span class="c1"># Calculate discount</span>
+<span class="n">original_price</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">discount_percent</span> <span class="o">=</span> <span class="mi">25</span>
+
+<span class="n">sale_price</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">original_price</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_discount&quot;</span><span class="p">,</span> <span class="s2">&quot;discount&quot;</span><span class="p">:</span> <span class="n">discount_percent</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sale price: </span><span class="si">{</span><span class="n">sale_price</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 75.0</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="validation-transformations">
+<h2>Validation Transformations<a class="headerlink" href="#validation-transformations" title="Link to this heading"></a></h2>
+<section id="input-validation">
+<h3>Input Validation<a class="headerlink" href="#input-validation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Email validation</span>
+<span class="n">valid_email</span> <span class="o">=</span> <span class="s2">&quot;user@example.com&quot;</span>
+<span class="n">invalid_email</span> <span class="o">=</span> <span class="s2">&quot;not-an-email&quot;</span>
+
+<span class="n">result1</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">valid_email</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;email_validator&quot;</span><span class="p">])</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">invalid_email</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;email_validator&quot;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Valid email: </span><span class="si">{</span><span class="n">result1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># &quot;user@example.com&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid email: </span><span class="si">{</span><span class="n">result2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># None</span>
+
+<span class="c1"># URL validation</span>
+<span class="n">valid_url</span> <span class="o">=</span> <span class="s2">&quot;https://tukuy.example.com/docs&quot;</span>
+<span class="n">invalid_url</span> <span class="o">=</span> <span class="s2">&quot;not a url&quot;</span>
+
+<span class="n">result1</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">valid_url</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;url_validator&quot;</span><span class="p">])</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">invalid_url</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;url_validator&quot;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Valid URL: </span><span class="si">{</span><span class="n">result1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># &quot;https://tukuy.example.com/docs&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid URL: </span><span class="si">{</span><span class="n">result2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># None</span>
+
+<span class="c1"># Phone number validation</span>
+<span class="n">valid_phone</span> <span class="o">=</span> <span class="s2">&quot;+1-555-123-4567&quot;</span>
+<span class="n">invalid_phone</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
+
+<span class="n">result1</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">valid_phone</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;phone_validator&quot;</span><span class="p">])</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">invalid_phone</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;phone_validator&quot;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Valid phone: </span><span class="si">{</span><span class="n">result1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># &quot;+1-555-123-4567&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid phone: </span><span class="si">{</span><span class="n">result2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># None</span>
+</pre></div>
+</div>
+</section>
+<section id="range-and-length-validation">
+<h3>Range and Length Validation<a class="headerlink" href="#range-and-length-validation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># String length validation</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;user123&quot;</span>
+
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;length_validator&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Username valid: </span><span class="si">{</span><span class="n">is_valid</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># Number range validation</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">25</span>
+
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">age</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;range_validator&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="mi">65</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age valid: </span><span class="si">{</span><span class="n">is_valid</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># Date range validation</span>
+<span class="n">event_date</span> <span class="o">=</span> <span class="s2">&quot;2023-06-15&quot;</span>
+
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">event_date</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;date_range_validator&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="s2">&quot;2023-12-31&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Date valid: </span><span class="si">{</span><span class="n">is_valid</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-pattern-validation">
+<h3>Custom Pattern Validation<a class="headerlink" href="#custom-pattern-validation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Regex pattern validation</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;P@ssw0rd123&quot;</span>
+
+<span class="c1"># Check if password meets complexity requirements</span>
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_validator&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&amp;])[A-Za-z\d@$!%*#?&amp;]{8,}$&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Password valid: </span><span class="si">{</span><span class="n">is_valid</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># Custom validation function</span>
+<span class="k">def</span> <span class="nf">validate_isbn</span><span class="p">(</span><span class="n">isbn</span><span class="p">):</span>
+    <span class="c1"># Remove hyphens</span>
+    <span class="n">isbn</span> <span class="o">=</span> <span class="n">isbn</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="c1"># Check if all remaining characters are digits</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isbn</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># Check length</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="c1"># Register custom validator</span>
+<span class="k">class</span> <span class="nc">ISBNValidator</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">validate_isbn</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="c1"># Usage</span>
+<span class="n">isbn</span> <span class="o">=</span> <span class="s2">&quot;978-3-16-148410-0&quot;</span>
+
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">isbn</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;isbn_validator&quot;</span><span class="p">}</span>  <span class="c1"># Assuming registered</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ISBN valid: </span><span class="si">{</span><span class="n">is_valid</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="creating-custom-transformers">
+<h2>Creating Custom Transformers<a class="headerlink" href="#creating-custom-transformers" title="Link to this heading"></a></h2>
+<section id="custom-text-transformer">
+<h3>Custom Text Transformer<a class="headerlink" href="#custom-text-transformer" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy.base</span> <span class="kn">import</span> <span class="n">ChainableTransformer</span>
+<span class="kn">from</span> <span class="nn">tukuy.plugins</span> <span class="kn">import</span> <span class="n">TransformerPlugin</span>
+<span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="c1"># Create a custom transformer for title case conversion</span>
+<span class="k">class</span> <span class="nc">TitleCaseTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># Custom implementation of title case</span>
+        <span class="c1"># (Different from str.title() because it preserves UPPERCASE acronyms)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+            <span class="c1"># Skip uppercase acronyms</span>
+            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="c1"># Capitalize first letter of other words</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">word</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+
+<span class="c1"># Create a plugin to register the transformer</span>
+<span class="k">class</span> <span class="nc">TextExtensionsPlugin</span><span class="p">(</span><span class="n">TransformerPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;text_extensions&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;title_case&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">TitleCaseTransformer</span><span class="p">(</span><span class="s1">&#39;title_case&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="c1"># Usage</span>
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+<span class="n">TUKUY</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">TextExtensionsPlugin</span><span class="p">())</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;the QUICK brown fox jumps over the lazy dog&quot;</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;title_case&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># &quot;The QUICK Brown Fox Jumps Over The Lazy Dog&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-data-processor">
+<h3>Custom Data Processor<a class="headerlink" href="#custom-data-processor" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a transformer for processing CSV data</span>
+<span class="k">class</span> <span class="nc">CSVParserTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">has_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="n">delimiter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_header</span> <span class="o">=</span> <span class="n">has_header</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_header</span><span class="p">:</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="n">row</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_header</span><span class="p">:</span>
+                <span class="n">row_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">headers</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span> <span class="n">cell</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">)}</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_dict</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+<span class="c1"># Create a plugin</span>
+<span class="k">class</span> <span class="nc">DataProcessingPlugin</span><span class="p">(</span><span class="n">TransformerPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;data_processing&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;parse_csv&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">CSVParserTransformer</span><span class="p">(</span><span class="s1">&#39;parse_csv&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="c1"># Usage</span>
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+<span class="n">TUKUY</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">DataProcessingPlugin</span><span class="p">())</span>
+
+<span class="n">csv_data</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Name,Age,Email</span>
+<span class="s2">John Doe,30,john@example.com</span>
+<span class="s2">Jane Smith,25,jane@example.com</span>
+<span class="s2">Bob Johnson,45,bob@example.com&quot;&quot;&quot;</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">csv_data</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;parse_csv&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># [</span>
+<span class="c1">#     {&#39;Name&#39;: &#39;John Doe&#39;, &#39;Age&#39;: &#39;30&#39;, &#39;Email&#39;: &#39;john@example.com&#39;},</span>
+<span class="c1">#     {&#39;Name&#39;: &#39;Jane Smith&#39;, &#39;Age&#39;: &#39;25&#39;, &#39;Email&#39;: &#39;jane@example.com&#39;},</span>
+<span class="c1">#     {&#39;Name&#39;: &#39;Bob Johnson&#39;, &#39;Age&#39;: &#39;45&#39;, &#39;Email&#39;: &#39;bob@example.com&#39;}</span>
+<span class="c1"># ]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="using-plugins">
+<h2>Using Plugins<a class="headerlink" href="#using-plugins" title="Link to this heading"></a></h2>
+<section id="registering-custom-plugins">
+<h3>Registering Custom Plugins<a class="headerlink" href="#registering-custom-plugins" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy.base</span> <span class="kn">import</span> <span class="n">ChainableTransformer</span>
+<span class="kn">from</span> <span class="nn">tukuy.plugins</span> <span class="kn">import</span> <span class="n">TransformerPlugin</span>
+<span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="c1"># Create a geo transformation plugin</span>
+<span class="k">class</span> <span class="nc">GeoTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span>
+               <span class="s1">&#39;lat&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s1">&#39;lon&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># Convert decimal coordinates to DMS format</span>
+        <span class="c1"># (Degrees, Minutes, Seconds)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">decimal_to_dms</span><span class="p">(</span><span class="n">coord</span><span class="p">):</span>
+            <span class="n">deg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+            <span class="n">min_float</span> <span class="o">=</span> <span class="p">(</span><span class="n">coord</span> <span class="o">-</span> <span class="n">deg</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span>
+            <span class="nb">min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_float</span><span class="p">)</span>
+            <span class="n">sec</span> <span class="o">=</span> <span class="p">(</span><span class="n">min_float</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deg</span><span class="si">}</span><span class="s2">° </span><span class="si">{</span><span class="nb">min</span><span class="si">}</span><span class="s2">&#39; </span><span class="si">{</span><span class="n">sec</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span>
+            <span class="s1">&#39;lon&#39;</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span>
+            <span class="s1">&#39;lat_dms&#39;</span><span class="p">:</span> <span class="n">decimal_to_dms</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span> <span class="k">if</span> <span class="n">lat</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;S&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;lon_dms&#39;</span><span class="p">:</span> <span class="n">decimal_to_dms</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">lon</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span> <span class="k">if</span> <span class="n">lon</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;W&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">GeoPlugin</span><span class="p">(</span><span class="n">TransformerPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;geo&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;to_dms&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">GeoTransformer</span><span class="p">(</span><span class="s1">&#39;to_dms&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Geo plugin initialized&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Geo plugin cleaned up&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+<span class="n">TUKUY</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">GeoPlugin</span><span class="p">())</span>
+
+<span class="n">coords</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lat&#39;</span><span class="p">:</span> <span class="mf">40.7128</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">74.0060</span><span class="p">}</span>  <span class="c1"># New York</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;to_dms&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># {</span>
+<span class="c1">#     &#39;lat&#39;: 40.7128,</span>
+<span class="c1">#     &#39;lon&#39;: -74.0060,</span>
+<span class="c1">#     &#39;lat_dms&#39;: &quot;40° 42&#39; 46.1\&quot;N&quot;,</span>
+<span class="c1">#     &#39;lon_dms&#39;: &quot;74° 0&#39; 21.6\&quot;W&quot;</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-plugin-collections">
+<h3>Creating Plugin Collections<a class="headerlink" href="#creating-plugin-collections" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a collection of related transformers</span>
+<span class="k">class</span> <span class="nc">AnalyticsTransformerA</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="c1"># Calculate average</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="mi">0</span>
+
+<span class="k">class</span> <span class="nc">AnalyticsTransformerB</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># Calculate basic statistics</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="c1"># Group them in a plugin</span>
+<span class="k">class</span> <span class="nc">AnalyticsPlugin</span><span class="p">(</span><span class="n">TransformerPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;analytics&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;average&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">AnalyticsTransformerA</span><span class="p">(</span><span class="s1">&#39;average&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;stats&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">AnalyticsTransformerB</span><span class="p">(</span><span class="s1">&#39;stats&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="c1"># Usage</span>
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+<span class="n">TUKUY</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">AnalyticsPlugin</span><span class="p">())</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+
+<span class="n">avg</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average: </span><span class="si">{</span><span class="n">avg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Average: 29.5</span>
+
+<span class="n">stats</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Statistics: </span><span class="si">{</span><span class="n">stats</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Statistics: {</span>
+<span class="c1">#   &#39;count&#39;: 8,</span>
+<span class="c1">#   &#39;sum&#39;: 236,</span>
+<span class="c1">#   &#39;mean&#39;: 29.5,</span>
+<span class="c1">#   &#39;min&#39;: 12,</span>
+<span class="c1">#   &#39;max&#39;: 67</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="real-world-use-cases">
+<h2>Real-world Use Cases<a class="headerlink" href="#real-world-use-cases" title="Link to this heading"></a></h2>
+<section id="web-scraping-and-data-extraction">
+<h3>Web Scraping and Data Extraction<a class="headerlink" href="#web-scraping-and-data-extraction" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Fetch a web page</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/products&quot;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+
+<span class="c1"># Define extraction pattern for products</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;products&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.product-item&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.product-title&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;price&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.product-price&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s2">&quot;strip&quot;</span><span class="p">,</span>
+                        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_extract&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\$(\d+\.\d+)&quot;</span><span class="p">}</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rating&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.product-rating&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_extract&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(\d\.\d)\/5&quot;</span><span class="p">}</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;inStock&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.stock-status&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;In Stock&quot;</span><span class="p">}</span>
+                    <span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pagination&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;currentPage&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.pagination .current&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;totalPages&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.pagination .total&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Extract structured data</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">extract_html_with_pattern</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+<span class="c1"># Process the extracted data</span>
+<span class="n">in_stock_products</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;inStock&quot;</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">in_stock_products</span><span class="p">)</span><span class="si">}</span><span class="s2"> in-stock products&quot;</span><span class="p">)</span>
+
+<span class="c1"># Sort by price</span>
+<span class="n">sorted_products</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">],</span>
+                        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Display top 5 cheapest in-stock products</span>
+<span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sorted_products</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;inStock&quot;</span><span class="p">]][:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - $</span><span class="si">{</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - Rating: </span><span class="si">{</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/5&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="data-cleaning-and-normalization">
+<h3>Data Cleaning and Normalization<a class="headerlink" href="#data-cleaning-and-normalization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Load raw data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;customer_data.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># Clean and normalize data</span>
+<span class="n">cleaned_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="c1"># Clean and validate email</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">],</span> <span class="p">[</span>
+        <span class="s2">&quot;strip&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lowercase&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;email_validator&quot;</span>
+    <span class="p">])</span>
+
+    <span class="c1"># Format phone number</span>
+    <span class="n">phone</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;phone&quot;</span><span class="p">],</span> <span class="p">[</span>
+        <span class="s2">&quot;strip&quot;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_replace&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;[^\d+]&quot;</span><span class="p">,</span> <span class="s2">&quot;replacement&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;phone_validator&quot;</span>
+    <span class="p">])</span>
+
+    <span class="c1"># Normalize name</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span>
+        <span class="s2">&quot;strip&quot;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;title_case&quot;</span><span class="p">}</span>  <span class="c1"># Custom transformer from earlier</span>
+    <span class="p">])</span>
+
+    <span class="c1"># Parse and validate date</span>
+    <span class="n">birth_date</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;birth_date&quot;</span><span class="p">],</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;parse_date&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%Y&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;format_date&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+    <span class="c1"># Calculate age</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">birth_date</span><span class="p">,</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;age_calc&quot;</span><span class="p">}</span>
+    <span class="p">])</span> <span class="k">if</span> <span class="n">birth_date</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="c1"># Add to cleaned data if critical fields are valid</span>
+    <span class="k">if</span> <span class="n">email</span> <span class="ow">and</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">cleaned_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+            <span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="n">phone</span><span class="p">,</span>
+            <span class="s2">&quot;birth_date&quot;</span><span class="p">:</span> <span class="n">birth_date</span><span class="p">,</span>
+            <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="n">age</span>
+        <span class="p">})</span>
+
+<span class="c1"># Create cleaned DataFrame</span>
+<span class="n">cleaned_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cleaned_data</span><span class="p">)</span>
+
+<span class="c1"># Save cleaned data</span>
+<span class="n">cleaned_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;cleaned_customer_data.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> records, kept </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cleaned_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> valid records&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">cleaned_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> invalid records&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="api-data-processing">
+<h3>API Data Processing<a class="headerlink" href="#api-data-processing" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Fetch data from an API</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://api.example.com/data&quot;</span><span class="p">)</span>
+<span class="n">api_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="c1"># Extract and transform specific data</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;items&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.items[*]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;category.name&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;price.amount&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;currency&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;price.currency&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;totalCount&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;meta.total&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;page&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;meta.page&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;meta.timestamp&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Extract structured data</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">extract_json_with_pattern</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">api_data</span><span class="p">),</span> <span class="n">pattern</span><span class="p">)</span>
+
+<span class="c1"># Process items</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]:</span>
+    <span class="c1"># Format price with currency symbol</span>
+    <span class="n">formatted_price</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]),</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;to_currency&quot;</span><span class="p">,</span> <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;currency&quot;</span><span class="p">]}</span>
+    <span class="p">])</span>
+
+    <span class="n">item</span><span class="p">[</span><span class="s2">&quot;formatted_price&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatted_price</span>
+
+    <span class="c1"># Categorize by price range</span>
+    <span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">price</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">item</span><span class="p">[</span><span class="s2">&quot;price_category&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;budget&quot;</span>
+    <span class="k">elif</span> <span class="n">price</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="n">item</span><span class="p">[</span><span class="s2">&quot;price_category&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">item</span><span class="p">[</span><span class="s2">&quot;price_category&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;premium&quot;</span>
+
+<span class="c1"># Group items by category</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]:</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+        <span class="n">categories</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">categories</span><span class="p">[</span><span class="n">category</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<span class="c1"># Calculate statistics for each category</span>
+<span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">prices</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">])</span>  <span class="c1"># From the analytics plugin</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Category: </span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Items: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Average price: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Price range: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="user_guide.html" class="btn btn-neutral float-left" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tukuy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
