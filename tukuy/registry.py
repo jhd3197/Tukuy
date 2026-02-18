@@ -33,12 +33,13 @@ def _load_builtin_plugins(registry: PluginRegistry) -> None:
     """Load every built-in plugin into *registry*."""
     from .plugins import BUILTIN_PLUGINS
 
-    for name, plugin_class in BUILTIN_PLUGINS.items():
+    for name in BUILTIN_PLUGINS.keys():
         try:
+            plugin_class = BUILTIN_PLUGINS[name]
             plugin = plugin_class()
             registry.register(plugin, source=PluginSource.TUKUY)
         except Exception as e:
-            logger.error("Failed to load built-in plugin %s: %s", name, e)
+            logger.debug("Skipped built-in plugin %s: %s", name, e)
 
 
 def reset_shared_registry() -> None:
