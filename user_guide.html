@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Guide &mdash; Tukuy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tukuy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-concepts">Core Concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chaining">Chaining</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugins">Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-transformers">Using Transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#text-transformations">Text Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#html-transformations">HTML Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#date-transformations">Date Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#json-transformations">JSON Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numerical-transformations">Numerical Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation-transformations">Validation Transformations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pattern-based-data-extraction">Pattern-based Data Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#html-pattern-extraction">HTML Pattern Extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#json-pattern-extraction">JSON Pattern Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chain-transformations">Chain Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-specific-selectors">Use Specific Selectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reuse-transformer-instances">Reuse Transformer Instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-custom-transformers">Create Custom Transformers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tukuy.html">tukuy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tukuy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">User Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/user_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading"></a></h1>
+<section id="core-concepts">
+<h2>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h2>
+<p>Tukuy is built around a few key concepts that make it powerful and flexible:</p>
+<section id="transformers">
+<h3>Transformers<a class="headerlink" href="#transformers" title="Link to this heading"></a></h3>
+<p>Transformers are the basic building blocks in Tukuy. Each transformer takes an input value, performs a specific operation, and returns a result. Transformers can:</p>
+<ul class="simple">
+<li><p><strong>Validate</strong> input data (like validating email formats)</p></li>
+<li><p><strong>Transform</strong> data from one form to another (like stripping HTML tags)</p></li>
+<li><p><strong>Extract</strong> specific pieces of information (like selecting elements from HTML)</p></li>
+<li><p><strong>Calculate</strong> new values (like calculating age from a date)</p></li>
+</ul>
+</section>
+<section id="chaining">
+<h3>Chaining<a class="headerlink" href="#chaining" title="Link to this heading"></a></h3>
+<p>Transformers can be chained together to create complex transformation pipelines. This allows you to:</p>
+<ul class="simple">
+<li><p>Apply multiple transformations in sequence</p></li>
+<li><p>Build reusable transformation sequences</p></li>
+<li><p>Combine different types of transformations</p></li>
+</ul>
+</section>
+<section id="plugins">
+<h3>Plugins<a class="headerlink" href="#plugins" title="Link to this heading"></a></h3>
+<p>Tukuy’s plugin system allows for extensibility. Plugins:</p>
+<ul class="simple">
+<li><p>Provide sets of related transformers</p></li>
+<li><p>Can be registered with the main TukuyTransformer</p></li>
+<li><p>Allow for modular organization of functionality</p></li>
+<li><p>Make it easy to add custom transformations</p></li>
+</ul>
+</section>
+</section>
+<section id="using-transformers">
+<h2>Using Transformers<a class="headerlink" href="#using-transformers" title="Link to this heading"></a></h2>
+<section id="text-transformations">
+<h3>Text Transformations<a class="headerlink" href="#text-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Basic transformations</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; Hello World! &quot;</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s2">&quot;strip&quot;</span><span class="p">,</span>              <span class="c1"># Remove leading/trailing whitespace</span>
+    <span class="s2">&quot;lowercase&quot;</span><span class="p">,</span>          <span class="c1"># Convert to lowercase</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;truncate&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>  <span class="c1"># Truncate to 5 chars</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># &quot;hello...&quot;</span>
+
+<span class="c1"># Using regex</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello 123 World&quot;</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_replace&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="s2">&quot;replacement&quot;</span><span class="p">:</span> <span class="s2">&quot;#&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># &quot;Hello # World&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="html-transformations">
+<h3>HTML Transformations<a class="headerlink" href="#html-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&lt;div&gt;&lt;h1&gt;Title&lt;/h1&gt;&lt;p&gt;This is &lt;b&gt;important&lt;/b&gt; content.&lt;/p&gt;&lt;/div&gt;&quot;</span>
+
+<span class="c1"># Strip tags</span>
+<span class="n">clean_text</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;strip_html_tags&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">clean_text</span><span class="p">)</span>  <span class="c1"># &quot;Title This is important content.&quot;</span>
+
+<span class="c1"># Extract specific content</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;h1&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>  <span class="c1"># &quot;Title&quot;</span>
+
+<span class="c1"># Extract and transform</span>
+<span class="n">important</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;b&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;uppercase&quot;</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">important</span><span class="p">)</span>  <span class="c1"># &quot;IMPORTANT&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="date-transformations">
+<h3>Date Transformations<a class="headerlink" href="#date-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+
+<span class="c1"># Calculate age</span>
+<span class="n">birth_date</span> <span class="o">=</span> <span class="s2">&quot;1990-05-15&quot;</span>
+<span class="n">age</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">birth_date</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;age_calc&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age: </span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s2"> years&quot;</span><span class="p">)</span>
+
+<span class="c1"># Calculate duration</span>
+<span class="n">start_date</span> <span class="o">=</span> <span class="s2">&quot;2023-01-01&quot;</span>
+<span class="n">days</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;duration_calc&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;days&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;2023-12-31&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Days: </span><span class="si">{</span><span class="n">days</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="json-transformations">
+<h3>JSON Transformations<a class="headerlink" href="#json-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">json_str</span> <span class="o">=</span> <span class="s1">&#39;{&quot;user&quot;: {&quot;name&quot;: &quot;John&quot;, &quot;email&quot;: &quot;john@example.com&quot;, &quot;age&quot;: 30}}&#39;</span>
+
+<span class="c1"># Extract values</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;user.name&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># &quot;John&quot;</span>
+
+<span class="c1"># Transform extracted values</span>
+<span class="n">email</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;user.email&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;validate_email&quot;</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>  <span class="c1"># &quot;john@example.com&quot; or None if invalid</span>
+</pre></div>
+</div>
+</section>
+<section id="numerical-transformations">
+<h3>Numerical Transformations<a class="headerlink" href="#numerical-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Format number</span>
+<span class="n">number</span> <span class="o">=</span> <span class="mf">1234.56</span>
+<span class="n">formatted</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;format_number&quot;</span><span class="p">,</span> <span class="s2">&quot;decimals&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>  <span class="c1"># &quot;1,234.6&quot;</span>
+
+<span class="c1"># Convert to percentage</span>
+<span class="n">decimal</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">percentage</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">decimal</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;percentage&quot;</span><span class="p">,</span> <span class="s2">&quot;decimals&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">percentage</span><span class="p">)</span>  <span class="c1"># &quot;75%&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="validation-transformations">
+<h3>Validation Transformations<a class="headerlink" href="#validation-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Validate email</span>
+<span class="n">email</span> <span class="o">=</span> <span class="s2">&quot;test@example.com&quot;</span>
+<span class="n">valid_email</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;email_validator&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">valid_email</span><span class="p">)</span>  <span class="c1"># &quot;test@example.com&quot; or None if invalid</span>
+
+<span class="c1"># Validate URL</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://example.com&quot;</span>
+<span class="n">valid_url</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;url_validator&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">valid_url</span><span class="p">)</span>  <span class="c1"># &quot;https://example.com&quot; or None if invalid</span>
+
+<span class="c1"># Validate number range</span>
+<span class="n">number</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">in_range</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;range_validator&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">in_range</span><span class="p">)</span>  <span class="c1"># 15 or None if outside range</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="pattern-based-data-extraction">
+<h2>Pattern-based Data Extraction<a class="headerlink" href="#pattern-based-data-extraction" title="Link to this heading"></a></h2>
+<section id="html-pattern-extraction">
+<h3>HTML Pattern Extraction<a class="headerlink" href="#html-pattern-extraction" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;div class=&quot;article&quot;&gt;</span>
+<span class="s2">    &lt;h1&gt;Main Title&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class=&quot;metadata&quot;&gt;</span>
+<span class="s2">        &lt;span class=&quot;author&quot;&gt;John Doe&lt;/span&gt;</span>
+<span class="s2">        &lt;span class=&quot;date&quot;&gt;2023-05-15&lt;/span&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class=&quot;content&quot;&gt;</span>
+<span class="s2">        &lt;p&gt;First paragraph&lt;/p&gt;</span>
+<span class="s2">        &lt;p&gt;Second paragraph&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;ul class=&quot;tags&quot;&gt;</span>
+<span class="s2">        &lt;li&gt;tech&lt;/li&gt;</span>
+<span class="s2">        &lt;li&gt;python&lt;/li&gt;</span>
+<span class="s2">        &lt;li&gt;data&lt;/li&gt;</span>
+<span class="s2">    &lt;/ul&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;h1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">,</span> <span class="s2">&quot;uppercase&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;author&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.author&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;paragraphs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tags&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;.tags li&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">extract_html_with_pattern</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;title&quot;: &quot;MAIN TITLE&quot;,</span>
+<span class="c1">#     &quot;author&quot;: &quot;John Doe&quot;,</span>
+<span class="c1">#     &quot;paragraphs&quot;: [&quot;First paragraph&quot;, &quot;Second paragraph&quot;],</span>
+<span class="c1">#     &quot;tags&quot;: [&quot;tech&quot;, &quot;python&quot;, &quot;data&quot;]</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+<section id="json-pattern-extraction">
+<h3>JSON Pattern Extraction<a class="headerlink" href="#json-pattern-extraction" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">json_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    &quot;data&quot;: {</span>
+<span class="s2">        &quot;user&quot;: {</span>
+<span class="s2">            &quot;profile&quot;: {</span>
+<span class="s2">                &quot;name&quot;: &quot;John Doe&quot;,</span>
+<span class="s2">                &quot;email&quot;: &quot;john@example.com&quot;</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;settings&quot;: {</span>
+<span class="s2">                &quot;theme&quot;: &quot;dark&quot;,</span>
+<span class="s2">                &quot;notifications&quot;: true</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;posts&quot;: [</span>
+<span class="s2">                {&quot;id&quot;: 1, &quot;title&quot;: &quot;First Post&quot;, &quot;likes&quot;: 10},</span>
+<span class="s2">                {&quot;id&quot;: 2, &quot;title&quot;: &quot;Second Post&quot;, &quot;likes&quot;: 15},</span>
+<span class="s2">                {&quot;id&quot;: 3, &quot;title&quot;: &quot;Third Post&quot;, &quot;likes&quot;: 5}</span>
+<span class="s2">            ]</span>
+<span class="s2">        }</span>
+<span class="s2">    }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;userName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.user.profile.name&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.user.profile.email&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;email_validator&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;darkMode&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.user.settings.theme&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;dark&quot;</span><span class="p">}]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;postTitles&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.user.posts[*].title&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;totalLikes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;data.user.posts[*].likes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span><span class="p">}]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">extract_json_with_pattern</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;userName&quot;: &quot;John Doe&quot;,</span>
+<span class="c1">#     &quot;email&quot;: &quot;john@example.com&quot;,</span>
+<span class="c1">#     &quot;darkMode&quot;: true,</span>
+<span class="c1">#     &quot;postTitles&quot;: [&quot;First Post&quot;, &quot;Second Post&quot;, &quot;Third Post&quot;],</span>
+<span class="c1">#     &quot;totalLikes&quot;: 30</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>Tukuy provides comprehensive error handling through specific exception types:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy</span> <span class="kn">import</span> <span class="n">TukuyTransformer</span>
+<span class="kn">from</span> <span class="nn">tukuy.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">TransformationError</span><span class="p">,</span> <span class="n">ParseError</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Try to validate an invalid email</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;not-an-email&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;email_validator&quot;</span><span class="p">])</span>
+<span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Try to parse invalid JSON</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;{invalid-json}&quot;</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;parse_json&quot;</span><span class="p">}])</span>
+<span class="k">except</span> <span class="n">ParseError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parse error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Try to use a non-existent transformer</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;non_existent_transformer&quot;</span><span class="p">])</span>
+<span class="k">except</span> <span class="n">TransformationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformation error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="chain-transformations">
+<h3>Chain Transformations<a class="headerlink" href="#chain-transformations" title="Link to this heading"></a></h3>
+<p>Chain transformations to avoid creating intermediate objects and to make your code more readable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Less efficient with intermediate objects:</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; Hello World! &quot;</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">])</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;lowercase&quot;</span><span class="p">])</span>
+
+<span class="c1"># More efficient with chaining:</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; Hello World! &quot;</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;strip&quot;</span><span class="p">,</span> <span class="s2">&quot;lowercase&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="use-specific-selectors">
+<h3>Use Specific Selectors<a class="headerlink" href="#use-specific-selectors" title="Link to this heading"></a></h3>
+<p>When extracting data from HTML or JSON, use specific selectors to improve performance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Less efficient:</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;div&quot;</span><span class="p">}</span>  <span class="c1"># Too general</span>
+<span class="p">])</span>
+
+<span class="c1"># More efficient:</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;div.article h1&quot;</span><span class="p">}</span>  <span class="c1"># More specific</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="reuse-transformer-instances">
+<h3>Reuse Transformer Instances<a class="headerlink" href="#reuse-transformer-instances" title="Link to this heading"></a></h3>
+<p>Create a single TukuyTransformer instance and reuse it throughout your application:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create once:</span>
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+
+<span class="c1"># Reuse across your application:</span>
+<span class="k">def</span> <span class="nf">process_user</span><span class="p">(</span><span class="n">user_data</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">}])</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">TUKUY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span><span class="p">}])</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="create-custom-transformers">
+<h3>Create Custom Transformers<a class="headerlink" href="#create-custom-transformers" title="Link to this heading"></a></h3>
+<p>For performance-critical operations or specialized transformations, create custom transformers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy.base</span> <span class="kn">import</span> <span class="n">ChainableTransformer</span>
+<span class="kn">from</span> <span class="nn">tukuy.plugins</span> <span class="kn">import</span> <span class="n">TransformerPlugin</span>
+
+<span class="k">class</span> <span class="nc">CustomTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># Custom implementation here</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;specific_pattern&#39;</span><span class="p">,</span> <span class="s1">&#39;replacement&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">CustomPlugin</span><span class="p">(</span><span class="n">TransformerPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;custom_plugin&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;custom_transform&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">CustomTransformer</span><span class="p">(</span><span class="s1">&#39;custom_transform&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="n">TUKUY</span> <span class="o">=</span> <span class="n">TukuyTransformer</span><span class="p">()</span>
+<span class="n">TUKUY</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">CustomPlugin</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tukuy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

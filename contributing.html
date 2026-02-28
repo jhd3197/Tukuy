@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing &mdash; Tukuy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="tukuy.types" href="tukuy.types.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tukuy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tukuy.html">tukuy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-guidelines">Development Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#code-style">Code Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#docstring-format">Docstring Format</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-pull-request">Creating a Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-new-transformers">Creating New Transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-new-plugins">Creating New Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-process">Release Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#community-guidelines">Community Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tukuy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contributing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/contributing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
+<p>Thank you for your interest in contributing to Tukuy! This document provides guidelines and instructions for contributing to the project.</p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Fork the Repository</strong></p>
+<p>Start by forking the main repository to your GitHub account.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone your fork locally</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YOUR-USERNAME/tukuy.git
+<span class="nb">cd</span><span class="w"> </span>tukuy
+</pre></div>
+</div>
+</li>
+<li><p><strong>Set Up Development Environment</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a virtual environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+
+<span class="c1"># Activate the virtual environment</span>
+<span class="c1"># On Windows:</span>
+venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+<span class="c1"># On Unix or MacOS:</span>
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+
+<span class="c1"># Install development dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Create a Feature Branch</strong></p>
+<p>Always create a new branch for your changes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature-name
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="development-guidelines">
+<h2>Development Guidelines<a class="headerlink" href="#development-guidelines" title="Link to this heading"></a></h2>
+<section id="code-style">
+<h3>Code Style<a class="headerlink" href="#code-style" title="Link to this heading"></a></h3>
+<p>Tukuy follows these coding standards:</p>
+<ul class="simple">
+<li><p>Use <strong>PEP 8</strong> style guide for Python code</p></li>
+<li><p>Use <strong>type hints</strong> for all function parameters and return values</p></li>
+<li><p>Document all public functions, classes, and methods with docstrings</p></li>
+<li><p>Keep line length to a maximum of 100 characters</p></li>
+<li><p>Use meaningful variable and function names</p></li>
+<li><p>Write unit tests for all new functionality</p></li>
+</ul>
+<p>Here’s an example of proper style:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="k">def</span> <span class="nf">calculate_average</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the average of a list of numbers.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        numbers: A list of floating-point numbers</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The average as a float, or None if the list is empty</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numbers</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All new features should be documented with docstrings</p></li>
+<li><p>Include examples in docstrings</p></li>
+<li><p>Keep docstrings up-to-date with code changes</p></li>
+<li><p>Update the user guide and examples for significant features</p></li>
+</ul>
+<section id="docstring-format">
+<h4>Docstring Format<a class="headerlink" href="#docstring-format" title="Link to this heading"></a></h4>
+<p>Use the following format for docstrings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Description:</span>
+<span class="sd">    A short description of what this function/class does.</span>
+
+<span class="sd">Version: v1</span>
+<span class="sd">Status: Production/Beta/Under Development</span>
+<span class="sd">Last Updated: YYYY-MM-DD</span>
+
+<span class="sd">Args:</span>
+<span class="sd">    param1 (type): Description of parameter 1</span>
+<span class="sd">    param2 (type): Description of parameter 2</span>
+
+<span class="sd">Returns:</span>
+<span class="sd">    type: Description of return value</span>
+
+<span class="sd">Raises:</span>
+<span class="sd">    ExceptionType: When and why this exception is raised</span>
+
+<span class="sd">Notes:</span>
+<span class="sd">    Additional information, limitations, or special considerations</span>
+
+<span class="sd">Example::</span>
+
+<span class="sd">    # Basic example</span>
+<span class="sd">    result = function(arg1, arg2)</span>
+<span class="sd">    assert result == expected_value</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<p>All new code should be thoroughly tested:</p>
+<ol class="arabic">
+<li><p><strong>Write Unit Tests</strong></p>
+<ul class="simple">
+<li><p>Write tests for each new feature or bug fix</p></li>
+<li><p>Aim for high code coverage</p></li>
+<li><p>Test edge cases and error conditions</p></li>
+</ul>
+</li>
+<li><p><strong>Run Tests Locally</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
+pytest
+
+<span class="c1"># Run tests with coverage report</span>
+pytest<span class="w"> </span>--cov<span class="o">=</span>tukuy<span class="w"> </span>tests/
+</pre></div>
+</div>
+</li>
+<li><p><strong>Ensure All Tests Pass</strong></p>
+<p>Make sure all tests pass before submitting a pull request.</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="creating-a-pull-request">
+<h2>Creating a Pull Request<a class="headerlink" href="#creating-a-pull-request" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Commit Your Changes</strong></p>
+<p>Make sure your commits are focused and include clear messages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add feature: brief description of what you did&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Push to Your Fork</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/your-feature-name
+</pre></div>
+</div>
+</li>
+<li><p><strong>Create a Pull Request</strong></p>
+<ul class="simple">
+<li><p>Go to the original repository on GitHub</p></li>
+<li><p>Click “Pull Request”</p></li>
+<li><p>Select your branch</p></li>
+<li><p>Fill in the PR template with details about your changes</p></li>
+</ul>
+</li>
+<li><p><strong>Respond to Feedback</strong></p>
+<p>Be open to feedback and make requested changes. This is a collaborative process to ensure high-quality code.</p>
+</li>
+</ol>
+</section>
+<section id="creating-new-transformers">
+<h2>Creating New Transformers<a class="headerlink" href="#creating-new-transformers" title="Link to this heading"></a></h2>
+<p>When adding new transformers to Tukuy, follow these guidelines:</p>
+<ol class="arabic">
+<li><p><strong>Choose the Right Location</strong></p>
+<ul class="simple">
+<li><p>Place the transformer in the appropriate module based on its functionality</p></li>
+<li><p>Create a new module if it doesn’t fit existing categories</p></li>
+</ul>
+</li>
+<li><p><strong>Extend the Base Class</strong></p>
+<p>All transformers should extend <cite>ChainableTransformer</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy.base</span> <span class="kn">import</span> <span class="n">ChainableTransformer</span>
+
+<span class="k">class</span> <span class="nc">MyTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="n">InputType</span><span class="p">,</span> <span class="n">OutputType</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># Initialize additional parameters</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">InputType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># Validate input</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ExpectedType</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">InputType</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutputType</span><span class="p">:</span>
+        <span class="c1"># Implement transformation logic</span>
+        <span class="k">return</span> <span class="n">transformed_value</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Handle Errors Properly</strong></p>
+<ul class="simple">
+<li><p>Use appropriate exception types</p></li>
+<li><p>Provide clear error messages</p></li>
+<li><p>Include the input value in error messages for debugging</p></li>
+</ul>
+</li>
+<li><p><strong>Document Thoroughly</strong></p>
+<ul class="simple">
+<li><p>Include detailed docstrings with examples</p></li>
+<li><p>Document parameters, return types, and exceptions</p></li>
+<li><p>Explain edge cases and limitations</p></li>
+</ul>
+</li>
+<li><p><strong>Test Comprehensively</strong></p>
+<ul class="simple">
+<li><p>Test basic functionality</p></li>
+<li><p>Test edge cases</p></li>
+<li><p>Test error conditions</p></li>
+<li><p>Test chaining with other transformers</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="creating-new-plugins">
+<h2>Creating New Plugins<a class="headerlink" href="#creating-new-plugins" title="Link to this heading"></a></h2>
+<p>To create a new plugin:</p>
+<ol class="arabic">
+<li><p><strong>Create a Plugin Class</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tukuy.plugins</span> <span class="kn">import</span> <span class="n">TransformerPlugin</span>
+
+<span class="k">class</span> <span class="nc">MyPlugin</span><span class="p">(</span><span class="n">TransformerPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;my_plugin_name&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;transformer_name&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">MyTransformer</span><span class="p">(</span><span class="s1">&#39;transformer_name&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;other_transformer&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">OtherTransformer</span><span class="p">(</span><span class="s1">&#39;other_transformer&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+        <span class="c1"># Perform initialization tasks</span>
+
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="c1"># Perform cleanup tasks</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Register Your Transformers</strong></p>
+<p>Make sure each transformer is properly registered in the <cite>transformers</cite> property.</p>
+</li>
+<li><p><strong>Document Your Plugin</strong></p>
+<ul class="simple">
+<li><p>Explain the purpose of the plugin</p></li>
+<li><p>Document each transformer provided by the plugin</p></li>
+<li><p>Include examples of how to use the plugin</p></li>
+</ul>
+</li>
+<li><p><strong>Test the Plugin</strong></p>
+<ul class="simple">
+<li><p>Test registration and initialization</p></li>
+<li><p>Test each transformer</p></li>
+<li><p>Test cleanup</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="release-process">
+<h2>Release Process<a class="headerlink" href="#release-process" title="Link to this heading"></a></h2>
+<p>If you’re a maintainer, follow these steps for releases:</p>
+<ol class="arabic">
+<li><p><strong>Version Bump</strong></p>
+<p>Update the version number in:
+- VERSION file
+- setup.py
+- Any other relevant files</p>
+</li>
+<li><p><strong>Update Changelog</strong></p>
+<p>Add detailed notes about changes, improvements, and bug fixes.</p>
+</li>
+<li><p><strong>Tag the Release</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>vX.Y.Z<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release vX.Y.Z&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>vX.Y.Z
+</pre></div>
+</div>
+</li>
+<li><p><strong>Publish to PyPI</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>sdist<span class="w"> </span>bdist_wheel
+twine<span class="w"> </span>upload<span class="w"> </span>dist/*
+</pre></div>
+</div>
+</li>
+<li><p><strong>Update Documentation</strong></p>
+<p>Ensure the documentation is updated for the new release.</p>
+</li>
+</ol>
+</section>
+<section id="community-guidelines">
+<h2>Community Guidelines<a class="headerlink" href="#community-guidelines" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Be Respectful</strong>: Treat all contributors with respect and consideration.</p></li>
+<li><p><strong>Be Constructive</strong>: Provide constructive feedback on pull requests.</p></li>
+<li><p><strong>Be Patient</strong>: Not all contributors have the same level of experience.</p></li>
+<li><p><strong>Be Inclusive</strong>: Welcome contributions from everyone, regardless of background.</p></li>
+</ul>
+<p>Thank you for helping to improve Tukuy!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tukuy.types.html" class="btn btn-neutral float-left" title="tukuy.types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tukuy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,850 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tukuy.plugins &mdash; Tukuy  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tukuy.transformers" href="tukuy.transformers.html" />
+    <link rel="prev" title="tukuy" href="tukuy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tukuy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tukuy.html">tukuy</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.AnalysisRiskLevel"><code class="docutils literal notranslate"><span class="pre">AnalysisRiskLevel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.AsyncBaseTransformer"><code class="docutils literal notranslate"><span class="pre">AsyncBaseTransformer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.AsyncChainableTransformer"><code class="docutils literal notranslate"><span class="pre">AsyncChainableTransformer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.AsyncTukuyTransformer"><code class="docutils literal notranslate"><span class="pre">AsyncTukuyTransformer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.AvailabilityReason"><code class="docutils literal notranslate"><span class="pre">AvailabilityReason</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.Branch"><code class="docutils literal notranslate"><span class="pre">Branch</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.Chain"><code class="docutils literal notranslate"><span class="pre">Chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.CodeAnalysis"><code class="docutils literal notranslate"><span class="pre">CodeAnalysis</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.CodeFeatures"><code class="docutils literal notranslate"><span class="pre">CodeFeatures</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ConfigParam"><code class="docutils literal notranslate"><span class="pre">ConfigParam</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ConfigScope"><code class="docutils literal notranslate"><span class="pre">ConfigScope</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.FeatureExtractor"><code class="docutils literal notranslate"><span class="pre">FeatureExtractor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ImportRestrictions"><code class="docutils literal notranslate"><span class="pre">ImportRestrictions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ImportViolationError"><code class="docutils literal notranslate"><span class="pre">ImportViolationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.Instruction"><code class="docutils literal notranslate"><span class="pre">Instruction</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.InstructionChunk"><code class="docutils literal notranslate"><span class="pre">InstructionChunk</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.InstructionDescriptor"><code class="docutils literal notranslate"><span class="pre">InstructionDescriptor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.LLMBackend"><code class="docutils literal notranslate"><span class="pre">LLMBackend</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.Parallel"><code class="docutils literal notranslate"><span class="pre">Parallel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PathRestrictions"><code class="docutils literal notranslate"><span class="pre">PathRestrictions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PathViolationError"><code class="docutils literal notranslate"><span class="pre">PathViolationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PluginDiscoveryResult"><code class="docutils literal notranslate"><span class="pre">PluginDiscoveryResult</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PluginManifest"><code class="docutils literal notranslate"><span class="pre">PluginManifest</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PluginRequirements"><code class="docutils literal notranslate"><span class="pre">PluginRequirements</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PluginSource"><code class="docutils literal notranslate"><span class="pre">PluginSource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.PythonSandbox"><code class="docutils literal notranslate"><span class="pre">PythonSandbox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ResourceContext"><code class="docutils literal notranslate"><span class="pre">ResourceContext</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ResourceLimitError"><code class="docutils literal notranslate"><span class="pre">ResourceLimitError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.ResourceLimits"><code class="docutils literal notranslate"><span class="pre">ResourceLimits</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.RiskAssessment"><code class="docutils literal notranslate"><span class="pre">RiskAssessment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.RiskLevel"><code class="docutils literal notranslate"><span class="pre">RiskLevel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SafetyError"><code class="docutils literal notranslate"><span class="pre">SafetyError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SafetyManifest"><code class="docutils literal notranslate"><span class="pre">SafetyManifest</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SafetyPolicy"><code class="docutils literal notranslate"><span class="pre">SafetyPolicy</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SafetyViolation"><code class="docutils literal notranslate"><span class="pre">SafetyViolation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SandboxError"><code class="docutils literal notranslate"><span class="pre">SandboxError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SandboxResult"><code class="docutils literal notranslate"><span class="pre">SandboxResult</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SandboxTimeoutError"><code class="docutils literal notranslate"><span class="pre">SandboxTimeoutError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SecurityContext"><code class="docutils literal notranslate"><span class="pre">SecurityContext</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SecurityError"><code class="docutils literal notranslate"><span class="pre">SecurityError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.Skill"><code class="docutils literal notranslate"><span class="pre">Skill</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SkillAvailability"><code class="docutils literal notranslate"><span class="pre">SkillAvailability</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SkillContext"><code class="docutils literal notranslate"><span class="pre">SkillContext</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SkillDescriptor"><code class="docutils literal notranslate"><span class="pre">SkillDescriptor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SkillExample"><code class="docutils literal notranslate"><span class="pre">SkillExample</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.SkillResult"><code class="docutils literal notranslate"><span class="pre">SkillResult</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.TukuyTransformer"><code class="docutils literal notranslate"><span class="pre">TukuyTransformer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.analyze_python"><code class="docutils literal notranslate"><span class="pre">analyze_python()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.async_dispatch_anthropic"><code class="docutils literal notranslate"><span class="pre">async_dispatch_anthropic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.async_dispatch_openai"><code class="docutils literal notranslate"><span class="pre">async_dispatch_openai()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.branch"><code class="docutils literal notranslate"><span class="pre">branch()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.browse_tools"><code class="docutils literal notranslate"><span class="pre">browse_tools()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.calculate_risk"><code class="docutils literal notranslate"><span class="pre">calculate_risk()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.discover_plugins"><code class="docutils literal notranslate"><span class="pre">discover_plugins()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.dispatch_anthropic"><code class="docutils literal notranslate"><span class="pre">dispatch_anthropic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.dispatch_openai"><code class="docutils literal notranslate"><span class="pre">dispatch_openai()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.format_result_anthropic"><code class="docutils literal notranslate"><span class="pre">format_result_anthropic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.format_result_openai"><code class="docutils literal notranslate"><span class="pre">format_result_openai()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.get_available_skills"><code class="docutils literal notranslate"><span class="pre">get_available_skills()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.get_policy"><code class="docutils literal notranslate"><span class="pre">get_policy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.get_security_context"><code class="docutils literal notranslate"><span class="pre">get_security_context()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.get_tool_details"><code class="docutils literal notranslate"><span class="pre">get_tool_details()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.instruction"><code class="docutils literal notranslate"><span class="pre">instruction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.parallel"><code class="docutils literal notranslate"><span class="pre">parallel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.reset_policy"><code class="docutils literal notranslate"><span class="pre">reset_policy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.reset_security_context"><code class="docutils literal notranslate"><span class="pre">reset_security_context()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.search_tools"><code class="docutils literal notranslate"><span class="pre">search_tools()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.set_policy"><code class="docutils literal notranslate"><span class="pre">set_policy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.set_security_context"><code class="docutils literal notranslate"><span class="pre">set_security_context()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.skill"><code class="docutils literal notranslate"><span class="pre">skill()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.to_anthropic_tool"><code class="docutils literal notranslate"><span class="pre">to_anthropic_tool()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.to_anthropic_tools"><code class="docutils literal notranslate"><span class="pre">to_anthropic_tools()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.to_openai_tool"><code class="docutils literal notranslate"><span class="pre">to_openai_tool()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy.to_openai_tools"><code class="docutils literal notranslate"><span class="pre">to_openai_tools()</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tukuy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tukuy.plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy.plugins.PluginRegistry"><code class="docutils literal notranslate"><span class="pre">PluginRegistry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tukuy.plugins.TransformerPlugin"><code class="docutils literal notranslate"><span class="pre">TransformerPlugin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tukuy.plugins.base">tukuy.plugins.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tukuy.transformers.html">tukuy.transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#module-tukuy.base">tukuy.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#module-tukuy.exceptions">tukuy.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tukuy.html#tukuy-types-module">tukuy.types module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tukuy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">&lt;no title&gt;</a></li>
+          <li class="breadcrumb-item"><a href="tukuy.html">tukuy</a></li>
+      <li class="breadcrumb-item active">tukuy.plugins</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tukuy.plugins.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tukuy.plugins">
+<span id="tukuy-plugins"></span><h1>tukuy.plugins<a class="headerlink" href="#module-tukuy.plugins" title="Link to this heading"></a></h1>
+<p>Plugin system for Tukuy transformers.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tukuy.plugins.</span></span><span class="sig-name descname"><span class="pre">PluginRegistry</span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Registry for managing transformer plugins.</p>
+<p>The registry maintains the collection of loaded plugins and their
+transformers, handling registration, unregistration, and access to
+transformer factories.</p>
+<p>Plugins are stored in source-layered dicts.  A flat resolved view is
+rebuilt after every mutation so that all existing callers keep working.
+When two sources register the same transformer/skill name, the source
+with higher priority (lower index in <code class="docutils literal notranslate"><span class="pre">_source_priority</span></code>) wins in the
+flat view.  Users can look up a specific source’s version using a
+qualified name like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:strip&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;local:strip&quot;</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize an empty plugin registry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.async_register">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.async_register" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.PluginRegistry.register" title="tukuy.plugins.PluginRegistry.register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code></a>.</p>
+<p>Indexes transformers and skills synchronously, then awaits the
+plugin’s <a class="reference internal" href="#tukuy.plugins.TransformerPlugin.async_initialize" title="tukuy.plugins.TransformerPlugin.async_initialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_initialize()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.async_unregister">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.async_unregister" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.PluginRegistry.unregister" title="tukuy.plugins.PluginRegistry.unregister"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unregister()</span></code></a>.</p>
+<p>Awaits the plugin’s <a class="reference internal" href="#tukuy.plugins.TransformerPlugin.async_cleanup" title="tukuy.plugins.TransformerPlugin.async_cleanup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_cleanup()</span></code></a> before
+removing it from the registry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_all_sources_for_skill">
+<span class="sig-name descname"><span class="pre">get_all_sources_for_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_all_sources_for_skill" title="Link to this definition"></a></dt>
+<dd><p>Return every source that provides skill <em>name</em>, in priority order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_all_sources_for_transformer">
+<span class="sig-name descname"><span class="pre">get_all_sources_for_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_all_sources_for_transformer" title="Link to this definition"></a></dt>
+<dd><p>Return every source that provides <em>name</em>, in priority order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_instruction">
+<span class="sig-name descname"><span class="pre">get_instruction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tukuy.html#tukuy.Instruction" title="tukuy.Instruction"><span class="pre">Instruction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_instruction" title="Link to this definition"></a></dt>
+<dd><p>Get an instruction by name.</p>
+<p>Supports qualified names like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:my_instruction&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the instruction (optionally qualified as <code class="docutils literal notranslate"><span class="pre">source:name</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Instruction instance, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_plugin">
+<span class="sig-name descname"><span class="pre">get_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_plugin" title="Link to this definition"></a></dt>
+<dd><p>Get a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the plugin</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The plugin instance, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_skill">
+<span class="sig-name descname"><span class="pre">get_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tukuy.html#tukuy.Skill" title="tukuy.Skill"><span class="pre">Skill</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_skill" title="Link to this definition"></a></dt>
+<dd><p>Get a skill by name.</p>
+<p>Supports qualified names like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:my_skill&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the skill (optionally qualified as <code class="docutils literal notranslate"><span class="pre">source:name</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Skill instance, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_source_for_skill">
+<span class="sig-name descname"><span class="pre">get_source_for_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_source_for_skill" title="Link to this definition"></a></dt>
+<dd><p>Return the winning source string for skill <em>name</em>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_source_for_transformer">
+<span class="sig-name descname"><span class="pre">get_source_for_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_source_for_transformer" title="Link to this definition"></a></dt>
+<dd><p>Return the winning source string for <em>name</em>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.get_transformer">
+<span class="sig-name descname"><span class="pre">get_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.get_transformer" title="Link to this definition"></a></dt>
+<dd><p>Get a transformer factory by name.</p>
+<p>Supports qualified names like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:strip&quot;</span></code> to bypass priority
+resolution and look up a specific source directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the transformer (optionally qualified as <code class="docutils literal notranslate"><span class="pre">source:name</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformer factory function, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.instructions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">instructions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Instruction" title="tukuy.Instruction"><span class="pre">Instruction</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.instructions" title="Link to this definition"></a></dt>
+<dd><p>Get all registered instructions.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.plugins">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plugins</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.plugins" title="Link to this definition"></a></dt>
+<dd><p>Get all registered plugins.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.register" title="Link to this definition"></a></dt>
+<dd><p>Register a plugin with the registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plugin</strong> – The plugin to register</p></li>
+<li><p><strong>source</strong> – Where this plugin comes from (PluginSource or str).
+Defaults to the plugin’s own <code class="docutils literal notranslate"><span class="pre">source</span></code> attribute, or
+<code class="docutils literal notranslate"><span class="pre">UNKNOWN</span></code> if not set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a plugin with the same name is already registered
+    <strong>from the same source</strong>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.set_source_priority">
+<span class="sig-name descname"><span class="pre">set_source_priority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.set_source_priority" title="Link to this definition"></a></dt>
+<dd><p>Override the default source priority and rebuild resolved views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>priority</strong> – Ordered list of source strings (highest priority first).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.skills">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">skills</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Skill" title="tukuy.Skill"><span class="pre">Skill</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.skills" title="Link to this definition"></a></dt>
+<dd><p>Get all registered skills.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.transformers">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transformers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">callable</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.transformers" title="Link to this definition"></a></dt>
+<dd><p>Get all registered transformers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.PluginRegistry.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.PluginRegistry.unregister" title="Link to this definition"></a></dt>
+<dd><p>Unregister a plugin from the registry.</p>
+<p>Finds the first source that contains a plugin with this name,
+cleans it up, removes it from layered storage, and rebuilds views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the plugin to unregister</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tukuy.plugins.</span></span><span class="sig-name descname"><span class="pre">TransformerPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.PluginSource" title="tukuy.plugins.base.PluginSource"><span class="pre">PluginSource</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PluginSource.UNKNOWN</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base class for transformer plugins.</p>
+<p>A plugin is a collection of related transformers that can be registered
+with the TukuyTransformer. Plugins provide a way to organize transformers
+into logical groups and manage their lifecycle.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.PluginSource" title="tukuy.plugins.base.PluginSource"><span class="pre">PluginSource</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PluginSource.UNKNOWN</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Unique identifier for this plugin</p></li>
+<li><p><strong>source</strong> – Where this plugin originates from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.async_cleanup">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.async_cleanup" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.TransformerPlugin.cleanup" title="tukuy.plugins.TransformerPlugin.cleanup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cleanup()</span></code></a>.</p>
+<p>Called by <a class="reference internal" href="#tukuy.plugins.PluginRegistry.async_unregister" title="tukuy.plugins.PluginRegistry.async_unregister"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PluginRegistry.async_unregister()</span></code></a>.  The default
+implementation delegates to the synchronous <code class="docutils literal notranslate"><span class="pre">cleanup()</span></code> so
+existing plugins work without changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.async_initialize">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.async_initialize" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.TransformerPlugin.initialize" title="tukuy.plugins.TransformerPlugin.initialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize()</span></code></a>.</p>
+<p>Called by <a class="reference internal" href="#tukuy.plugins.PluginRegistry.async_register" title="tukuy.plugins.PluginRegistry.async_register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PluginRegistry.async_register()</span></code></a>.  The default
+implementation delegates to the synchronous <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> so
+existing plugins work without changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Called when the plugin is unloaded.</p>
+<p>Override this method to perform any cleanup required by the plugin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.initialize" title="Link to this definition"></a></dt>
+<dd><p>Called when the plugin is loaded.</p>
+<p>Override this method to perform any setup required by the plugin.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.instructions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">instructions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Instruction" title="tukuy.Instruction"><span class="pre">Instruction</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.instructions" title="Link to this definition"></a></dt>
+<dd><p>Get the instructions provided by this plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping instruction names to Instruction instances.
+Defaults to an empty dict for backward compatibility.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.manifest">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">manifest</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.PluginManifest" title="tukuy.PluginManifest"><span class="pre">PluginManifest</span></a></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.manifest" title="Link to this definition"></a></dt>
+<dd><p>Declarative metadata about this plugin for discovery and UI.</p>
+<p>The default implementation auto-generates a minimal manifest from the
+plugin <code class="docutils literal notranslate"><span class="pre">name</span></code>.  Subclasses can override to provide richer metadata
+(icons, colors, groups, requirements).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.skills">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">skills</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Skill" title="tukuy.Skill"><span class="pre">Skill</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.skills" title="Link to this definition"></a></dt>
+<dd><p>Get the skills provided by this plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping skill names to Skill instances.
+Defaults to an empty dict for backward compatibility.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.TransformerPlugin.transformers">
+<span class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transformers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">callable</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.TransformerPlugin.transformers" title="Link to this definition"></a></dt>
+<dd><p>Get the transformers provided by this plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping transformer names to factory functions</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="module-tukuy.plugins.base">
+<span id="tukuy-plugins-base-module"></span><h2>tukuy.plugins.base module<a class="headerlink" href="#module-tukuy.plugins.base" title="Link to this heading"></a></h2>
+<p>Base classes and utilities for the plugin system.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tukuy.plugins.base.</span></span><span class="sig-name descname"><span class="pre">PluginRegistry</span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Registry for managing transformer plugins.</p>
+<p>The registry maintains the collection of loaded plugins and their
+transformers, handling registration, unregistration, and access to
+transformer factories.</p>
+<p>Plugins are stored in source-layered dicts.  A flat resolved view is
+rebuilt after every mutation so that all existing callers keep working.
+When two sources register the same transformer/skill name, the source
+with higher priority (lower index in <code class="docutils literal notranslate"><span class="pre">_source_priority</span></code>) wins in the
+flat view.  Users can look up a specific source’s version using a
+qualified name like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:strip&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;local:strip&quot;</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize an empty plugin registry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.async_register">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.async_register" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.base.PluginRegistry.register" title="tukuy.plugins.base.PluginRegistry.register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code></a>.</p>
+<p>Indexes transformers and skills synchronously, then awaits the
+plugin’s <a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin.async_initialize" title="tukuy.plugins.base.TransformerPlugin.async_initialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_initialize()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.async_unregister">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.async_unregister" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.base.PluginRegistry.unregister" title="tukuy.plugins.base.PluginRegistry.unregister"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unregister()</span></code></a>.</p>
+<p>Awaits the plugin’s <a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin.async_cleanup" title="tukuy.plugins.base.TransformerPlugin.async_cleanup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">async_cleanup()</span></code></a> before
+removing it from the registry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_all_sources_for_skill">
+<span class="sig-name descname"><span class="pre">get_all_sources_for_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_all_sources_for_skill" title="Link to this definition"></a></dt>
+<dd><p>Return every source that provides skill <em>name</em>, in priority order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_all_sources_for_transformer">
+<span class="sig-name descname"><span class="pre">get_all_sources_for_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_all_sources_for_transformer" title="Link to this definition"></a></dt>
+<dd><p>Return every source that provides <em>name</em>, in priority order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_instruction">
+<span class="sig-name descname"><span class="pre">get_instruction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tukuy.html#tukuy.Instruction" title="tukuy.Instruction"><span class="pre">Instruction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_instruction" title="Link to this definition"></a></dt>
+<dd><p>Get an instruction by name.</p>
+<p>Supports qualified names like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:my_instruction&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the instruction (optionally qualified as <code class="docutils literal notranslate"><span class="pre">source:name</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Instruction instance, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_plugin">
+<span class="sig-name descname"><span class="pre">get_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_plugin" title="Link to this definition"></a></dt>
+<dd><p>Get a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the plugin</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The plugin instance, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_skill">
+<span class="sig-name descname"><span class="pre">get_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tukuy.html#tukuy.Skill" title="tukuy.Skill"><span class="pre">Skill</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_skill" title="Link to this definition"></a></dt>
+<dd><p>Get a skill by name.</p>
+<p>Supports qualified names like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:my_skill&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the skill (optionally qualified as <code class="docutils literal notranslate"><span class="pre">source:name</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Skill instance, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_source_for_skill">
+<span class="sig-name descname"><span class="pre">get_source_for_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_source_for_skill" title="Link to this definition"></a></dt>
+<dd><p>Return the winning source string for skill <em>name</em>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_source_for_transformer">
+<span class="sig-name descname"><span class="pre">get_source_for_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_source_for_transformer" title="Link to this definition"></a></dt>
+<dd><p>Return the winning source string for <em>name</em>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.get_transformer">
+<span class="sig-name descname"><span class="pre">get_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.get_transformer" title="Link to this definition"></a></dt>
+<dd><p>Get a transformer factory by name.</p>
+<p>Supports qualified names like <code class="docutils literal notranslate"><span class="pre">&quot;tukuy:strip&quot;</span></code> to bypass priority
+resolution and look up a specific source directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the transformer (optionally qualified as <code class="docutils literal notranslate"><span class="pre">source:name</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformer factory function, or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.instructions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">instructions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Instruction" title="tukuy.Instruction"><span class="pre">Instruction</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.instructions" title="Link to this definition"></a></dt>
+<dd><p>Get all registered instructions.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.plugins">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plugins</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.plugins" title="Link to this definition"></a></dt>
+<dd><p>Get all registered plugins.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin" title="tukuy.plugins.base.TransformerPlugin"><span class="pre">TransformerPlugin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.register" title="Link to this definition"></a></dt>
+<dd><p>Register a plugin with the registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plugin</strong> – The plugin to register</p></li>
+<li><p><strong>source</strong> – Where this plugin comes from (PluginSource or str).
+Defaults to the plugin’s own <code class="docutils literal notranslate"><span class="pre">source</span></code> attribute, or
+<code class="docutils literal notranslate"><span class="pre">UNKNOWN</span></code> if not set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a plugin with the same name is already registered
+    <strong>from the same source</strong>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.set_source_priority">
+<span class="sig-name descname"><span class="pre">set_source_priority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.set_source_priority" title="Link to this definition"></a></dt>
+<dd><p>Override the default source priority and rebuild resolved views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>priority</strong> – Ordered list of source strings (highest priority first).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.skills">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">skills</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Skill" title="tukuy.Skill"><span class="pre">Skill</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.skills" title="Link to this definition"></a></dt>
+<dd><p>Get all registered skills.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.transformers">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transformers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">callable</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.transformers" title="Link to this definition"></a></dt>
+<dd><p>Get all registered transformers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginRegistry.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.PluginRegistry.unregister" title="Link to this definition"></a></dt>
+<dd><p>Unregister a plugin from the registry.</p>
+<p>Finds the first source that contains a plugin with this name,
+cleans it up, removes it from layered storage, and rebuilds views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the plugin to unregister</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginSource">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tukuy.plugins.base.</span></span><span class="sig-name descname"><span class="pre">PluginSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.base.PluginSource" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Where a plugin was loaded from.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginSource.CLAUDE">
+<span class="sig-name descname"><span class="pre">CLAUDE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'claude'</span></span><a class="headerlink" href="#tukuy.plugins.base.PluginSource.CLAUDE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginSource.LOCAL">
+<span class="sig-name descname"><span class="pre">LOCAL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'local'</span></span><a class="headerlink" href="#tukuy.plugins.base.PluginSource.LOCAL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginSource.PIP">
+<span class="sig-name descname"><span class="pre">PIP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pip'</span></span><a class="headerlink" href="#tukuy.plugins.base.PluginSource.PIP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginSource.TUKUY">
+<span class="sig-name descname"><span class="pre">TUKUY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tukuy'</span></span><a class="headerlink" href="#tukuy.plugins.base.PluginSource.TUKUY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tukuy.plugins.base.PluginSource.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown'</span></span><a class="headerlink" href="#tukuy.plugins.base.PluginSource.UNKNOWN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tukuy.plugins.base.</span></span><span class="sig-name descname"><span class="pre">TransformerPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.PluginSource" title="tukuy.plugins.base.PluginSource"><span class="pre">PluginSource</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PluginSource.UNKNOWN</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base class for transformer plugins.</p>
+<p>A plugin is a collection of related transformers that can be registered
+with the TukuyTransformer. Plugins provide a way to organize transformers
+into logical groups and manage their lifecycle.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tukuy.plugins.base.PluginSource" title="tukuy.plugins.base.PluginSource"><span class="pre">PluginSource</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PluginSource.UNKNOWN</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Unique identifier for this plugin</p></li>
+<li><p><strong>source</strong> – Where this plugin originates from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.async_cleanup">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.async_cleanup" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin.cleanup" title="tukuy.plugins.base.TransformerPlugin.cleanup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cleanup()</span></code></a>.</p>
+<p>Called by <a class="reference internal" href="#tukuy.plugins.base.PluginRegistry.async_unregister" title="tukuy.plugins.base.PluginRegistry.async_unregister"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PluginRegistry.async_unregister()</span></code></a>.  The default
+implementation delegates to the synchronous <code class="docutils literal notranslate"><span class="pre">cleanup()</span></code> so
+existing plugins work without changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.async_initialize">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.async_initialize" title="Link to this definition"></a></dt>
+<dd><p>Async variant of <a class="reference internal" href="#tukuy.plugins.base.TransformerPlugin.initialize" title="tukuy.plugins.base.TransformerPlugin.initialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize()</span></code></a>.</p>
+<p>Called by <a class="reference internal" href="#tukuy.plugins.base.PluginRegistry.async_register" title="tukuy.plugins.base.PluginRegistry.async_register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PluginRegistry.async_register()</span></code></a>.  The default
+implementation delegates to the synchronous <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> so
+existing plugins work without changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Called when the plugin is unloaded.</p>
+<p>Override this method to perform any cleanup required by the plugin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.initialize" title="Link to this definition"></a></dt>
+<dd><p>Called when the plugin is loaded.</p>
+<p>Override this method to perform any setup required by the plugin.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.instructions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">instructions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Instruction" title="tukuy.Instruction"><span class="pre">Instruction</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.instructions" title="Link to this definition"></a></dt>
+<dd><p>Get the instructions provided by this plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping instruction names to Instruction instances.
+Defaults to an empty dict for backward compatibility.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.manifest">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">manifest</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.PluginManifest" title="tukuy.PluginManifest"><span class="pre">PluginManifest</span></a></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.manifest" title="Link to this definition"></a></dt>
+<dd><p>Declarative metadata about this plugin for discovery and UI.</p>
+<p>The default implementation auto-generates a minimal manifest from the
+plugin <code class="docutils literal notranslate"><span class="pre">name</span></code>.  Subclasses can override to provide richer metadata
+(icons, colors, groups, requirements).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.skills">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">skills</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tukuy.html#tukuy.Skill" title="tukuy.Skill"><span class="pre">Skill</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.skills" title="Link to this definition"></a></dt>
+<dd><p>Get the skills provided by this plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping skill names to Skill instances.
+Defaults to an empty dict for backward compatibility.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tukuy.plugins.base.TransformerPlugin.transformers">
+<span class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transformers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">callable</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#tukuy.plugins.base.TransformerPlugin.transformers" title="Link to this definition"></a></dt>
+<dd><p>Get the transformers provided by this plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping transformer names to factory functions</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tukuy.plugins.base.register_transformer">
+<span class="sig-prename descclassname"><span class="pre">tukuy.plugins.base.</span></span><span class="sig-name descname"><span class="pre">register_transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">default_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tukuy.plugins.base.register_transformer" title="Link to this definition"></a></dt>
+<dd><p>Decorate a transformer class so <code class="docutils literal notranslate"><span class="pre">_auto_transformers</span></code> can discover it.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@register_transformer</span><span class="p">(</span><span class="s2">&quot;strip&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">StripTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="o">...</span>
+
+<span class="nd">@register_transformer</span><span class="p">(</span><span class="s2">&quot;truncate&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">TruncateTransformer</span><span class="p">(</span><span class="n">ChainableTransformer</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>The decorated class gets two private attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_tukuy_name</span></code>  – the registry name (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;strip&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_tukuy_defaults</span></code> – a dict of default param values</p></li>
+</ul>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tukuy.html" class="btn btn-neutral float-left" title="tukuy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tukuy.transformers.html" class="btn btn-neutral float-right" title="tukuy.transformers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tukuy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
