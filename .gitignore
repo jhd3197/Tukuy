@@ -177,3 +177,5 @@ playground.py
 FEEDBACK.md
 nul
 js/node_modules/
+/.vscode
+/.vscode1

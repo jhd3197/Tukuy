@@ -214,8 +214,14 @@ class Instruction:
     # ------------------------------------------------------------------
 
     def _setup(self, kwargs: Dict[str, Any]):
-        """Extract context, validate safety, and return (ctx, llm_backend) or a SkillResult error."""
+        """Extract context, validate safety, and return (ctx, llm_backend) or a SkillResult error.
+
+        Supports ``raise_on_violation=True`` in *kwargs* to raise
+        :class:`~tukuy.safety.SafetyError` instead of returning a failed
+        :class:`SkillResult` on policy violations.
+        """
         policy = kwargs.pop("policy", None)
+        raise_on_violation: bool = kwargs.pop("raise_on_violation", False)
         if policy is None:
             from .safety import get_policy
             policy = get_policy()
@@ -223,8 +229,11 @@ class Instruction:
             from .safety import SafetyError
             violations = policy.validate(self.descriptor)
             if violations:
+                err = SafetyError(violations)
+                if raise_on_violation:
+                    raise err
                 return SkillResult(
-                    error=str(SafetyError(violations)),
+                    error=str(err),
                     success=False,
                     retryable=False,
                     metadata={"safety_violations": [str(v) for v in violations]},

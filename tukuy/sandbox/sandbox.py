@@ -15,7 +15,12 @@ from typing import Any
 
 from tukuy.analysis import analyze_python
 
-from .exceptions import ImportViolationError, PathViolationError, SandboxError, SandboxTimeoutError
+from .exceptions import (
+    ImportViolationError,
+    PathViolationError,
+    SandboxError,
+    SandboxTimeoutError,
+)
 from .resource_limits import ResourceContext, ResourceLimits
 from .restrictions import ImportRestrictions, PathRestrictions, get_safe_imports
 
@@ -192,7 +197,9 @@ class PythonSandbox:
 
         self.validate_before_exec = validate_before_exec
 
-    def execute(self, code: str, globals_dict: dict[str, Any] | None = None) -> SandboxResult:
+    def execute(
+        self, code: str, globals_dict: dict[str, Any] | None = None
+    ) -> SandboxResult:
         """Execute Python code in the sandbox.
 
         Args:
@@ -239,7 +246,10 @@ class PythonSandbox:
             # Success
             output = captured_stdout.getvalue()
             if len(output) > self.resource_limits.max_output_bytes:
-                output = output[: self.resource_limits.max_output_bytes] + "\n... [output truncated]"
+                output = (
+                    output[: self.resource_limits.max_output_bytes]
+                    + "\n... [output truncated]"
+                )
 
             return SandboxResult(
                 success=True,
@@ -362,7 +372,9 @@ class PythonSandbox:
         }
 
         # Add restricted import
-        safe["__import__"] = RestrictedImporter(self.import_restrictions, builtins.__import__)
+        safe["__import__"] = RestrictedImporter(
+            self.import_restrictions, builtins.__import__
+        )
 
         # Add restricted open if path restrictions are configured
         if (
@@ -374,11 +386,12 @@ class PythonSandbox:
 
         return safe
 
-    def read_file(self, path: str | Path) -> str:
+    def read_file(self, path: str | Path, encoding: str = "utf-8") -> str:
         """Convenience method to read a file through the sandbox.
 
         Args:
             path: Path to the file to read.
+            encoding: Text encoding to use (default: utf-8).
 
         Returns:
             File contents as a string.
@@ -389,21 +402,24 @@ class PythonSandbox:
         """
         if not self.path_restrictions.can_read(path):
             raise PathViolationError(str(path), "read")
-        return Path(path).read_text()
+        return Path(path).read_text(encoding=encoding)
 
-    def write_file(self, path: str | Path, content: str) -> None:
+    def write_file(
+        self, path: str | Path, content: str, encoding: str = "utf-8"
+    ) -> None:
         """Convenience method to write a file through the sandbox.
 
         Args:
             path: Path to the file to write.
             content: Content to write to the file.
+            encoding: Text encoding to use (default: utf-8).
 
         Raises:
             PathViolationError: If the path is not allowed for writing.
         """
         if not self.path_restrictions.can_write(path):
             raise PathViolationError(str(path), "write")
-        Path(path).write_text(content)
+        Path(path).write_text(content, encoding=encoding)
 
     def to_security_context(self) -> Any:
         """Convert this sandbox's path restrictions to a tukuy ``SecurityContext``.

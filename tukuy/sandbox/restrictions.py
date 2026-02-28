@@ -145,15 +145,15 @@ class ImportRestrictions:
         if self.block_all:
             return False, "All imports are blocked in this sandbox"
 
+        # Explicit blocked set takes precedence over the allowed whitelist
+        if top_level in self.blocked or module_name in self.blocked:
+            return False, "Module is explicitly blocked"
+
         # Whitelist mode (allowed is non-empty)
         if self.allowed:
             if top_level in self.allowed or module_name in self.allowed:
                 return True, None
             return False, "Module is not on the allowed list"
-
-        # Blacklist mode
-        if top_level in self.blocked or module_name in self.blocked:
-            return False, "Module is explicitly blocked"
 
         return True, None
 

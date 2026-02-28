@@ -48,7 +48,7 @@ from .sandbox import (
 # Two-phase discovery
 from .core.unified import browse_tools, get_tool_details, search_tools
 
-__version__ = '0.0.17'
+__version__ = '0.0.30'
 
 __all__ = [
     # Core

@@ -658,6 +658,46 @@ class Skill:
             kwargs[param_name] = ctx
         return args, kwargs
 
+    def _check_policy(
+        self, kwargs: Dict[str, Any]
+    ) -> Optional[SkillResult]:
+        """Validate against safety policy and return a failure result if violated.
+
+        Pops ``policy`` and ``raise_on_violation`` from *kwargs*.
+
+        Args:
+            kwargs: Keyword arguments (mutated — ``policy`` and
+                ``raise_on_violation`` are consumed).
+
+        Returns:
+            A :class:`SkillResult` with the violations if the policy is
+            violated and ``raise_on_violation`` is ``False`` (the default).
+            ``None`` otherwise (i.e. the skill is allowed to proceed).
+
+        Raises:
+            SafetyError: If the policy is violated **and**
+                ``raise_on_violation=True`` was passed.
+        """
+        policy = kwargs.pop("policy", None)
+        raise_on_violation: bool = kwargs.pop("raise_on_violation", False)
+        if policy is None:
+            from .safety import get_policy
+            policy = get_policy()
+        if policy is not None:
+            from .safety import SafetyError
+            violations = policy.validate(self.descriptor)
+            if violations:
+                err = SafetyError(violations)
+                if raise_on_violation:
+                    raise err
+                return SkillResult(
+                    error=str(err),
+                    success=False,
+                    retryable=False,
+                    metadata={"safety_violations": [str(v) for v in violations]},
+                )
+        return None
+
     def invoke(self, *args: Any, **kwargs: Any) -> SkillResult:
         """Invoke the skill, timing execution and catching exceptions.
 
@@ -670,22 +710,13 @@ class Skill:
         Pass ``policy=<SafetyPolicy>`` to validate against a specific policy.
         If not provided, the active policy from :func:`~tukuy.safety.get_policy`
         is used.  If no policy is active, the skill runs unrestricted.
+
+        Pass ``raise_on_violation=True`` to raise :class:`~tukuy.safety.SafetyError`
+        instead of returning a failed :class:`SkillResult` on policy violations.
         """
-        # Safety enforcement
-        policy = kwargs.pop("policy", None)
-        if policy is None:
-            from .safety import get_policy
-            policy = get_policy()
-        if policy is not None:
-            from .safety import SafetyError
-            violations = policy.validate(self.descriptor)
-            if violations:
-                return SkillResult(
-                    error=str(SafetyError(violations)),
-                    success=False,
-                    retryable=False,
-                    metadata={"safety_violations": [str(v) for v in violations]},
-                )
+        violation = self._check_policy(kwargs)
+        if violation is not None:
+            return violation
 
         args, kwargs = self._inject_context(args, kwargs)
         start = time.perf_counter()
@@ -720,22 +751,13 @@ class Skill:
         Pass ``policy=<SafetyPolicy>`` to validate against a specific policy.
         If not provided, the active policy from :func:`~tukuy.safety.get_policy`
         is used.
+
+        Pass ``raise_on_violation=True`` to raise :class:`~tukuy.safety.SafetyError`
+        instead of returning a failed :class:`SkillResult` on policy violations.
         """
-        # Safety enforcement
-        policy = kwargs.pop("policy", None)
-        if policy is None:
-            from .safety import get_policy
-            policy = get_policy()
-        if policy is not None:
-            from .safety import SafetyError
-            violations = policy.validate(self.descriptor)
-            if violations:
-                return SkillResult(
-                    error=str(SafetyError(violations)),
-                    success=False,
-                    retryable=False,
-                    metadata={"safety_violations": [str(v) for v in violations]},
-                )
+        violation = self._check_policy(kwargs)
+        if violation is not None:
+            return violation
 
         args, kwargs = self._inject_context(args, kwargs)
         start = time.perf_counter()
