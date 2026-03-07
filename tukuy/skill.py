@@ -12,6 +12,7 @@ from typing import (
     Optional,
     Set,
     TypeVar,
+    overload,
 )
 
 from enum import Enum
@@ -19,6 +20,7 @@ from enum import Enum
 from .types import TransformResult
 
 R = TypeVar("R")
+_F = TypeVar("_F", bound=Callable[..., Any])
 
 
 # ---------------------------------------------------------------------------
@@ -788,34 +790,67 @@ class Skill:
 # ---------------------------------------------------------------------------
 
 
+@overload
+def skill(fn: _F) -> _F: ...
+
+
+@overload
 def skill(
-    fn=None,
+    fn: None = None,
     *,
-    name=None,
-    description=None,
-    version="0.1.0",
-    input_schema=None,
-    output_schema=None,
-    category="general",
-    tags=None,
-    examples=None,
-    is_async=None,
-    estimated_latency_ms=None,
-    idempotent=False,
-    side_effects=False,
-    required_imports=None,
-    requires_network=False,
-    requires_filesystem=False,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    version: str = "0.1.0",
+    input_schema: Any = None,
+    output_schema: Any = None,
+    category: str = "general",
+    tags: Optional[List[str]] = None,
+    examples: Optional[List[Any]] = None,
+    is_async: Optional[bool] = None,
+    estimated_latency_ms: Optional[int] = None,
+    idempotent: bool = False,
+    side_effects: bool = False,
+    required_imports: Optional[List[str]] = None,
+    requires_network: bool = False,
+    requires_filesystem: bool = False,
+    display_name: Optional[str] = None,
+    icon: Optional[str] = None,
+    risk_level: "RiskLevel" = RiskLevel.AUTO,
+    group: Optional[str] = None,
+    hidden: bool = False,
+    deprecated: Optional[str] = None,
+    config_params: Optional[List[Any]] = None,
+) -> Callable[[_F], _F]: ...
+
+
+def skill(  # type: ignore[misc]
+    fn: _F | None = None,
+    *,
+    name: str | None = None,
+    description: str | None = None,
+    version: str = "0.1.0",
+    input_schema: Any = None,
+    output_schema: Any = None,
+    category: str = "general",
+    tags: list[str] | None = None,
+    examples: list[Any] | None = None,
+    is_async: bool | None = None,
+    estimated_latency_ms: int | None = None,
+    idempotent: bool = False,
+    side_effects: bool = False,
+    required_imports: list[str] | None = None,
+    requires_network: bool = False,
+    requires_filesystem: bool = False,
     # UI metadata
-    display_name=None,
-    icon=None,
-    risk_level=RiskLevel.AUTO,
-    group=None,
-    hidden=False,
-    deprecated=None,
+    display_name: str | None = None,
+    icon: str | None = None,
+    risk_level: "RiskLevel" = RiskLevel.AUTO,
+    group: str | None = None,
+    hidden: bool = False,
+    deprecated: str | None = None,
     # Configurable parameters
-    config_params=None,
-):
+    config_params: list[Any] | None = None,
+) -> _F | Callable[[_F], _F]:
     """Decorator that turns a function into a skill.
 
     Supports three calling conventions::
@@ -833,7 +868,7 @@ def skill(
     attached as ``fn.__skill__``.
     """
 
-    def _attach(func):
+    def _attach(func: _F) -> _F:
         resolved_name = name if name is not None else func.__name__
         resolved_description = description if description is not None else (func.__doc__ or "").strip()
         resolved_is_async = is_async if is_async is not None else inspect.iscoroutinefunction(func)
