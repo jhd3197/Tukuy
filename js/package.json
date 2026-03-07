@@ -7,7 +7,7 @@
   "types": "dist/tukuy.d.ts",
   "exports": {
     ".": {
-      "browser": "./dist/tukuy.iife.js",
+      "browser": "./dist/tukuy.mjs",
       "import": "./dist/tukuy.mjs",
       "require": "./dist/tukuy.js"
     }

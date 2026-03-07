@@ -1,0 +1,1069 @@
+{
+  "version": "0.1.0",
+  "transformers": [
+    {
+      "name": "strip",
+      "displayName": "Strip",
+      "description": "Remove leading/trailing whitespace",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "lowercase",
+      "displayName": "Lowercase",
+      "description": "Convert to lowercase",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "uppercase",
+      "displayName": "Uppercase",
+      "description": "Convert to uppercase",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "title_case",
+      "displayName": "Title Case",
+      "description": "Capitalize the first letter of each word",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "camel_case",
+      "displayName": "camelCase",
+      "description": "Convert to camelCase",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "snake_case",
+      "displayName": "snake_case",
+      "description": "Convert to snake_case",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "slugify",
+      "displayName": "Slugify",
+      "description": "Convert text to URL-friendly slug",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "truncate",
+      "displayName": "Truncate",
+      "description": "Truncate text with suffix",
+      "category": "text",
+      "params": [
+        {
+          "name": "length",
+          "type": "number",
+          "default": 50,
+          "description": "Maximum length"
+        },
+        {
+          "name": "suffix",
+          "type": "string",
+          "default": "...",
+          "description": "Suffix to append"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "remove_emojis",
+      "displayName": "Remove Emojis",
+      "description": "Strip emoji characters from text",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "redact_sensitive",
+      "displayName": "Redact Sensitive",
+      "description": "Mask credit card numbers (keep first/last 4 digits)",
+      "category": "text",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "regex",
+      "displayName": "Regex",
+      "description": "Regex search or replace",
+      "category": "text",
+      "params": [
+        {
+          "name": "pattern",
+          "type": "string",
+          "default": "",
+          "description": "Regular expression pattern"
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "default": null,
+          "description": "Replacement template (null = extract match)"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "split",
+      "displayName": "Split",
+      "description": "Split string and extract a part by index",
+      "category": "text",
+      "params": [
+        {
+          "name": "delimiter",
+          "type": "string",
+          "default": ":",
+          "description": "Character to split on"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "default": -1,
+          "description": "Index of part to extract (-1 = last)"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "url_encode",
+      "displayName": "URL Encode",
+      "description": "Percent-encode text for URLs",
+      "category": "encoding",
+      "params": [
+        {
+          "name": "safe",
+          "type": "string",
+          "default": "",
+          "description": "Characters to leave unencoded"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "url_decode",
+      "displayName": "URL Decode",
+      "description": "Decode percent-encoded text",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "hex_encode",
+      "displayName": "Hex Encode",
+      "description": "Encode UTF-8 text to hexadecimal",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "hex_decode",
+      "displayName": "Hex Decode",
+      "description": "Decode hexadecimal to UTF-8 text",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "html_entities_encode",
+      "displayName": "HTML Entities Encode",
+      "description": "Escape HTML special characters",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "html_entities_decode",
+      "displayName": "HTML Entities Decode",
+      "description": "Unescape HTML entities",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "rot13",
+      "displayName": "ROT13",
+      "description": "ROT13 cipher (self-reversing)",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "unicode_escape",
+      "displayName": "Unicode Escape",
+      "description": "Escape non-ASCII characters to \\uXXXX sequences",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "unicode_unescape",
+      "displayName": "Unicode Unescape",
+      "description": "Convert \\uXXXX sequences to characters",
+      "category": "encoding",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "hash_text",
+      "displayName": "Hash Text",
+      "description": "Hash string (SHA-1, SHA-256, SHA-512)",
+      "category": "crypto",
+      "params": [
+        {
+          "name": "algorithm",
+          "type": "string",
+          "default": "sha256",
+          "description": "Hash algorithm",
+          "options": [
+            "sha1",
+            "sha256",
+            "sha512"
+          ]
+        }
+      ],
+      "async": true,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "base64_encode",
+      "displayName": "Base64 Encode",
+      "description": "Encode text to Base64",
+      "category": "crypto",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "base64_decode",
+      "displayName": "Base64 Decode",
+      "description": "Decode Base64 to text",
+      "category": "crypto",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "uuid_generate",
+      "displayName": "Generate UUID",
+      "description": "Generate a UUID v4",
+      "category": "crypto",
+      "params": [
+        {
+          "name": "version",
+          "type": "number",
+          "default": 4,
+          "description": "UUID version (v4 in browser)"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "string"
+    },
+    {
+      "name": "hmac_sign",
+      "displayName": "HMAC Sign",
+      "description": "Generate HMAC signature",
+      "category": "crypto",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "default": "",
+          "description": "Secret key"
+        },
+        {
+          "name": "algorithm",
+          "type": "string",
+          "default": "sha256",
+          "description": "Hash algorithm",
+          "options": [
+            "sha1",
+            "sha256",
+            "sha512"
+          ]
+        }
+      ],
+      "async": true,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "int",
+      "displayName": "Integer",
+      "description": "Convert to integer",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "min_value",
+          "type": "number",
+          "default": null,
+          "description": "Minimum allowed value"
+        },
+        {
+          "name": "max_value",
+          "type": "number",
+          "default": null,
+          "description": "Maximum allowed value"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "number"
+    },
+    {
+      "name": "float",
+      "displayName": "Float",
+      "description": "Convert to float",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "min_value",
+          "type": "number",
+          "default": null,
+          "description": "Minimum allowed value"
+        },
+        {
+          "name": "max_value",
+          "type": "number",
+          "default": null,
+          "description": "Maximum allowed value"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "number"
+    },
+    {
+      "name": "round",
+      "displayName": "Round",
+      "description": "Round to N decimal places",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "decimals",
+          "type": "number",
+          "default": 0,
+          "description": "Decimal places"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "currency_convert",
+      "displayName": "Currency Convert",
+      "description": "Multiply by exchange rate",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "rate",
+          "type": "number",
+          "default": 1,
+          "description": "Exchange rate"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "unit_convert",
+      "displayName": "Unit Convert",
+      "description": "Multiply by conversion rate",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "rate",
+          "type": "number",
+          "default": 1,
+          "description": "Conversion rate"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "math_operation",
+      "displayName": "Math Operation",
+      "description": "Perform add/subtract/multiply/divide",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "operation",
+          "type": "string",
+          "default": "add",
+          "description": "Operation",
+          "options": [
+            "add",
+            "subtract",
+            "multiply",
+            "divide"
+          ]
+        },
+        {
+          "name": "operand",
+          "type": "number",
+          "default": 0,
+          "description": "Operand value"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "extract_numbers",
+      "displayName": "Extract Numbers",
+      "description": "Extract all numbers from text",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "array"
+    },
+    {
+      "name": "abs",
+      "displayName": "Absolute Value",
+      "description": "Compute |x|",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "floor",
+      "displayName": "Floor",
+      "description": "Round down to nearest integer",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "ceil",
+      "displayName": "Ceiling",
+      "description": "Round up to nearest integer",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "clamp",
+      "displayName": "Clamp",
+      "description": "Clamp value between min and max",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "min_value",
+          "type": "number",
+          "default": null,
+          "description": "Minimum value"
+        },
+        {
+          "name": "max_value",
+          "type": "number",
+          "default": null,
+          "description": "Maximum value"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "scale",
+      "displayName": "Scale",
+      "description": "Scale from one range to another",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "src_min",
+          "type": "number",
+          "default": 0,
+          "description": "Source range min"
+        },
+        {
+          "name": "src_max",
+          "type": "number",
+          "default": 1,
+          "description": "Source range max"
+        },
+        {
+          "name": "dst_min",
+          "type": "number",
+          "default": 0,
+          "description": "Dest range min"
+        },
+        {
+          "name": "dst_max",
+          "type": "number",
+          "default": 1,
+          "description": "Dest range max"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "stats",
+      "displayName": "Statistics",
+      "description": "Compute count/sum/mean/median/min/max/stdev",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "array",
+      "outputType": "object"
+    },
+    {
+      "name": "format_number",
+      "displayName": "Format Number",
+      "description": "Format with thousand separators",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "decimals",
+          "type": "number",
+          "default": 2,
+          "description": "Decimal places"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "string"
+    },
+    {
+      "name": "random",
+      "displayName": "Random Number",
+      "description": "Generate random number in range",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "min_value",
+          "type": "number",
+          "default": 0,
+          "description": "Minimum value"
+        },
+        {
+          "name": "max_value",
+          "type": "number",
+          "default": 1,
+          "description": "Maximum value"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "number"
+    },
+    {
+      "name": "pow",
+      "displayName": "Power",
+      "description": "Raise to a power",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "exponent",
+          "type": "number",
+          "default": 2,
+          "description": "Exponent"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "sqrt",
+      "displayName": "Square Root",
+      "description": "Compute square root",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "log",
+      "displayName": "Logarithm",
+      "description": "Compute logarithm (natural or custom base)",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "base",
+          "type": "number",
+          "default": null,
+          "description": "Log base (null = natural log)"
+        }
+      ],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "shorthand_number",
+      "displayName": "Parse Shorthand Number",
+      "description": "Parse 1.2k, $3.5m, 50% etc.",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "allow_currency",
+          "type": "boolean",
+          "default": true,
+          "description": "Accept currency prefix"
+        },
+        {
+          "name": "allow_percent",
+          "type": "boolean",
+          "default": true,
+          "description": "Accept % suffix"
+        },
+        {
+          "name": "percent_base",
+          "type": "number",
+          "default": 1,
+          "description": "Base for percentage (1.0 => fraction)"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "number"
+    },
+    {
+      "name": "shorthand_decimal",
+      "displayName": "Parse Shorthand Decimal",
+      "description": "Parse shorthand notation (returns float)",
+      "category": "numerical",
+      "params": [
+        {
+          "name": "allow_currency",
+          "type": "boolean",
+          "default": true,
+          "description": "Accept currency prefix"
+        },
+        {
+          "name": "allow_percent",
+          "type": "boolean",
+          "default": true,
+          "description": "Accept % suffix"
+        },
+        {
+          "name": "percent_base",
+          "type": "number",
+          "default": 1,
+          "description": "Base for percentage (1.0 => fraction)"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "number"
+    },
+    {
+      "name": "percentage_calc",
+      "displayName": "Percentage Calculate",
+      "description": "Convert to percentage (0.5 -> 50)",
+      "category": "numerical",
+      "params": [],
+      "async": false,
+      "inputType": "number",
+      "outputType": "number"
+    },
+    {
+      "name": "date",
+      "displayName": "Parse Date",
+      "description": "Parse date string to ISO format",
+      "category": "date",
+      "params": [
+        {
+          "name": "format",
+          "type": "string",
+          "default": "%Y-%m-%d",
+          "description": "Date format (strftime codes)"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "duration_calc",
+      "displayName": "Duration Calculator",
+      "description": "Calculate duration between dates",
+      "category": "date",
+      "params": [
+        {
+          "name": "unit",
+          "type": "string",
+          "default": "days",
+          "description": "Unit",
+          "options": [
+            "days",
+            "months",
+            "years"
+          ]
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "default": "%Y-%m-%d",
+          "description": "Date format"
+        },
+        {
+          "name": "end",
+          "type": "string",
+          "default": null,
+          "description": "End date (null = today)"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "number"
+    },
+    {
+      "name": "age_calc",
+      "displayName": "Age Calculator",
+      "description": "Calculate age in years from birth date",
+      "category": "date",
+      "params": [
+        {
+          "name": "reference_date",
+          "type": "string",
+          "default": null,
+          "description": "Reference date (null = today)"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "number"
+    },
+    {
+      "name": "bool",
+      "displayName": "Boolean",
+      "description": "Convert to boolean (yes/no/true/false/1/0)",
+      "category": "validation",
+      "params": [],
+      "async": false,
+      "inputType": "any",
+      "outputType": "boolean"
+    },
+    {
+      "name": "email_validator",
+      "displayName": "Email Validator",
+      "description": "Validate email address format",
+      "category": "validation",
+      "params": [
+        {
+          "name": "allowed_domains",
+          "type": "array",
+          "default": null,
+          "description": "Restrict to domains"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "phone_formatter",
+      "displayName": "Phone Formatter",
+      "description": "Format 10-digit phone number",
+      "category": "validation",
+      "params": [
+        {
+          "name": "format",
+          "type": "string",
+          "default": "({area}) {prefix}-{line}",
+          "description": "Output format"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "credit_card_check",
+      "displayName": "Credit Card Validator",
+      "description": "Validate via Luhn algorithm",
+      "category": "validation",
+      "params": [
+        {
+          "name": "mask",
+          "type": "boolean",
+          "default": false,
+          "description": "Mask middle digits"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "type_enforcer",
+      "displayName": "Type Enforcer",
+      "description": "Convert value to target type",
+      "category": "validation",
+      "params": [
+        {
+          "name": "target_type",
+          "type": "string",
+          "default": "str",
+          "description": "Target type",
+          "options": [
+            "int",
+            "float",
+            "str",
+            "bool"
+          ]
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "any"
+    },
+    {
+      "name": "json_parse",
+      "displayName": "JSON Parse",
+      "description": "Parse JSON string with optional schema validation",
+      "category": "json",
+      "params": [
+        {
+          "name": "strict",
+          "type": "boolean",
+          "default": true,
+          "description": "Throw on invalid JSON"
+        },
+        {
+          "name": "schema",
+          "type": "object",
+          "default": null,
+          "description": "JSON schema for validation"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "any"
+    },
+    {
+      "name": "json_extract",
+      "displayName": "JSON Extract",
+      "description": "Extract values using dot-notation paths",
+      "category": "json",
+      "params": [
+        {
+          "name": "path",
+          "type": "string",
+          "default": "",
+          "description": "Dot-notation path (e.g. user.name, items[0], items[*].id)"
+        },
+        {
+          "name": "default_value",
+          "type": "any",
+          "default": null,
+          "description": "Default if path not found"
+        }
+      ],
+      "async": false,
+      "inputType": "any",
+      "outputType": "any"
+    },
+    {
+      "name": "strip_html_tags",
+      "displayName": "Strip HTML Tags",
+      "description": "Remove all HTML tags, keep text content",
+      "category": "html",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "html_sanitize",
+      "displayName": "HTML Sanitize",
+      "description": "Remove dangerous tags (script, style, iframe, etc.)",
+      "category": "html",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "link_extraction",
+      "displayName": "Extract Links",
+      "description": "Extract all href URLs from anchor tags",
+      "category": "html",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "array"
+    },
+    {
+      "name": "extract_domain",
+      "displayName": "Extract Domain",
+      "description": "Extract domain from URL",
+      "category": "html",
+      "params": [],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    },
+    {
+      "name": "resolve_url",
+      "displayName": "Resolve URL",
+      "description": "Resolve relative URL against a base",
+      "category": "html",
+      "params": [
+        {
+          "name": "base_url",
+          "type": "string",
+          "default": "",
+          "description": "Base URL"
+        }
+      ],
+      "async": false,
+      "inputType": "string",
+      "outputType": "string"
+    }
+  ],
+  "categories": {
+    "text": [
+      "strip",
+      "lowercase",
+      "uppercase",
+      "title_case",
+      "camel_case",
+      "snake_case",
+      "slugify",
+      "truncate",
+      "remove_emojis",
+      "redact_sensitive",
+      "regex",
+      "split"
+    ],
+    "encoding": [
+      "url_encode",
+      "url_decode",
+      "hex_encode",
+      "hex_decode",
+      "html_entities_encode",
+      "html_entities_decode",
+      "rot13",
+      "unicode_escape",
+      "unicode_unescape"
+    ],
+    "crypto": [
+      "hash_text",
+      "base64_encode",
+      "base64_decode",
+      "uuid_generate",
+      "hmac_sign"
+    ],
+    "numerical": [
+      "int",
+      "float",
+      "round",
+      "currency_convert",
+      "unit_convert",
+      "math_operation",
+      "extract_numbers",
+      "abs",
+      "floor",
+      "ceil",
+      "clamp",
+      "scale",
+      "stats",
+      "format_number",
+      "random",
+      "pow",
+      "sqrt",
+      "log",
+      "shorthand_number",
+      "shorthand_decimal",
+      "percentage_calc"
+    ],
+    "date": [
+      "date",
+      "duration_calc",
+      "age_calc"
+    ],
+    "validation": [
+      "bool",
+      "email_validator",
+      "phone_formatter",
+      "credit_card_check",
+      "type_enforcer"
+    ],
+    "json": [
+      "json_parse",
+      "json_extract"
+    ],
+    "html": [
+      "strip_html_tags",
+      "html_sanitize",
+      "link_extraction",
+      "extract_domain",
+      "resolve_url"
+    ]
+  }
+}

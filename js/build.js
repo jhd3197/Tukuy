@@ -35,10 +35,30 @@ async function build() {
     globalName: 'Tukuy',
   });
 
+  // Generate JS registry manifest — consumed by Python for platform matrix
+  const { tukuy } = require('./dist/tukuy.js');
+  const manifest = {
+    version: require('./package.json').version,
+    transformers: tukuy.getMetadata(),
+    categories: Object.fromEntries(
+      tukuy.getCategories().map(cat => [cat, tukuy.list(cat)])
+    ),
+  };
+  const fs = require('fs');
+  fs.writeFileSync(
+    path.join(__dirname, 'dist', 'js-registry.json'),
+    JSON.stringify(manifest, null, 2) + '\n'
+  );
+  // Also write to Python package so it's accessible at runtime
+  const pyTarget = path.join(__dirname, '..', 'tukuy', 'js-registry.json');
+  fs.writeFileSync(pyTarget, JSON.stringify(manifest, null, 2) + '\n');
+
   console.log('[tukuy.js] Build complete:');
-  console.log('  dist/tukuy.mjs      (ESM)');
-  console.log('  dist/tukuy.js       (CJS)');
-  console.log('  dist/tukuy.iife.js  (Browser)');
+  console.log('  dist/tukuy.mjs          (ESM)');
+  console.log('  dist/tukuy.js           (CJS)');
+  console.log('  dist/tukuy.iife.js      (Browser)');
+  console.log(`  dist/js-registry.json   (${tukuy.size} transformers)`);
+  console.log(`  tukuy/js-registry.json  (Python copy)`);
 }
 
 build().catch((err) => {
