@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tukuy"
-version = "0.0.33"
+version = "0.0.35"
 description = "A flexible data transformation library with a plugin system"
 readme = "README.md"
 license = "MIT"
@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "python-slugify>=4.0.0",
+    "cacaodocs>=0.1.26",
 ]
 
 [project.optional-dependencies]
