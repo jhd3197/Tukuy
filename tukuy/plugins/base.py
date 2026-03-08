@@ -6,6 +6,7 @@ import inspect
 import sys
 from typing import TYPE_CHECKING, Dict, List, Optional
 from logging import getLogger
+from cacaodocs import doc
 
 if TYPE_CHECKING:
     from ..instruction import Instruction
@@ -15,6 +16,7 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
+@doc(category="Plugins", description="Decorator to register a transformer class for auto-discovery.")
 def register_transformer(name: str, **default_params):
     """Decorate a transformer class so ``_auto_transformers`` can discover it.
 
@@ -41,6 +43,7 @@ def register_transformer(name: str, **default_params):
     return decorator
 
 
+@doc(category="Plugins", description="Where a plugin was loaded from.")
 class PluginSource(str, Enum):
     """Where a plugin was loaded from."""
     TUKUY = "tukuy"
@@ -53,6 +56,7 @@ class PluginSource(str, Enum):
 DEFAULT_SOURCE_PRIORITY: List[str] = ["tukuy", "local", "pip", "claude", "unknown"]
 
 
+@doc(category="Plugins", description="Base class for transformer plugins providing organized transformer groups.", doc_type="plugin")
 class TransformerPlugin(ABC):
     """
     Base class for transformer plugins.
@@ -198,6 +202,7 @@ class TransformerPlugin(ABC):
         """
         self.cleanup()
 
+@doc(category="Plugins", description="Central registry for managing transformer plugins.", doc_type="plugin")
 class PluginRegistry:
     """
     Registry for managing transformer plugins.

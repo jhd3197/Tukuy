@@ -1,8 +1,9 @@
 """
-Tukuy Skills Showcase — powered by Cacao.
+Tukuy Skills Showcase — powered by Cacao + CacaoDocs.
 
 An interactive web UI that discovers all Tukuy plugins and skills at runtime
-and presents them in a browsable admin-style dashboard.
+and presents them in a browsable admin-style dashboard, with integrated
+API documentation via CacaoDocs.
 
 Run:
     cacao run tukuy_showcase.py
@@ -10,12 +11,19 @@ Run:
 
 import sys
 import cacao as c
+import cacaodocs
 
 # ---------------------------------------------------------------------------
 # Cacao app configuration
 # ---------------------------------------------------------------------------
 
 c.config(title="Tukuy Skills Showcase", theme="dark")
+
+# ---------------------------------------------------------------------------
+# CacaoDocs plugin — scans tukuy/ for API docs + markdown pages
+# ---------------------------------------------------------------------------
+
+docs = cacaodocs.plug("./tukuy", nav_key="docs")
 
 # ---------------------------------------------------------------------------
 # Discover Tukuy plugins at import time
@@ -148,6 +156,10 @@ with c.app_shell(brand="Tukuy Skills", default="overview"):
     with c.nav_sidebar():
         c.nav_item("Overview", key="overview", icon="home")
 
+        # CacaoDocs documentation nav
+        docs.sidebar()
+
+        # Plugin browser nav
         for group in ordered_groups:
             plugins = _catalog[group]
             icon = GROUP_ICONS.get(group, "package")
@@ -168,7 +180,7 @@ with c.app_shell(brand="Tukuy Skills", default="overview"):
     # -- Main content ---------------------------------------------------------
     with c.shell_content():
 
-        # ── Overview panel ──────────────────────────────────────────────────
+        # -- Overview panel --
         with c.nav_panel("overview"):
             c.title("Tukuy Skills Showcase")
             c.text(
@@ -235,7 +247,10 @@ with c.app_shell(brand="Tukuy Skills", default="overview"):
                     page_size=15,
                 )
 
-        # ── Per-plugin panels ───────────────────────────────────────────────
+        # -- CacaoDocs panels (API docs + pages) --
+        docs.panels()
+
+        # -- Per-plugin panels --
         for group in ordered_groups:
             for plugin in _catalog[group]:
                 with c.nav_panel(plugin["name"]):

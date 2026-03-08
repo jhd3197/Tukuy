@@ -21,12 +21,14 @@ Usage::
 """
 
 from typing import Any, Dict, Iterator, Optional, TypeVar
+from cacaodocs import doc
 
 T = TypeVar("T")
 
 _SENTINEL = object()
 
 
+@doc(category="Context", description="Typed, scoped context bag for inter-skill communication.")
 class SkillContext:
     """Typed, scoped context bag for inter-skill communication.
 
@@ -76,6 +78,7 @@ class SkillContext:
     # Core get / set
     # ------------------------------------------------------------------
 
+    @doc(category="Context")
     def get(self, key: str, default: Any = None) -> Any:
         """Read a value from context.
 
@@ -101,6 +104,7 @@ class SkillContext:
 
         return default
 
+    @doc(category="Context")
     def set(self, key: str, value: Any) -> None:
         """Write a value into context.
 
@@ -136,6 +140,7 @@ class SkillContext:
     # Scoping
     # ------------------------------------------------------------------
 
+    @doc(category="Context")
     def scope(self, namespace: str) -> "SkillContext":
         """Create a child context scoped to *namespace*.
 
@@ -153,6 +158,7 @@ class SkillContext:
     # Snapshot / merge
     # ------------------------------------------------------------------
 
+    @doc(category="Context")
     def snapshot(self) -> Dict[str, Any]:
         """Return a shallow copy of the raw data dict."""
         return dict(self._data)
@@ -166,6 +172,7 @@ class SkillContext:
     # ------------------------------------------------------------------
 
     @classmethod
+    @doc(category="Context")
     def from_dict(cls, data: Dict[str, Any]) -> "SkillContext":
         """Create a SkillContext backed by an existing dict.
 

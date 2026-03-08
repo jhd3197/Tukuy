@@ -17,6 +17,7 @@ from typing import (
 
 from enum import Enum
 
+from cacaodocs import doc
 from .types import TransformResult
 
 R = TypeVar("R")
@@ -27,6 +28,7 @@ _F = TypeVar("_F", bound=Callable[..., Any])
 # Enums for UI metadata and config
 # ---------------------------------------------------------------------------
 
+@doc(description="Risk levels for skills, used by frontends to display risk badges.", category="Skills")
 class RiskLevel(str, Enum):
     """Risk level for a skill, used by frontends to display risk badges.
 
@@ -43,6 +45,7 @@ class RiskLevel(str, Enum):
     CRITICAL = "critical"
 
 
+@doc(description="Scopes controlling when a config parameter can be changed.", category="Skills")
 class ConfigScope(str, Enum):
     """When a config parameter can be changed."""
 
@@ -55,6 +58,7 @@ class ConfigScope(str, Enum):
 # ConfigParam
 # ---------------------------------------------------------------------------
 
+@doc(description="A configurable parameter for a skill, used to auto-generate settings UIs.", category="Skills")
 @dataclass
 class ConfigParam:
     """A configurable parameter for a skill.
@@ -425,6 +429,7 @@ def _infer_schemas(fn: Callable) -> tuple:
 # SkillExample
 # ---------------------------------------------------------------------------
 
+@doc(description="A structured example demonstrating skill usage.", category="Skills")
 @dataclass
 class SkillExample:
     """A structured example demonstrating skill usage."""
@@ -445,6 +450,7 @@ class SkillExample:
 # SkillDescriptor
 # ---------------------------------------------------------------------------
 
+@doc(description="Declared-upfront skill contract providing identity, I/O schemas, and safety declarations.", category="Skills", doc_type="skill")
 @dataclass
 class SkillDescriptor:
     """Declared-upfront contract for a skill.
@@ -582,6 +588,7 @@ class SkillDescriptor:
 # SkillResult
 # ---------------------------------------------------------------------------
 
+@doc(description="Container for skill invocation results with timing, retry, and metadata.", category="Skills", doc_type="skill")
 @dataclass
 class SkillResult(Generic[R]):
     """Container for skill invocation results.
@@ -622,6 +629,7 @@ class SkillResult(Generic[R]):
 # Skill
 # ---------------------------------------------------------------------------
 
+@doc(description="Binds a SkillDescriptor to a callable and provides invoke/ainvoke.", category="Skills", doc_type="skill")
 @dataclass
 class Skill:
     """Binds a :class:`SkillDescriptor` to a callable and provides ``invoke()``.
@@ -823,6 +831,7 @@ def skill(
 ) -> Callable[[_F], _F]: ...
 
 
+@doc(description="Decorator that turns a function into a registered skill with a SkillDescriptor.", category="Skills")
 def skill(  # type: ignore[misc]
     fn: _F | None = None,
     *,

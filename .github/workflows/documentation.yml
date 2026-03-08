@@ -1,27 +1,56 @@
 name: documentation
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Install dependencies
         run: |
-          pip install sphinx sphinx_rtd_theme myst_parser
-      - name: Sphinx build
+          pip install cacaodocs cacao>=2.0.8
+
+      - name: Restore previous build from gh-pages
         run: |
-          sphinx-build doc _build
+          git fetch origin gh-pages --depth=1 || true
+          mkdir -p ./_build
+          git show origin/gh-pages:data.json > ./_build/data.json 2>/dev/null || true
+          git show origin/gh-pages:changelog.json > ./_build/changelog.json 2>/dev/null || true
+
+      - name: Build docs
+        run: |
+          cacaodocs build ./tukuy -o ./_build
+
+      - name: Export static site
+        run: |
+          cacaodocs export ./_build -o ./dist --base-path /${{ github.event.repository.name }}
+
+      - name: Include build state for changelog tracking
+        run: |
+          cp ./_build/data.json ./dist/data.json 2>/dev/null || true
+          cp ./_build/changelog.json ./dist/changelog.json 2>/dev/null || true
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/
+          publish_dir: ./dist
           force_orphan: true

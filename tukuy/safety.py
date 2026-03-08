@@ -45,11 +45,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
 from urllib.parse import urlparse
 
+from cacaodocs import doc
+
 
 # ---------------------------------------------------------------------------
 # SafetyViolation
 # ---------------------------------------------------------------------------
 
+@doc(category="Safety", description="A single safety policy violation.")
 @dataclass
 class SafetyViolation:
     """A single safety policy violation."""
@@ -67,6 +70,7 @@ class SafetyViolation:
 # SafetyError
 # ---------------------------------------------------------------------------
 
+@doc(category="Safety", description="Raised when a skill violates the active safety policy.")
 class SafetyError(Exception):
     """Raised when a skill violates the active safety policy."""
 
@@ -80,6 +84,7 @@ class SafetyError(Exception):
 # SecurityError
 # ---------------------------------------------------------------------------
 
+@doc(category="Safety", description="Raised when a resource access is denied by the active SecurityContext.")
 class SecurityError(Exception):
     """Raised when a resource access is denied by the active SecurityContext.
 
@@ -92,6 +97,7 @@ class SecurityError(Exception):
 # SecurityContext
 # ---------------------------------------------------------------------------
 
+@doc(category="Safety", description="Scoped security restrictions for built-in plugin I/O.")
 @dataclass
 class SecurityContext:
     """Scoped security restrictions for built-in plugin I/O.
@@ -205,6 +211,7 @@ class SecurityContext:
 # SafetyManifest
 # ---------------------------------------------------------------------------
 
+@doc(category="Safety", description="Extracted resource requirements from a skill descriptor.")
 @dataclass
 class SafetyManifest:
     """Extracted resource requirements from a skill descriptor.
@@ -249,6 +256,7 @@ class SafetyManifest:
 # SafetyPolicy
 # ---------------------------------------------------------------------------
 
+@doc(category="Safety", description="Defines what resources are permitted in the current runtime.")
 @dataclass
 class SafetyPolicy:
     """Defines what resources are permitted in the current runtime.
@@ -439,6 +447,7 @@ _active_policy: contextvars.ContextVar[Optional[SafetyPolicy]] = contextvars.Con
 )
 
 
+@doc(category="Safety", description="Activate a safety policy globally (async-safe via contextvars).")
 def set_policy(policy: Optional[SafetyPolicy]) -> contextvars.Token:
     """Set the active safety policy for the current context.
 
@@ -454,11 +463,13 @@ def set_policy(policy: Optional[SafetyPolicy]) -> contextvars.Token:
     return _active_policy.set(policy)
 
 
+@doc(category="Safety", description="Get the currently active safety policy.")
 def get_policy() -> Optional[SafetyPolicy]:
     """Return the active safety policy, or ``None`` if unrestricted."""
     return _active_policy.get()
 
 
+@doc(category="Safety", description="Clear the active safety policy.")
 def reset_policy(token: contextvars.Token) -> None:
     """Restore the previous safety policy using a token from :func:`set_policy`."""
     _active_policy.reset(token)
@@ -473,6 +484,7 @@ _active_security_context: contextvars.ContextVar[Optional[SecurityContext]] = co
 )
 
 
+@doc(category="Safety", description="Set the active security context for the current context.")
 def set_security_context(ctx: Optional[SecurityContext]) -> contextvars.Token:
     """Set the active security context for the current context.
 
@@ -482,11 +494,13 @@ def set_security_context(ctx: Optional[SecurityContext]) -> contextvars.Token:
     return _active_security_context.set(ctx)
 
 
+@doc(category="Safety", description="Get the active security context.")
 def get_security_context() -> Optional[SecurityContext]:
     """Return the active security context, or ``None`` if unrestricted."""
     return _active_security_context.get()
 
 
+@doc(category="Safety", description="Restore the previous security context.")
 def reset_security_context(token: contextvars.Token) -> None:
     """Restore the previous security context using a token from :func:`set_security_context`."""
     _active_security_context.reset(token)

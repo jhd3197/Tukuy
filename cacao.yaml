@@ -1,0 +1,111 @@
+# Cacao Configuration
+# Shared by Cacao framework and CacaoDocs plugin.
+
+# --- Cacao Framework Settings ---
+title: "Tukuy"
+theme:
+  default: "light"
+  dark:
+    bg-primary: "#0a1628"
+    bg-secondary: "#0f1f3d"
+    bg-tertiary: "#152a4f"
+    text-primary: "#e3edf9"
+    text-secondary: "#8baacf"
+    accent-primary: "#3b82f6"
+    accent-secondary: "#2563eb"
+    success: "#22c55e"
+    danger: "#ef4444"
+    warning: "#f59e0b"
+    chart-1: "#3b82f6"
+    chart-2: "#2563eb"
+    chart-3: "#60a5fa"
+    chart-4: "#06b6d4"
+    chart-5: "#22c55e"
+    chart-6: "#f59e0b"
+  light:
+    bg-primary: "#f0f6ff"
+    bg-secondary: "#e0edff"
+    bg-tertiary: "#c7ddfb"
+    text-primary: "#0c1a2e"
+    text-secondary: "#1e40af"
+    accent-primary: "#2563eb"
+    accent-secondary: "#1d4ed8"
+    success: "#16a34a"
+    danger: "#dc2626"
+    warning: "#d97706"
+    chart-1: "#2563eb"
+    chart-2: "#1d4ed8"
+    chart-3: "#3b82f6"
+    chart-4: "#0891b2"
+    chart-5: "#16a34a"
+    chart-6: "#d97706"
+
+# --- CacaoDocs Plugin Settings ---
+description: "A portable agent skills library & data transformation toolkit for Python"
+version: "0.0.33"
+github_url: "https://github.com/jhd3197/tukuy"
+
+# Patterns to exclude from scanning
+exclude_patterns:
+  - "__pycache__"
+  - ".venv"
+  - "venv"
+  - ".git"
+  - "node_modules"
+  - "build"
+  - "dist"
+  - "tests"
+  - "doc"
+  - "js"
+  - "*.egg-info"
+  - "playground.py"
+  - "examples.py"
+  - "tukuy_showcase.py"
+
+# Page ordering for Markdown docs
+page_order:
+  - "getting-started"
+  - "user-guide"
+  - "examples"
+  - "contributing"
+
+# Custom doc types for Tukuy-specific concepts
+doc_types:
+  transformer:
+    label: "Transformer"
+    icon: "refresh-cw"
+    sections:
+      - name: "Operations"
+        format: args
+      - name: "Input"
+        format: args
+      - name: "Output"
+        format: args
+      - name: "Examples"
+        format: code
+
+  skill:
+    label: "Skill"
+    icon: "zap"
+    sections:
+      - name: "Risk Level"
+      - name: "Input Schema"
+        format: args
+      - name: "Output Schema"
+        format: args
+      - name: "Tags"
+      - name: "Examples"
+        format: code
+
+  plugin:
+    label: "Plugin"
+    icon: "package"
+    sections:
+      - name: "Manifest"
+        format: args
+      - name: "Transformers"
+        format: args
+      - name: "Skills"
+        format: args
+      - name: "Requirements"
+        format: args
