@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "python-slugify>=4.0.0",
+    "cacaodocs>=0.1.26",
 ]
 
 [project.optional-dependencies]
