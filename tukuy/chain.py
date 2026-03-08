@@ -41,6 +41,7 @@ from .plugins.base import PluginRegistry
 from .registry import get_shared_registry
 from .base import BaseTransformer
 from .async_base import AsyncBaseTransformer
+from cacaodocs import doc
 
 logger = getLogger(__name__)
 
@@ -245,6 +246,7 @@ async def _async_resolve_and_run(
 # Chain
 # ---------------------------------------------------------------------------
 
+@doc(category="Composition", description="Sequential pipeline that passes each result to the next step.")
 class Chain:
     """Execute a sequence of steps, passing each result to the next.
 
@@ -271,6 +273,7 @@ class Chain:
             self._registry = get_shared_registry()
         return self._registry
 
+    @doc(category="Composition")
     def run(self, value: Any, context: Optional[Dict[str, Any]] = None) -> Any:
         """Execute the chain synchronously.
 
@@ -301,6 +304,7 @@ class Chain:
             current = _resolve_and_run(step, self.registry, current, ctx)
         return current
 
+    @doc(category="Composition")
     async def arun(self, value: Any, context: Optional[Dict[str, Any]] = None) -> Any:
         """Execute the chain asynchronously.
 
@@ -332,6 +336,7 @@ class Chain:
 # Branch
 # ---------------------------------------------------------------------------
 
+@doc(category="Composition", description="Conditional step that routes to one of two paths based on a predicate.")
 class Branch:
     """Conditional step that routes to one of two paths.
 
@@ -387,6 +392,7 @@ class Branch:
 # Parallel
 # ---------------------------------------------------------------------------
 
+@doc(category="Composition", description="Fan-out step that runs multiple steps on the same input and merges results.")
 class Parallel:
     """Fan-out step that runs multiple steps on the same input and merges.
 
@@ -518,6 +524,7 @@ class Parallel:
 # Factory functions (match the FEEDBACK.md API)
 # ---------------------------------------------------------------------------
 
+@doc(category="Composition", description="Factory function to create a Branch step.")
 def branch(
     on_match: Callable[[Any], bool],
     true_path: List[Any],
@@ -536,6 +543,7 @@ def branch(
     return Branch(on_match=on_match, true_path=true_path, false_path=false_path)
 
 
+@doc(category="Composition", description="Factory function to create a Parallel step.")
 def parallel(
     steps: Optional[List[Any]] = None,
     *,

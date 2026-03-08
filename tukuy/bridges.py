@@ -4,6 +4,8 @@ import inspect
 import json
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from cacaodocs import doc
+
 from .context import SkillContext
 from .instruction import Instruction
 from .skill import Skill, SkillDescriptor, SkillResult
@@ -127,6 +129,7 @@ def _unwrap_single_param(skill_obj: Union[Skill, Instruction], args: dict) -> Un
 # ---------------------------------------------------------------------------
 
 
+@doc(category="Bridges", description="Convert a skill to an OpenAI function-calling tool definition.")
 def to_openai_tool(skill_or_fn: Any) -> dict:
     """Convert a skill to an OpenAI function-calling tool definition."""
     skill_obj = _normalize(skill_or_fn)
@@ -141,6 +144,7 @@ def to_openai_tool(skill_or_fn: Any) -> dict:
     }
 
 
+@doc(category="Bridges", description="Convert a skill to an Anthropic tool definition.")
 def to_anthropic_tool(skill_or_fn: Any) -> dict:
     """Convert a skill to an Anthropic tool definition."""
     skill_obj = _normalize(skill_or_fn)
@@ -152,11 +156,13 @@ def to_anthropic_tool(skill_or_fn: Any) -> dict:
     }
 
 
+@doc(category="Bridges", description="Batch-convert skills to OpenAI tool definitions.")
 def to_openai_tools(skills: List[Any]) -> List[dict]:
     """Batch-convert skills to OpenAI tool definitions."""
     return [to_openai_tool(s) for s in skills]
 
 
+@doc(category="Bridges", description="Batch-convert skills to Anthropic tool definitions.")
 def to_anthropic_tools(skills: List[Any]) -> List[dict]:
     """Batch-convert skills to Anthropic tool definitions."""
     return [to_anthropic_tool(s) for s in skills]
@@ -167,6 +173,7 @@ def to_anthropic_tools(skills: List[Any]) -> List[dict]:
 # ---------------------------------------------------------------------------
 
 
+@doc(category="Bridges", description="Format a SkillResult as an OpenAI tool-result message.")
 def format_result_openai(tool_call_id: str, result: SkillResult) -> dict:
     """Format a ``SkillResult`` as an OpenAI tool-result message."""
     return {
@@ -176,6 +183,7 @@ def format_result_openai(tool_call_id: str, result: SkillResult) -> dict:
     }
 
 
+@doc(category="Bridges", description="Format a SkillResult as an Anthropic tool-result content block.")
 def format_result_anthropic(tool_use_id: str, result: SkillResult) -> dict:
     """Format a ``SkillResult`` as an Anthropic tool-result content block."""
     msg: Dict[str, Any] = {
@@ -193,6 +201,7 @@ def format_result_anthropic(tool_use_id: str, result: SkillResult) -> dict:
 # ---------------------------------------------------------------------------
 
 
+@doc(category="Bridges", description="Look up a skill by name, invoke it, and return a formatted OpenAI tool-result.")
 def dispatch_openai(
     tool_call: dict,
     skills: Dict[str, Any],
@@ -250,6 +259,7 @@ def dispatch_openai(
     return format_result_openai(call_id, result)
 
 
+@doc(category="Bridges", description="Look up a skill by name, invoke it, and return a formatted Anthropic tool-result.")
 def dispatch_anthropic(
     tool_use: dict,
     skills: Dict[str, Any],
@@ -299,6 +309,7 @@ def dispatch_anthropic(
     return format_result_anthropic(use_id, result)
 
 
+@doc(category="Bridges", description="Async variant of dispatch_openai using ainvoke.")
 async def async_dispatch_openai(
     tool_call: dict,
     skills: Dict[str, Any],
@@ -343,6 +354,7 @@ async def async_dispatch_openai(
     return format_result_openai(call_id, result)
 
 
+@doc(category="Bridges", description="Async variant of dispatch_anthropic using ainvoke.")
 async def async_dispatch_anthropic(
     tool_use: dict,
     skills: Dict[str, Any],

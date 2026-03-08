@@ -9,9 +9,15 @@ from ..types import TransformContext, JsonType
 from ..exceptions import ValidationError, TransformationError
 from ..plugins.base import PluginRegistry, PluginSource
 from ..registry import get_shared_registry
+from cacaodocs import doc
 
 logger = getLogger(__name__)
 
+@doc(
+    description="Main transformer class providing access to all transformation tools.",
+    doc_type="transformer",
+    category="Core",
+)
 class TukuyTransformer:
     """
     Main transformer class that provides access to all transformation tools.
@@ -29,6 +35,10 @@ class TukuyTransformer:
         """
         self.registry = registry if registry is not None else get_shared_registry()
 
+    @doc(
+        description="Register a custom plugin into the transformer registry.",
+        args={"plugin": "The plugin instance to register."},
+    )
     def register_plugin(self, plugin):
         """
         Register a custom plugin.
@@ -47,6 +57,18 @@ class TukuyTransformer:
         """
         self.registry.unregister(name)
     
+    @doc(
+        description="Transform a value using a sequence of transformations.",
+        args={
+            "value": "The value to transform.",
+            "transforms": "List of transformations to apply (strings or dicts).",
+        },
+        returns="The transformed value.",
+        raises={
+            "TransformationError": "If any transformation fails.",
+            "ValidationError": "If schema validation fails.",
+        },
+    )
     def transform(self, value: Any, transforms: List[Union[str, Dict[str, Any]]]) -> Any:
         """
         Transform a value using a sequence of transformations.
@@ -205,6 +227,11 @@ class TukuyTransformer:
             raise result.error
         return result.value[prop['name']] if prop.get('name') else None
 
+@doc(
+    description="Async counterpart of TukuyTransformer for async transformation pipelines.",
+    doc_type="transformer",
+    category="Core",
+)
 class AsyncTukuyTransformer:
     """Async counterpart of :class:`TukuyTransformer`.
 
@@ -230,6 +257,18 @@ class AsyncTukuyTransformer:
         """Unregister a plugin using the async lifecycle."""
         await self.registry.async_unregister(name)
 
+    @doc(
+        description="Async version of TukuyTransformer.transform.",
+        args={
+            "value": "The value to transform.",
+            "transforms": "List of transformations to apply (strings or dicts).",
+        },
+        returns="The transformed value.",
+        raises={
+            "TransformationError": "If any transformation fails.",
+            "ValidationError": "If schema validation fails.",
+        },
+    )
     async def transform(self, value: Any, transforms: List[Union[str, Dict[str, Any]]]) -> Any:
         """Async version of :meth:`TukuyTransformer.transform`.
 

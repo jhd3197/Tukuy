@@ -61,6 +61,10 @@ all = [
     "python-docx>=1.0",
     "pyyaml>=6.0",
 ]
+docs = [
+    "cacaodocs>=0.4.0",
+    "cacao>=2.0.8",
+]
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
@@ -72,6 +76,8 @@ dev = [
     "pypdf>=4.0",
     "python-docx>=1.0",
     "pyyaml>=6.0",
+    "cacaodocs>=0.4.0",
+    "cacao>=2.0.8",
 ]
 
 [project.scripts]

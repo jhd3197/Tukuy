@@ -174,8 +174,11 @@ cython_debug/
 .pypirc
 playground.py
 /_build
+/_docs_build
+/docs
 FEEDBACK.md
 nul
 js/node_modules/
 /.vscode
 /.vscode1
+plan.md
