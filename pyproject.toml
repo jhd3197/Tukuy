@@ -82,5 +82,8 @@ tukuy-mcp = "tukuy.mcp_server:main"
 Homepage = "https://github.com/jhd3197/tukuy"
 Repository = "https://github.com/jhd3197/tukuy"
 
+[tool.setuptools.package-data]
+tukuy = ["js-registry.json"]
+
 [tool.setuptools.packages.find]
 exclude = ["tests*", "doc*", "venv*"]

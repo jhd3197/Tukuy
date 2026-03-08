@@ -45,10 +45,17 @@ from .sandbox import (
     SandboxError, SandboxResult, SandboxTimeoutError,
 )
 
+# Platform matrix
+from .platforms import (
+    get_platforms, get_platform_matrix, get_platform_summary,
+    get_js_transformer_names, get_js_categories,
+    get_js_transformer_metadata, get_python_transformer_names,
+)
+
 # Two-phase discovery
 from .core.unified import browse_tools, get_tool_details, search_tools
 
-__version__ = '0.0.30'
+__version__ = '0.0.32'
 
 __all__ = [
     # Core
@@ -148,4 +155,12 @@ __all__ = [
     'SandboxError',
     'SandboxResult',
     'SandboxTimeoutError',
+    # Platform matrix
+    'get_platforms',
+    'get_platform_matrix',
+    'get_platform_summary',
+    'get_js_transformer_names',
+    'get_js_categories',
+    'get_js_transformer_metadata',
+    'get_python_transformer_names',
 ]

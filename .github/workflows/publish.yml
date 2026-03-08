@@ -8,7 +8,8 @@ on:
       - main
 
 permissions:
-  contents: write  # Required to push commits and tags
+  contents: write
+  pull-requests: read
 
 jobs:
   bump-version-and-publish:
@@ -61,18 +62,67 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add VERSION pyproject.toml
           git add -f js/dist/
-          git commit -m "🔄 Version to v${NEW_VERSION} [skip ci]"
-          git push origin main
+          git commit -m "🔄 Version to v${NEW_VERSION} [skip ci]" || true
+          git push origin main || true
 
-      ### Step 6: Create GitHub Release ###
+      ### Step 6: Fetch Latest Pull Request Info ###
+      - name: Fetch Latest Pull Request Info
+        id: fetch_pr
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              base: 'main',
+              head: 'dev',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 1
+            });
+
+            if (prs.data.length > 0) {
+              const pr = prs.data[0];
+              const prTitle = pr.title;
+              const prBody = pr.body || 'No description provided';
+              const prNumber = pr.number;
+              const prUrl = pr.html_url;
+              const prAuthor = pr.user.login;
+
+              const formattedBody = prBody.replace(/\r\n/g, '\n');
+
+              const releaseInfo = {
+                title: prTitle,
+                body: formattedBody,
+                number: prNumber,
+                url: prUrl,
+                author: prAuthor
+              };
+
+              console.log('Latest PR Info:', releaseInfo);
+              return releaseInfo;
+            } else {
+              console.log('No recent PRs from dev to main found');
+              return null;
+            }
+
+      ### Step 7: Create GitHub Release ###
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.bump_version.outputs.new_version }}
-          release_name: Release v${{ steps.bump_version.outputs.new_version }}
-          body: "Release version v${{ steps.bump_version.outputs.new_version }}"
+          release_name: v${{ steps.bump_version.outputs.new_version }}
+          body: |
+            ## Changes
+            ${{ steps.fetch_pr.outputs.result != 'null' && fromJSON(steps.fetch_pr.outputs.result).body || 'Version update' }}
+
+            ## Details
+            - Version: v${{ steps.bump_version.outputs.new_version }}
+            ${{ steps.fetch_pr.outputs.result != 'null' && format('- PR: #{0} by @{1}', fromJSON(steps.fetch_pr.outputs.result).number, fromJSON(steps.fetch_pr.outputs.result).author) || '' }}
+            ${{ steps.fetch_pr.outputs.result != 'null' && format('- PR URL: {0}', fromJSON(steps.fetch_pr.outputs.result).url) || '' }}
           draft: false
           prerelease: false
 
